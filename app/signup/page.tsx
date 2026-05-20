@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
@@ -20,11 +20,15 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [role, setRole] = useState<'aluno' | 'instrutor'>('aluno')
 
   // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      router.push('/dashboard')
+    }
+  }, [user, router])
+
   if (user) {
-    router.push('/dashboard')
     return null
   }
 
@@ -50,7 +54,7 @@ export default function SignupPage() {
 
     setIsLoading(true)
 
-    const result = await signup(name, email, password, role)
+    const result = await signup(name, email, password, 'aluno')
     
     if (result.success) {
       router.push('/dashboard')
@@ -157,36 +161,7 @@ export default function SignupPage() {
               </motion.div>
             )}
 
-            {/* Profile Selection */}
-            <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Escolha o seu perfil</Label>
-              <div className="grid grid-cols-2 gap-4 mt-1">
-                <button
-                  type="button"
-                  onClick={() => setRole('aluno')}
-                  className={`p-3 rounded-2xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all duration-300 text-center cursor-pointer ${
-                    role === 'aluno'
-                      ? 'border-[#8a66a8] bg-purple-50/10 text-[#312455] shadow-sm'
-                      : 'border-slate-100 bg-slate-50/50 text-slate-400 hover:border-slate-200 hover:text-slate-600'
-                  }`}
-                >
-                  <GraduationCap className={`h-5 w-5 ${role === 'aluno' ? 'text-[#8a66a8]' : ''}`} />
-                  <div className="font-bold text-xs tracking-wide">Aluno</div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRole('instrutor')}
-                  className={`p-3 rounded-2xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all duration-300 text-center cursor-pointer ${
-                    role === 'instrutor'
-                      ? 'border-[#8a66a8] bg-purple-50/10 text-[#312455] shadow-sm'
-                      : 'border-slate-100 bg-slate-50/50 text-slate-400 hover:border-slate-200 hover:text-slate-600'
-                  }`}
-                >
-                  <UserIcon className={`h-5 w-5 ${role === 'instrutor' ? 'text-[#8a66a8]' : ''}`} />
-                  <div className="font-bold text-xs tracking-wide">Instrutor</div>
-                </button>
-              </div>
-            </div>
+
 
             <div className="space-y-1">
               <Label htmlFor="name" className="text-xs font-bold uppercase tracking-wider text-slate-500">Nome completo</Label>

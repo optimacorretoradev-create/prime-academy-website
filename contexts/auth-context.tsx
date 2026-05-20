@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabase'
 
 interface User {
   name: string
@@ -22,95 +23,139 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
+  const fetchProfile = async (id: string, email: string, fallbackName?: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('perfis')
+        .select('nome, email, cargo')
+        .eq('id', id)
+        .single()
+
+      if (data && !error) {
+        setUser({
+          name: data.nome,
+          email: data.email,
+          role: data.cargo as 'aluno' | 'instrutor',
+        })
+      } else {
+        // Fallback to metadata if the profile table hasn't finished writing yet
+        setUser({
+          name: fallbackName || 'Utilizador',
+          email: email,
+          role: 'aluno',
+        })
+      }
+    } catch (err) {
+      console.error('Error fetching user profile from profiles table:', err)
+      setUser({
+        name: fallbackName || 'Utilizador',
+        email: email,
+        role: 'aluno',
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
-    // Load user from localStorage on mount
-    const storedUser = localStorage.getItem('prime_academy_user')
-    if (storedUser) {
+    // Check active session on mount
+    const checkSession = async () => {
       try {
-        setUser(JSON.parse(storedUser))
-      } catch (e) {
-        console.error('Error parsing stored user', e)
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session) {
+          await fetchProfile(
+            session.user.id,
+            session.user.email || '',
+            session.user.user_metadata?.name
+          )
+        } else {
+          setUser(null)
+          setIsLoading(false)
+        }
+      } catch (error) {
+        console.error('Error checking active session:', error)
+        setUser(null)
+        setIsLoading(false)
       }
     }
-    setIsLoading(false)
+
+    checkSession()
+
+    // Listen for auth changes (login, logout, token refresh, etc.)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session) {
+        await fetchProfile(
+          session.user.id,
+          session.user.email || '',
+          session.user.user_metadata?.name
+        )
+      } else {
+        setUser(null)
+        setIsLoading(false)
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [])
 
   const login = async (email: string, password: string) => {
-    // Check if the user signed up previously in localStorage
-    const savedUsers = localStorage.getItem('prime_academy_registered_users')
-    let registeredUsers: Array<User & { password?: string }> = []
-    if (savedUsers) {
-      try {
-        registeredUsers = JSON.parse(savedUsers)
-      } catch (e) {
-        console.error(e)
-      }
-    }
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
 
-    const foundUser = registeredUsers.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase()
-    )
-
-    if (foundUser) {
-      const loggedUser: User = {
-        name: foundUser.name,
-        email: foundUser.email,
-        role: foundUser.role || 'aluno'
+      if (error) {
+        return { success: false, error: error.message }
       }
-      setUser(loggedUser)
-      localStorage.setItem('prime_academy_user', JSON.stringify(loggedUser))
+
       return { success: true }
-    }
-
-    // Default mock behavior to allow easy testing with any email
-    if (email.includes('@')) {
-      const isInstrutor = email.includes('instrutor') || email.includes('teacher')
-      const loggedUser: User = {
-        name: email.split('@')[0].replace('.', ' ').replace(/\b\w/g, c => c.toUpperCase()),
-        email: email,
-        role: isInstrutor ? 'instrutor' : 'aluno'
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err.message || 'Ocorreu um erro inesperado ao tentar entrar.',
       }
-      setUser(loggedUser)
-      localStorage.setItem('prime_academy_user', JSON.stringify(loggedUser))
-      return { success: true }
     }
-
-    return { success: false, error: 'Credenciais inválidas' }
   }
 
   const signup = async (name: string, email: string, password: string, role: 'aluno' | 'instrutor' = 'aluno') => {
-    const savedUsers = localStorage.getItem('prime_academy_registered_users')
-    let registeredUsers: Array<User & { password?: string; role: 'aluno' | 'instrutor' }> = []
-    if (savedUsers) {
-      try {
-        registeredUsers = JSON.parse(savedUsers)
-      } catch (e) {
-        console.error(e)
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: name,
+            role: 'aluno', // Enforce 'aluno' on signup
+          },
+        },
+      })
+
+      if (error) {
+        return { success: false, error: error.message }
+      }
+
+      return { success: true }
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err.message || 'Ocorreu um erro inesperado ao tentar criar a conta.',
       }
     }
-
-    const exists = registeredUsers.some(
-      (u) => u.email.toLowerCase() === email.toLowerCase()
-    )
-
-    if (exists) {
-      return { success: false, error: 'Este email já está registado' }
-    }
-
-    const newUser = { name, email, password, role }
-    registeredUsers.push(newUser)
-    localStorage.setItem('prime_academy_registered_users', JSON.stringify(registeredUsers))
-
-    const loggedUser: User = { name, email, role }
-    setUser(loggedUser)
-    localStorage.setItem('prime_academy_user', JSON.stringify(loggedUser))
-
-    return { success: true }
   }
 
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem('prime_academy_user')
+  const logout = async () => {
+    try {
+      setIsLoading(true)
+      await supabase.auth.signOut()
+      setUser(null)
+    } catch (err) {
+      console.error('Error signing out:', err)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (

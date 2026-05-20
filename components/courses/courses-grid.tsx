@@ -45,20 +45,23 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
     return matchesCategory && matchesType && matchesSearch
   })
 
+  const featuredCourse = courses.find((c) => c.id === '5') || courses[0]
+  const featuredTrainer = featuredCourse ? getTrainerInfo(featuredCourse.id) : null
+
   return (
     <div className="min-h-screen bg-slate-50">
 
-      {/* ── HERO (único, original, roxo da marca) ── */}
-      <section className="relative py-24 md:py-32 overflow-hidden">
+      {/* ── HERO (Restaurado para cor original, com barra de pesquisa glassmorphic integrada) ── */}
+      <section className="relative pt-32 pb-24 md:pt-40 md:pb-32 overflow-hidden bg-[#312455]">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1920&q=80)' }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#312455]/95 via-[#312455]/90 to-[#312455]/80" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#8a66a8]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-[#8a66a8]/5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#8a66a8]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-[#8a66a8]/5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 
-        <div className="container mx-auto px-4 text-center relative z-10">
+        <div className="container mx-auto px-4 text-center relative z-10 max-w-5xl">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -71,60 +74,63 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-white/90 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed text-pretty"
+            className="text-white/90 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed mb-10 text-pretty"
           >
             Descubra a formação ideal para impulsionar a sua carreira. Oferecemos cursos práticos
             com certificação reconhecida pelo mercado angolano.
           </motion.p>
+
+          {/* Barra de pesquisa Glassmorphic integrada na Hero */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="bg-white/[0.06] backdrop-blur-xl border border-white/10 p-2.5 rounded-2xl md:rounded-full flex flex-col md:flex-row items-center gap-2 shadow-[0_20px_50px_rgba(0,0,0,0.25)] w-full max-w-4xl mx-auto text-left"
+          >
+            <div className="flex items-center gap-2 flex-1 w-full px-4 py-1.5">
+              <Search className="h-4 w-4 text-[#8a66a8] shrink-0" />
+              <input
+                type="text"
+                placeholder="Pesquisar por palavra-chave..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-transparent border-none outline-none text-white placeholder-white/50 w-full text-sm font-medium focus:ring-0"
+              />
+            </div>
+
+            <div className="hidden md:block h-6 w-px bg-white/10" />
+            <div className="w-full md:w-auto px-4 py-1.5">
+              <select
+                value={activeCategory}
+                onChange={(e) => setActiveCategory(e.target.value)}
+                className="bg-transparent border-none outline-none text-white/95 font-semibold text-sm w-full md:w-48 cursor-pointer focus:ring-0 py-1"
+              >
+                <option value="Todos" className="bg-[#312455] text-white">Todas as Categorias</option>
+                {categories.filter((c) => c !== 'Todos').map((cat) => (
+                  <option key={cat} value={cat} className="bg-[#312455] text-white">{cat}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="hidden md:block h-6 w-px bg-white/10" />
+            <div className="w-full md:w-auto px-4 py-1.5">
+              <select
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+                className="bg-transparent border-none outline-none text-white/95 font-semibold text-sm w-full md:w-40 cursor-pointer focus:ring-0 py-1"
+              >
+                <option value="Todos" className="bg-[#312455] text-white">Todos Formatos</option>
+                <option value="online" className="bg-[#312455] text-white">Online</option>
+                <option value="presencial" className="bg-[#312455] text-white">Presencial</option>
+              </select>
+            </div>
+
+            <button className="w-full md:w-auto bg-[#8a66a8] hover:bg-[#a882c5] text-white font-bold text-xs tracking-widest uppercase px-8 py-3.5 rounded-xl md:rounded-full transition-all duration-300 shadow-[0_4px_20px_rgba(138,102,168,0.2)] shrink-0 cursor-pointer">
+              Pesquisar
+            </button>
+          </motion.div>
         </div>
       </section>
-
-      {/* ── BARRA DE PESQUISA flutuante (sobrepõe o Hero) ── */}
-      <div className="relative z-20 -mt-7 px-4 mb-12">
-        <div className="bg-white rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row items-center gap-2 shadow-[0_15px_45px_rgba(0,0,0,0.07)] border border-slate-100 w-full max-w-4xl mx-auto">
-          <div className="flex items-center gap-2 flex-1 w-full px-4 py-1.5">
-            <Search className="h-4 w-4 text-[#8a66a8] shrink-0" />
-            <input
-              type="text"
-              placeholder="Pesquisar por palavra-chave..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 w-full text-sm font-medium focus:ring-0"
-            />
-          </div>
-
-          <div className="hidden md:block h-6 w-px bg-slate-200" />
-          <div className="w-full md:w-auto px-4 py-1.5">
-            <select
-              value={activeCategory}
-              onChange={(e) => setActiveCategory(e.target.value)}
-              className="bg-transparent border-none outline-none text-slate-600 font-semibold text-sm w-full md:w-48 cursor-pointer focus:ring-0 py-1"
-            >
-              <option value="Todos">Todas as Categorias</option>
-              {categories.filter((c) => c !== 'Todos').map((cat) => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="hidden md:block h-6 w-px bg-slate-200" />
-          <div className="w-full md:w-auto px-4 py-1.5">
-            <select
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-              className="bg-transparent border-none outline-none text-slate-600 font-semibold text-sm w-full md:w-40 cursor-pointer focus:ring-0 py-1"
-            >
-              <option value="Todos">Todos os Formatos</option>
-              <option value="online">Online</option>
-              <option value="presencial">Presencial</option>
-            </select>
-          </div>
-
-          <button className="w-full md:w-auto bg-[#312455] hover:bg-[#8a66a8] text-white font-bold text-xs tracking-widest uppercase px-8 py-3.5 rounded-xl md:rounded-full transition-all duration-300 shadow-md shrink-0">
-            Pesquisar
-          </button>
-        </div>
-      </div>
 
       {/* ── CONTEÚDO PRINCIPAL ── */}
       <div className="container mx-auto px-4 max-w-screen-xl pb-20">

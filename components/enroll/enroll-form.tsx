@@ -19,11 +19,20 @@ export function EnrollForm({ courses }: EnrollFormProps) {
   const searchParams = useSearchParams()
   const preselectedCourse = searchParams.get('course')
 
+  // Find corresponding course name if ID or name was passed
+  const getInitialCourseValue = () => {
+    if (!preselectedCourse) return ''
+    const match = courses.find(
+      (c) => c.id === preselectedCourse || c.name === preselectedCourse
+    )
+    return match ? match.name : preselectedCourse
+  }
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    course: preselectedCourse || '',
+    course: getInitialCourseValue(),
     message: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -32,9 +41,12 @@ export function EnrollForm({ courses }: EnrollFormProps) {
 
   useEffect(() => {
     if (preselectedCourse) {
-      setFormData((prev) => ({ ...prev, course: preselectedCourse }))
+      const match = courses.find(
+        (c) => c.id === preselectedCourse || c.name === preselectedCourse
+      )
+      setFormData((prev) => ({ ...prev, course: match ? match.name : preselectedCourse }))
     }
-  }, [preselectedCourse])
+  }, [preselectedCourse, courses])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

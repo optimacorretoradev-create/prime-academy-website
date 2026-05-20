@@ -39,28 +39,16 @@ export default async function CourseDetailsPage({ params }: PageProps) {
   }
 
   // Syllabus mock data depending on course
-  const syllabus = course.id === '1' ? [
-    { title: 'Módulo 1: Fundamentos da Gestão de Projectos', topics: ['Ciclo de vida do projecto', 'Estrutura organizacional', 'Definição de objectivos e escopo'] },
-    { title: 'Módulo 2: Metodologias Ágeis vs Tradicionais', topics: ['Introdução ao Scrum e Kanban', 'O papel do Project Manager', 'Processos de planeamento preditivo'] },
-    { title: 'Módulo 3: Planeamento, Cronograma e Orçamento', topics: ['WBS / EAP estruturada', 'Estimativas de custos e margens', 'Cálculo de caminho crítico (CPM)'] },
-    { title: 'Módulo 4: Monitoria, Riscos e Encerramento', topics: ['Matriz de probabilidade e impacto', 'Análise de valor ganho (EVM)', 'Reuniões de retrospectiva'] }
-  ] : [
-    { title: 'Módulo 1: Fórmulas Avançadas e Lógicas', topics: ['SE, E, OU aninhados', 'PROCV, PROCH, ÍNDICE e CORRESP', 'Fórmulas financeiras avançadas'] },
-    { title: 'Módulo 2: Manipulação e Validação de Dados', topics: ['Remoção de duplicados estruturada', 'Formatação condicional dinâmica', 'Filtros avançados e subtotais'] },
-    { title: 'Módulo 3: Tabelas Dinâmicas de Performance', topics: ['Agrupamentos especiais', 'Gráficos dinâmicos com filtros (Slicers)', 'Campos e itens calculados'] },
-    { title: 'Módulo 4: Automatizações Básicas e Macros', topics: ['Gravador de Macros', 'Introdução à linguagem VBA', 'Desenho de botões interactivos'] }
+  const syllabus = course.syllabus || [
+    { title: 'Módulo 1: Fundamentos do Curso', topics: ['Visão geral', 'Conceitos chave', 'Boas práticas'] },
+    { title: 'Módulo 2: Aplicação Prática', topics: ['Estudos de caso', 'Exercícios reais', 'Resolução de problemas'] }
   ]
 
-  const highlights = course.id === '1' ? [
-    'Acesso ilimitado ao material de estudo telemático',
-    'Matriz de controlo de riscos e planeamento real inclusa',
-    'Orientado aos exames oficiais de certificação PMI',
-    'Ideal para líderes e gestores de equipas em Angola'
-  ] : [
-    'Exercícios práticos focados em dados de finanças reais',
-    'Acesso a planilhas prontas de alto rendimento corporativo',
-    'Material didático de apoio em vídeo e manuais digitais',
-    'Certificação oficial atestando competência avançada'
+  const highlights = course.highlights || [
+    'Acesso vitalício ao material de estudo do curso',
+    'Exercícios práticos focados no mercado profissional',
+    'Certificado de conclusão reconhecido nacionalmente',
+    'Acompanhamento e suporte com formadores experientes'
   ]
 
   return (

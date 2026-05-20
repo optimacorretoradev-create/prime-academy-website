@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   BookOpen, Clock, Award, ArrowRight, Play, User, LogOut, 
-  Download, Upload, Plus, CheckCircle2, Globe, Users, FileText, ChevronRight 
+  Download, Upload, Plus, CheckCircle2, Globe, Users, FileText, ChevronRight, ShieldCheck 
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -197,6 +197,17 @@ export default function DashboardPage() {
                   Ver Cursos
                 </Link>
               </Button>
+              {isInstructor && (
+                <Button
+                  asChild
+                  className="bg-[#8a66a8] hover:bg-[#a882c5] text-white rounded-xl shadow-md cursor-pointer"
+                >
+                  <Link href="/admin">
+                    <ShieldCheck className="mr-2 h-4 w-4" />
+                    Painel Admin
+                  </Link>
+                </Button>
+              )}
               <Button 
                 variant="ghost" 
                 className="text-primary-foreground hover:bg-primary-foreground/10 rounded-xl cursor-pointer"

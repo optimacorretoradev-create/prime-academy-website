@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
@@ -20,8 +20,13 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      router.push('/dashboard')
+    }
+  }, [user, router])
+
   if (user) {
-    router.push('/dashboard')
     return null
   }
 
