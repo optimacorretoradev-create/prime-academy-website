@@ -12,6 +12,7 @@ export function ContactForm() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     message: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -38,7 +39,7 @@ export function ContactForm() {
       }
 
       setIsSuccess(true)
-      setFormData({ name: '', email: '', message: '' })
+      setFormData({ name: '', email: '', phone: '', message: '' })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao enviar mensagem')
     } finally {
@@ -53,17 +54,16 @@ export function ContactForm() {
         animate={{ opacity: 1, scale: 1 }}
         className="text-center py-12"
       >
-        <div className="bg-accent/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-          <CheckCircle className="h-10 w-10 text-accent" />
+        <div className="bg-emerald-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+          <CheckCircle className="h-10 w-10 text-emerald-500" />
         </div>
-        <h3 className="text-xl font-bold text-foreground mb-3">Mensagem enviada!</h3>
-        <p className="text-muted-foreground mb-6">
-          Obrigado pelo contacto. Responderemos em breve.
+        <h3 className="text-xl font-bold text-[#312455] mb-3">Mensagem enviada!</h3>
+        <p className="text-slate-500 mb-6 text-sm">
+          Obrigado pelo contacto. A nossa equipa responderá o mais breve possível.
         </p>
         <Button
           onClick={() => setIsSuccess(false)}
-          variant="outline"
-          className="rounded-xl"
+          className="bg-[#312455] hover:bg-[#8a66a8] text-white rounded-xl text-xs font-bold uppercase tracking-wider px-6 py-2.5"
         >
           Enviar outra mensagem
         </Button>
@@ -72,9 +72,11 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-2">
-        <Label htmlFor="contact-name">Nome *</Label>
+    <form onSubmit={handleSubmit} className="space-y-5 flex flex-col flex-1">
+      <div className="space-y-1.5">
+        <Label htmlFor="contact-name" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+          Nome Completo *
+        </Label>
         <Input
           id="contact-name"
           type="text"
@@ -82,12 +84,14 @@ export function ContactForm() {
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           placeholder="Insira o seu nome"
-          className="rounded-xl"
+          className="rounded-xl border-slate-200 focus-visible:ring-[#8a66a8]"
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="contact-email">Email *</Label>
+      <div className="space-y-1.5">
+        <Label htmlFor="contact-email" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+          Endereço de E-mail *
+        </Label>
         <Input
           id="contact-email"
           type="email"
@@ -95,20 +99,36 @@ export function ContactForm() {
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           placeholder="exemplo@email.com"
-          className="rounded-xl"
+          className="rounded-xl border-slate-200 focus-visible:ring-[#8a66a8]"
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="contact-message">Mensagem *</Label>
+      <div className="space-y-1.5">
+        <Label htmlFor="contact-phone" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+          WhatsApp / Telefone
+        </Label>
+        <Input
+          id="contact-phone"
+          type="tel"
+          value={formData.phone}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          placeholder="+244 9XX XXX XXX"
+          className="rounded-xl border-slate-200 focus-visible:ring-[#8a66a8]"
+        />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="contact-message" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+          Mensagem *
+        </Label>
         <Textarea
           id="contact-message"
           required
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-          placeholder="Escreva a sua mensagem..."
-          rows={5}
-          className="rounded-xl resize-none"
+          placeholder="Escreva a sua mensagem aqui..."
+          rows={4}
+          className="rounded-xl resize-none border-slate-200 focus-visible:ring-[#8a66a8]"
         />
       </div>
 
@@ -128,17 +148,17 @@ export function ContactForm() {
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-accent text-accent-foreground hover:bg-accent/90 rounded-xl text-base py-6"
+        className="w-fit bg-[#312455] hover:bg-[#8a66a8] text-white rounded-2xl text-xs font-bold uppercase tracking-widest px-6 py-4 mt-auto shadow-sm transition-all duration-300"
       >
         {isSubmitting ? (
           <>
-            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             A enviar...
           </>
         ) : (
           <>
-            <Send className="mr-2 h-5 w-5" />
-            Enviar mensagem
+            <span>Enviar Mensagem</span>
+            <span className="ml-1.5">&gt;</span>
           </>
         )}
       </Button>

@@ -35,28 +35,35 @@ export default function LoginPage() {
     if (result.success) {
       router.push('/dashboard')
     } else {
-      setError(result.error || 'Erro ao fazer login')
+      setError(result.error || 'Erro ao fazer login. Verifique as suas credenciais.')
     }
     
     setIsLoading(false)
   }
 
   return (
-    <div className="min-h-[calc(100vh-5rem)] flex">
-      {/* Left Side - Form */}
-      <div className="flex-1 flex items-center justify-center p-8">
+    <div className="min-h-[calc(100vh-5rem)] flex bg-[#fafaf8] relative overflow-hidden">
+      {/* Decorative background grid pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
+      
+      {/* Background blobs for premium glassmorphism vibe */}
+      <div className="absolute top-1/4 left-1/10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/10 w-80 h-80 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Left Side - Form Pane */}
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-12 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md"
+          className="w-full max-w-md bg-white border border-slate-100 rounded-[2.5rem] p-8 sm:p-10 shadow-xl shadow-slate-200/50"
         >
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-4">
-              <GraduationCap className="w-8 h-8 text-primary-foreground" />
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-tr from-[#312455] to-[#8a66a8] rounded-2xl mb-4 shadow-md shadow-purple-950/20">
+              <GraduationCap className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Bem-vindo de volta</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl sm:text-3xl font-black text-[#312455] mb-2 tracking-tight">Bem-vindo de volta</h1>
+            <p className="text-slate-500 text-sm sm:text-base">
               Entre na sua conta para continuar a sua formação
             </p>
           </div>
@@ -66,23 +73,25 @@ export default function LoginPage() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="p-4 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive text-sm"
+                className="p-4 bg-destructive/10 border border-destructive/20 rounded-2xl text-destructive text-sm"
               >
                 {error}
               </motion.div>
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                Email
+              </Label>
+              <div className="relative mt-1">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="seu@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 h-12 rounded-xl"
+                  className="pl-12 h-12 rounded-2xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
                   required
                 />
               </div>
@@ -90,26 +99,28 @@ export default function LoginPage() {
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Senha</Label>
-                <Link href="#" className="text-sm text-accent hover:underline">
+                <Label htmlFor="password" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                  Senha
+                </Label>
+                <Link href="#" className="text-xs font-semibold text-[#8a66a8] hover:text-[#735191] transition-colors hover:underline">
                   Esqueceu a senha?
                 </Link>
               </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <div className="relative mt-1">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="********"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 pr-10 h-12 rounded-xl"
+                  className="pl-12 pr-12 h-12 rounded-2xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
@@ -118,25 +129,25 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="w-full h-12 bg-primary hover:bg-primary/90 rounded-xl text-base font-semibold"
+              className="w-full h-12 bg-[#312455] hover:bg-[#402f6e] text-white rounded-2xl text-base font-semibold shadow-lg shadow-purple-950/15 hover:shadow-xl transition-all duration-300"
               disabled={isLoading}
             >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Entrando...
+                  A entrar...
                 </>
               ) : (
                 'Entrar'
               )}
             </Button>
 
-            <div className="relative">
+            <div className="relative py-2">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
+                <span className="w-full border-t border-slate-100" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
+                <span className="bg-white px-3 text-slate-400 font-semibold tracking-wider">
                   Novo na Prime Academy?
                 </span>
               </div>
@@ -145,7 +156,7 @@ export default function LoginPage() {
             <Button
               type="button"
               variant="outline"
-              className="w-full h-12 rounded-xl text-base"
+              className="w-full h-12 rounded-2xl text-base border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-800 transition-all font-semibold"
               onClick={() => router.push('/signup')}
             >
               Criar conta gratuita
@@ -154,49 +165,64 @@ export default function LoginPage() {
         </motion.div>
       </div>
 
-      {/* Right Side - Image/Branding */}
-      <div className="hidden lg:flex flex-1 relative overflow-hidden">
+      {/* Right Side - Image/Branding Info */}
+      <div className="hidden lg:flex flex-1 relative overflow-hidden bg-[#312455]">
         <div 
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-center scale-105 filter blur-[1px] opacity-25"
           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1920&q=80)' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/95 via-primary/90 to-[#1d1533]/95" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#312455]/98 via-[#4b3684]/95 to-[#1c1333]/98" />
         
-        {/* Decorative Elements */}
-        <div className="absolute top-20 right-20 w-64 h-64 bg-accent/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 left-20 w-48 h-48 bg-accent/10 rounded-full blur-2xl" />
-        
-        <div className="relative z-10 flex flex-col justify-center p-12 text-primary-foreground">
+        {/* Dynamic Abstract Glowing Orbs */}
+        <div className="absolute top-1/4 right-1/4 w-80 h-80 bg-[#8a66a8]/25 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s' }} />
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-[#312455]/40 rounded-full blur-3xl" />
+
+        <div className="relative z-10 flex flex-col justify-center p-16 text-white max-w-xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="space-y-8"
           >
-            <h2 className="text-4xl font-bold mb-6 text-balance">
-              Transforme a sua carreira com a Prime Academy
-            </h2>
-            <p className="text-xl text-primary-foreground/80 mb-8">
-              Aceda a cursos de qualidade, materiais exclusivos e acompanhe o seu progresso em tempo real.
-            </p>
+            <div className="space-y-4">
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#8a66a8] bg-[#8a66a8]/10 px-3.5 py-1.5 rounded-full border border-[#8a66a8]/25 w-fit block">
+                Educação do Futuro
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight text-white tracking-tight">
+                Transforme a sua carreira com a Prime Academy
+              </h2>
+              <p className="text-base text-slate-300 font-light leading-relaxed">
+                Aceda a cursos certificados de alta qualidade, aprenda ao seu ritmo e impulsione o seu crescimento profissional com mentores de referência.
+              </p>
+            </div>
             
             <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                  <span className="text-accent font-bold">1</span>
+              <div className="flex items-center gap-4 bg-white/[0.04] border border-white/[0.08] p-4 rounded-[1.25rem] backdrop-blur-md hover:bg-white/[0.08] hover:border-white/10 transition-all duration-300">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#8a66a8] to-[#9c7cb8] flex items-center justify-center shrink-0 shadow-md">
+                  <span className="text-white font-bold text-sm">1</span>
                 </div>
-                <span>Mais de 50 cursos disponíveis</span>
+                <div>
+                  <h4 className="font-bold text-white text-sm">Formação Executiva Flexível</h4>
+                  <p className="text-slate-300 text-xs mt-0.5">Mais de 50 cursos estruturados 100% online.</p>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                  <span className="text-accent font-bold">2</span>
+              <div className="flex items-center gap-4 bg-white/[0.04] border border-white/[0.08] p-4 rounded-[1.25rem] backdrop-blur-md hover:bg-white/[0.08] hover:border-white/10 transition-all duration-300">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#8a66a8] to-[#9c7cb8] flex items-center justify-center shrink-0 shadow-md">
+                  <span className="text-white font-bold text-sm">2</span>
                 </div>
-                <span>Certificados reconhecidos</span>
+                <div>
+                  <h4 className="font-bold text-white text-sm">Certificação Reconhecida</h4>
+                  <p className="text-slate-300 text-xs mt-0.5">Adicione valor curricular com diplomas certificados.</p>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                  <span className="text-accent font-bold">3</span>
+              <div className="flex items-center gap-4 bg-white/[0.04] border border-white/[0.08] p-4 rounded-[1.25rem] backdrop-blur-md hover:bg-white/[0.08] hover:border-white/10 transition-all duration-300">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#8a66a8] to-[#9c7cb8] flex items-center justify-center shrink-0 shadow-md">
+                  <span className="text-white font-bold text-sm">3</span>
                 </div>
-                <span>Suporte personalizado</span>
+                <div>
+                  <h4 className="font-bold text-white text-sm">Tutores e Mentoria de Elite</h4>
+                  <p className="text-slate-300 text-xs mt-0.5">Apoio contínuo e orientação de especialistas de topo.</p>
+                </div>
               </div>
             </div>
           </motion.div>

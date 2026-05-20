@@ -2,42 +2,83 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { ArrowRight } from 'lucide-react'
 import { motion } from 'framer-motion'
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 export function CtaSection() {
   return (
-    <section className="py-16 md:py-24 bg-primary relative overflow-hidden">
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-72 h-72 bg-accent rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
-      </div>
-
-      <div className="container mx-auto px-4 relative z-10">
+    <section className="py-10 md:py-14 bg-background relative overflow-hidden">
+      <div className="container mx-auto px-4 max-w-7xl">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="max-w-3xl mx-auto text-center"
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-primary text-primary-foreground px-6 py-8 md:px-10 md:py-8 shadow-xl border border-white/10"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-primary-foreground mb-6 text-balance leading-tight">
-            Pronto para transformar a sua carreira?
-          </h2>
-          <p className="text-primary-foreground/85 text-base md:text-lg mb-10 max-w-xl mx-auto text-pretty font-light">
-            Dê o próximo passo estratégico e capacite-se com formadores de elite na Prime Academy. A sua jornada começa hoje.
-          </p>
-          <Button
-            asChild
-            size="lg"
-            className="bg-accent text-accent-foreground hover:bg-accent/90 rounded-2xl shadow-lg hover:shadow-xl transition-all text-base px-8 font-bold h-13"
-          >
-            <Link href="/enroll" className="flex items-center gap-2">
-              Começar Agora
-              <ArrowRight className="h-5 w-5" />
-            </Link>
-          </Button>
+          {/* Subtle glowing gradients using Prime Academy brand accent colors */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {/* Left side secondary lilac glow */}
+            <div className="absolute -left-10 top-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-[#8a66a8]/25 rounded-full blur-[100px] mix-blend-screen" />
+            {/* Right side secondary purple glow */}
+            <div className="absolute -right-10 top-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-[#8a66a8]/20 rounded-full blur-[100px] mix-blend-screen" />
+          </div>
+
+          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-12">
+            {/* Text block left */}
+            <div className="text-center lg:text-left flex-1">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-extrabold text-white tracking-tight mb-2 leading-tight">
+                Pronto para transformar a sua carreira?
+              </h2>
+              <p className="text-white/80 text-xs md:text-sm max-w-xl mx-auto lg:mx-0 font-light leading-relaxed">
+                Dê o próximo passo estratégico e capacite-se com formadores de elite na Prime Academy. A sua jornada começa hoje.
+              </p>
+            </div>
+
+            {/* Actions block right - Compact horizontal structure matching reference layout */}
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-5 sm:gap-6 shrink-0 w-full lg:w-auto">
+              <Button
+                asChild
+                className="w-full sm:w-auto bg-white hover:bg-neutral-100 text-[#312455] rounded-xl px-7 py-5 text-xs md:text-sm font-bold tracking-wide transition-all duration-300 hover:scale-[1.03] shadow-md hover:shadow-lg border-0"
+              >
+                <Link href="/enroll">
+                  Começar Agora
+                </Link>
+              </Button>
+
+              {/* Dialog for Watch Video using exact structural concept */}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="group flex items-center justify-center gap-3 cursor-pointer select-none">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white/40 bg-transparent text-white group-hover:scale-105 group-hover:border-white/80 transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                      <svg className="w-3 h-3 text-white fill-current translate-x-[1px]" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
+                    <span className="text-xs md:text-sm font-bold tracking-wide text-white/90 group-hover:text-white transition-colors duration-200">
+                      Ver Vídeo
+                    </span>
+                  </button>
+                </DialogTrigger>
+                
+                <DialogContent className="max-w-4xl p-0 overflow-hidden bg-black border-neutral-800 aspect-video rounded-xl sm:rounded-2xl">
+                  <DialogTitle className="sr-only">Apresentação da Prime Academy</DialogTitle>
+                  <iframe
+                    className="w-full h-full border-none"
+                    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+                    title="Prime Academy Presentation"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
         </motion.div>
       </div>
     </section>

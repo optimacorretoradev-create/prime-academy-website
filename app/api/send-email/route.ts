@@ -19,6 +19,7 @@ interface ContactData {
   type: 'contact'
   name: string
   email: string
+  phone?: string
   message: string
 }
 
@@ -92,6 +93,7 @@ function generateEmailHtml(data: FormData): string {
     <h2>Nova Mensagem de Contacto</h2>
     <p><strong>Nome:</strong> ${contactData.name}</p>
     <p><strong>Email:</strong> ${contactData.email}</p>
+    ${contactData.phone ? `<p><strong>Telefone/WhatsApp:</strong> ${contactData.phone}</p>` : ''}
     <p><strong>Mensagem:</strong></p>
     <p>${contactData.message}</p>
   `

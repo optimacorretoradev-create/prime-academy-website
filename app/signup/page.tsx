@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, Mail, Lock, User, GraduationCap, Loader2, CheckCircle2 } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, User as UserIcon, GraduationCap, Loader2, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -55,225 +55,243 @@ export default function SignupPage() {
     if (result.success) {
       router.push('/dashboard')
     } else {
-      setError(result.error || 'Erro ao criar conta')
+      setError(result.error || 'Erro ao criar conta. Verifique os seus dados.')
     }
     
     setIsLoading(false)
   }
 
   return (
-    <div className="min-h-[calc(100vh-5rem)] flex">
-      {/* Left Side - Image/Branding */}
-      <div className="hidden lg:flex flex-1 relative overflow-hidden">
+    <div className="min-h-[calc(100vh-5rem)] flex bg-[#fafaf8] relative overflow-hidden">
+      {/* Decorative background grid pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
+
+      {/* Background blobs for premium glassmorphism vibe */}
+      <div className="absolute top-1/4 right-1/10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/10 w-80 h-80 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Left Side - Image/Branding Info */}
+      <div className="hidden lg:flex flex-1 relative overflow-hidden bg-[#312455]">
         <div 
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-center scale-105 filter blur-[1px] opacity-25"
           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1920&q=80)' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-bl from-primary/95 via-primary/90 to-[#1d1533]/95" />
+        <div className="absolute inset-0 bg-gradient-to-bl from-[#312455]/98 via-[#4b3684]/95 to-[#1c1333]/98" />
         
-        {/* Decorative Elements */}
-        <div className="absolute top-20 left-20 w-64 h-64 bg-accent/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-48 h-48 bg-accent/10 rounded-full blur-2xl" />
-        
-        <div className="relative z-10 flex flex-col justify-center p-12 text-primary-foreground">
+        {/* Dynamic Abstract Glowing Orbs */}
+        <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-[#8a66a8]/25 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s' }} />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#312455]/40 rounded-full blur-3xl" />
+
+        <div className="relative z-10 flex flex-col justify-center p-16 text-white max-w-xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="space-y-8"
           >
-            <h2 className="text-4xl font-bold mb-6 text-balance">
-              Comece a sua jornada de aprendizagem hoje
-            </h2>
-            <p className="text-xl text-primary-foreground/80 mb-8">
-              Junte-se a milhares de profissionais que já transformaram as suas carreiras connosco.
-            </p>
+            <div className="space-y-4">
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#8a66a8] bg-[#8a66a8]/10 px-3.5 py-1.5 rounded-full border border-[#8a66a8]/25 w-fit block">
+                Educação do Futuro
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight text-white tracking-tight">
+                Comece a sua jornada de aprendizagem hoje
+              </h2>
+              <p className="text-base text-slate-300 font-light leading-relaxed">
+                Junte-se a milhares de profissionais que já transformaram as suas carreiras connosco. Aceda a tudo instantaneamente.
+              </p>
+            </div>
             
             <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-6 h-6 text-accent" />
-                <span>Acesso imediato a todos os conteúdos</span>
+              <div className="flex items-center gap-4 bg-white/[0.04] border border-white/[0.08] p-4 rounded-[1.25rem] backdrop-blur-md hover:bg-white/[0.08] hover:border-white/10 transition-all duration-300">
+                <CheckCircle2 className="w-6 h-6 text-[#8a66a8] shrink-0" />
+                <div>
+                  <h4 className="font-bold text-white text-sm">Acesso imediato e irrestrito</h4>
+                  <p className="text-slate-300 text-xs mt-0.5">Explore materiais e videoaulas de excelência no e-learning.</p>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-6 h-6 text-accent" />
-                <span>Progresso sincronizado em todos dispositivos</span>
+              <div className="flex items-center gap-4 bg-white/[0.04] border border-white/[0.08] p-4 rounded-[1.25rem] backdrop-blur-md hover:bg-white/[0.08] hover:border-white/10 transition-all duration-300">
+                <CheckCircle2 className="w-6 h-6 text-[#8a66a8] shrink-0" />
+                <div>
+                  <h4 className="font-bold text-white text-sm">Sincronização na Nuvem</h4>
+                  <p className="text-slate-300 text-xs mt-0.5">Retome os estudos de onde parou em qualquer dispositivo.</p>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-6 h-6 text-accent" />
-                <span>Comunidade exclusiva de alunos</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-6 h-6 text-accent" />
-                <span>Certificados digitais verificáveis</span>
+              <div className="flex items-center gap-4 bg-white/[0.04] border border-white/[0.08] p-4 rounded-[1.25rem] backdrop-blur-md hover:bg-white/[0.08] hover:border-white/10 transition-all duration-300">
+                <CheckCircle2 className="w-6 h-6 text-[#8a66a8] shrink-0" />
+                <div>
+                  <h4 className="font-bold text-white text-sm">Comunidade Exclusiva</h4>
+                  <p className="text-slate-300 text-xs mt-0.5">Faça networking com outros profissionais de destaque.</p>
+                </div>
               </div>
             </div>
           </motion.div>
         </div>
       </div>
 
-      {/* Right Side - Form */}
-      <div className="flex-1 flex items-center justify-center p-8">
+      {/* Right Side - Form Pane */}
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-12 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md"
+          className="w-full max-w-md bg-white border border-slate-100 rounded-[2.5rem] p-8 sm:p-10 shadow-xl shadow-slate-200/50"
         >
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-4">
-              <GraduationCap className="w-8 h-8 text-primary-foreground" />
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-tr from-[#312455] to-[#8a66a8] rounded-2xl mb-4 shadow-md shadow-purple-950/20">
+              <GraduationCap className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Criar conta</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl sm:text-3xl font-black text-[#312455] mb-2 tracking-tight">Criar conta</h1>
+            <p className="text-slate-500 text-sm sm:text-base">
               Preencha os dados abaixo para começar
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="p-4 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive text-sm"
+                className="p-4 bg-destructive/10 border border-destructive/20 rounded-2xl text-destructive text-sm"
               >
                 {error}
               </motion.div>
             )}
 
-            {/* Profile Selection Card Selector */}
+            {/* Profile Selection */}
             <div className="space-y-2">
-              <Label>Escolha o seu perfil</Label>
-              <div className="grid grid-cols-2 gap-4">
+              <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Escolha o seu perfil</Label>
+              <div className="grid grid-cols-2 gap-4 mt-1">
                 <button
                   type="button"
                   onClick={() => setRole('aluno')}
-                  className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all text-center cursor-pointer ${
+                  className={`p-3 rounded-2xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all duration-300 text-center cursor-pointer ${
                     role === 'aluno'
-                      ? 'border-primary bg-primary/5 text-foreground'
-                      : 'border-border bg-card text-muted-foreground hover:border-primary/30'
+                      ? 'border-[#8a66a8] bg-purple-50/10 text-[#312455] shadow-sm'
+                      : 'border-slate-100 bg-slate-50/50 text-slate-400 hover:border-slate-200 hover:text-slate-600'
                   }`}
                 >
-                  <GraduationCap className={`h-5 w-5 ${role === 'aluno' ? 'text-primary' : ''}`} />
-                  <div className="font-semibold text-sm">Aluno</div>
+                  <GraduationCap className={`h-5 w-5 ${role === 'aluno' ? 'text-[#8a66a8]' : ''}`} />
+                  <div className="font-bold text-xs tracking-wide">Aluno</div>
                 </button>
                 <button
                   type="button"
                   onClick={() => setRole('instrutor')}
-                  className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all text-center cursor-pointer ${
+                  className={`p-3 rounded-2xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all duration-300 text-center cursor-pointer ${
                     role === 'instrutor'
-                      ? 'border-primary bg-primary/5 text-foreground'
-                      : 'border-border bg-card text-muted-foreground hover:border-primary/30'
+                      ? 'border-[#8a66a8] bg-purple-50/10 text-[#312455] shadow-sm'
+                      : 'border-slate-100 bg-slate-50/50 text-slate-400 hover:border-slate-200 hover:text-slate-600'
                   }`}
                 >
-                  <User className={`h-5 w-5 ${role === 'instrutor' ? 'text-primary' : ''}`} />
-                  <div className="font-semibold text-sm">Instrutor</div>
+                  <UserIcon className={`h-5 w-5 ${role === 'instrutor' ? 'text-[#8a66a8]' : ''}`} />
+                  <div className="font-bold text-xs tracking-wide">Instrutor</div>
                 </button>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="name">Nome completo</Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <div className="space-y-1">
+              <Label htmlFor="name" className="text-xs font-bold uppercase tracking-wider text-slate-500">Nome completo</Label>
+              <div className="relative mt-1">
+                <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <Input
                   id="name"
                   type="text"
                   placeholder="Seu nome"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="pl-10 h-12 rounded-xl"
+                  className="pl-12 h-12 rounded-2xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
                   required
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <div className="space-y-1">
+              <Label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-slate-500">Email</Label>
+              <div className="relative mt-1">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="seu@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 h-12 rounded-xl"
+                  className="pl-12 h-12 rounded-2xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
                   required
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <div className="space-y-1">
+              <Label htmlFor="password" className="text-xs font-bold uppercase tracking-wider text-slate-500">Senha</Label>
+              <div className="relative mt-1">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="********"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 pr-10 h-12 rounded-xl"
+                  className="pl-12 pr-12 h-12 rounded-2xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
               
-              {/* Password Requirements */}
-              <div className="grid grid-cols-1 gap-1 mt-2">
+              {/* Password Requirements Container */}
+              <div className="grid grid-cols-1 gap-1.5 mt-2 bg-slate-50 p-3 rounded-2xl border border-slate-100">
                 {passwordRequirements.map((req, index) => (
                   <div key={index} className="flex items-center gap-2 text-xs">
-                    <div className={`w-4 h-4 rounded-full flex items-center justify-center ${req.met ? 'bg-green-500' : 'bg-muted'}`}>
-                      {req.met && <CheckCircle2 className="w-3 h-3 text-white" />}
+                    <div className={`w-4 h-4 rounded-full flex items-center justify-center transition-all ${req.met ? 'bg-emerald-500' : 'bg-slate-200'}`}>
+                      {req.met && <CheckCircle2 className="w-2.5 h-2.5 text-white" />}
                     </div>
-                    <span className={req.met ? 'text-green-600' : 'text-muted-foreground'}>{req.label}</span>
+                    <span className={req.met ? 'text-emerald-700 font-medium animate-pulse' : 'text-slate-400 font-normal'}>{req.label}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirmar senha</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <div className="space-y-1">
+              <Label htmlFor="confirmPassword" className="text-xs font-bold uppercase tracking-wider text-slate-500">Confirmar senha</Label>
+              <div className="relative mt-1">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <Input
                   id="confirmPassword"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="********"
+                  placeholder="••••••••"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="pl-10 h-12 rounded-xl"
+                  className="pl-12 h-12 rounded-2xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
                   required
                 />
               </div>
               {confirmPassword && password !== confirmPassword && (
-                <p className="text-xs text-destructive">As senhas não coincidem</p>
+                <p className="text-xs text-destructive mt-1 font-medium">As senhas não coincidem</p>
               )}
             </div>
 
             <Button
               type="submit"
-              className="w-full h-12 bg-primary hover:bg-primary/90 rounded-xl text-base font-semibold"
+              className="w-full h-12 bg-[#312455] hover:bg-[#402f6e] text-white rounded-2xl text-base font-semibold shadow-lg shadow-purple-950/15 hover:shadow-xl transition-all duration-300 mt-2"
               disabled={isLoading}
             >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Criando conta...
+                  A criar conta...
                 </>
               ) : (
                 'Criar conta'
               )}
             </Button>
 
-            <p className="text-center text-sm text-muted-foreground">
+            <p className="text-center text-sm text-slate-500 pt-1">
               Já tem uma conta?{' '}
-              <Link href="/login" className="text-accent font-medium hover:underline">
+              <Link href="/login" className="text-[#8a66a8] font-semibold hover:text-[#735191] hover:underline transition-colors">
                 Fazer login
               </Link>
             </p>

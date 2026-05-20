@@ -136,6 +136,36 @@ const galleryImagesData: GalleryImage[] = [
     imageUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80',
     caption: 'Seminário de Liderança em Angola',
     category: 'Eventos'
+  },
+  {
+    id: 'g5',
+    imageUrl: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80',
+    caption: 'Formação Avançada de Secretariado Executivo',
+    category: 'Aulas'
+  },
+  {
+    id: 'g6',
+    imageUrl: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&q=80',
+    caption: 'Sessão de Mentoria Executiva Individualizada',
+    category: 'Workshops'
+  },
+  {
+    id: 'g7',
+    imageUrl: 'https://images.unsplash.com/photo-1531538606174-0f90ff5dce83?w=800&q=80',
+    caption: 'Aula Prática de Tecnologias de Gestão',
+    category: 'Aulas'
+  },
+  {
+    id: 'g8',
+    imageUrl: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&q=80',
+    caption: 'Encerramento de Bootcamp Executivo',
+    category: 'Eventos'
+  },
+  {
+    id: 'g9',
+    imageUrl: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80',
+    caption: 'Palestra Geral sobre Gestão Estratégica',
+    category: 'Workshops'
   }
 ]
 

@@ -40,122 +40,141 @@ export default async function ContactPage() {
       </section>
 
       {/* Contact Section */}
-      <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Contact Info */}
-            <div className="space-y-8">
+      <section className="py-16 md:py-24 bg-white">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-stretch">
+            
+            {/* LEFT COLUMN: CONTACT DETAILS */}
+            <div className="lg:col-span-7 space-y-10">
               <div>
-                <h2 className="text-2xl font-bold text-foreground mb-6">
-                  Informações de contacto
+                <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">Get In Touch</span>
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-[#312455] mt-2 leading-tight">
+                  Não Hesite em<br />Contactar-nos
                 </h2>
-                <div className="space-y-4">
-                  <a
-                    href={`https://wa.me/${contactInfo.whatsappNumber.replace(/[^0-9]/g, '')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-4 p-4 bg-card rounded-xl border border-border hover:border-accent/50 hover:shadow-md transition-all group"
-                  >
-                    <div className="bg-[#25D366]/10 p-3 rounded-lg group-hover:bg-[#25D366]/20 transition-colors">
-                      <MessageCircle className="h-6 w-6 text-[#25D366]" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">WhatsApp</p>
-                      <p className="font-medium text-foreground">{contactInfo.phone}</p>
-                    </div>
-                  </a>
+                <p className="text-slate-500 text-sm mt-4 font-light leading-relaxed max-w-xl">
+                  Estamos sempre disponíveis para o ajudar a alcançar o sucesso profissional. Fale connosco para esclarecer as suas dúvidas sobre os nossos cursos, inscrições ou parcerias.
+                </p>
+              </div>
 
-                  <a
-                    href={`tel:${contactInfo.phone}`}
-                    className="flex items-center gap-4 p-4 bg-card rounded-xl border border-border hover:border-accent/50 hover:shadow-md transition-all group"
-                  >
-                    <div className="bg-primary/10 p-3 rounded-lg group-hover:bg-primary/20 transition-colors">
-                      <Phone className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Telefone</p>
-                      <p className="font-medium text-foreground">{contactInfo.phone}</p>
-                    </div>
-                  </a>
+              {/* Grid of 4 Items */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
+                {/* 1. Location */}
+                <div className="flex gap-4">
+                  <div className="bg-[#312455]/5 text-[#312455] p-3 rounded-2xl h-fit">
+                    <MapPin className="h-6 w-6 text-[#312455]" />
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="font-bold text-[#312455] text-base">Localização</h4>
+                    <p className="text-slate-500 text-xs font-light leading-relaxed">{contactInfo.address}</p>
+                  </div>
+                </div>
 
-                  <a
-                    href={`mailto:${contactInfo.email}`}
-                    className="flex items-center gap-4 p-4 bg-card rounded-xl border border-border hover:border-accent/50 hover:shadow-md transition-all group"
-                  >
-                    <div className="bg-accent/10 p-3 rounded-lg group-hover:bg-accent/20 transition-colors">
-                      <Mail className="h-6 w-6 text-accent" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Email</p>
-                      <p className="font-medium text-foreground">{contactInfo.email}</p>
-                    </div>
-                  </a>
+                {/* 2. Phone */}
+                <div className="flex gap-4">
+                  <div className="bg-[#312455]/5 text-[#312455] p-3 rounded-2xl h-fit">
+                    <Phone className="h-6 w-6 text-[#312455]" />
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="font-bold text-[#312455] text-base">Telefone</h4>
+                    <a href={`tel:${contactInfo.phone}`} className="block text-slate-500 text-xs hover:text-[#8a66a8] transition-colors">{contactInfo.phone}</a>
+                    <a 
+                      href={`https://wa.me/${contactInfo.whatsappNumber.replace(/[^0-9]/g, '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-slate-500 text-xs hover:text-[#25D366] transition-colors font-medium flex items-center gap-1 mt-0.5"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#25D366] animate-ping inline-block" />
+                      WhatsApp Business
+                    </a>
+                  </div>
+                </div>
 
-                  <div className="flex items-start gap-4 p-4 bg-card rounded-xl border border-border">
-                    <div className="bg-muted p-3 rounded-lg">
-                      <MapPin className="h-6 w-6 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Endereço</p>
-                      <p className="font-medium text-foreground">{contactInfo.address}</p>
+                {/* 3. Email */}
+                <div className="flex gap-4">
+                  <div className="bg-[#312455]/5 text-[#312455] p-3 rounded-2xl h-fit">
+                    <Mail className="h-6 w-6 text-[#312455]" />
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="font-bold text-[#312455] text-base">Email</h4>
+                    <a href={`mailto:${contactInfo.email}`} className="block text-slate-500 text-xs hover:text-[#8a66a8] transition-colors break-all">{contactInfo.email}</a>
+                  </div>
+                </div>
+
+                {/* 4. Social networks */}
+                <div className="flex gap-4">
+                  <div className="bg-[#312455]/5 text-[#312455] p-3 rounded-2xl h-fit">
+                    <MessageCircle className="h-6 w-6 text-[#312455]" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <h4 className="font-bold text-[#312455] text-base">Redes Sociais</h4>
+                    <div className="flex gap-2">
+                      {contactInfo.socialLinks.facebook && (
+                        <a
+                          href={contactInfo.socialLinks.facebook}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-slate-50 hover:bg-[#312455] text-slate-700 hover:text-white p-2 rounded-xl transition-all duration-300 border border-slate-100 shadow-sm"
+                          aria-label="Facebook"
+                        >
+                          <Facebook className="h-4 w-4" />
+                        </a>
+                      )}
+                      {contactInfo.socialLinks.instagram && (
+                        <a
+                          href={contactInfo.socialLinks.instagram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-slate-50 hover:bg-[#312455] text-slate-700 hover:text-white p-2 rounded-xl transition-all duration-300 border border-slate-100 shadow-sm"
+                          aria-label="Instagram"
+                        >
+                          <Instagram className="h-4 w-4" />
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Social Links */}
-              <div>
-                <h3 className="text-lg font-semibold text-foreground mb-4">Redes Sociais</h3>
-                <div className="flex gap-3">
-                  {contactInfo.socialLinks.facebook && (
-                    <a
-                      href={contactInfo.socialLinks.facebook}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-card p-3 rounded-xl border border-border hover:border-accent hover:bg-accent/10 transition-all"
-                      aria-label="Facebook"
-                    >
-                      <Facebook className="h-5 w-5 text-foreground" />
-                    </a>
-                  )}
-                  {contactInfo.socialLinks.instagram && (
-                    <a
-                      href={contactInfo.socialLinks.instagram}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-card p-3 rounded-xl border border-border hover:border-accent hover:bg-accent/10 transition-all"
-                      aria-label="Instagram"
-                    >
-                      <Instagram className="h-5 w-5 text-foreground" />
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              {/* Map Placeholder */}
-              <div className="aspect-video bg-muted rounded-2xl overflow-hidden">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125454.08896689972!2d13.165465866406256!3d-8.838980099999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1a51f3b5e17e2d2d%3A0x8f2b6e1dff9c9c9a!2sLuanda%2C%20Angola!5e0!3m2!1sen!2sus!4v1640000000000!5m2!1sen!2sus"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Localização da Prime Academy"
+              {/* Nice Wide Image at the bottom left */}
+              <div className="relative aspect-[21/9] sm:aspect-[21/10] w-full overflow-hidden rounded-3xl shadow-sm border border-slate-100 mt-6">
+                <div 
+                  className="absolute inset-0 bg-cover bg-center"
+                  style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1000&q=80)' }}
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#312455]/40 via-transparent to-transparent" />
               </div>
             </div>
 
-            {/* Contact Form */}
-            <div className="bg-card p-6 md:p-10 rounded-2xl border border-border shadow-sm h-fit">
-              <h2 className="text-2xl font-bold text-foreground mb-6">
-                Envie-nos uma mensagem
-              </h2>
-              <ContactForm />
+            {/* RIGHT COLUMN: CARD & FORM */}
+            <div className="lg:col-span-5 h-full">
+              <div className="bg-[#fafaf8] border border-slate-100 rounded-[2.5rem] p-8 sm:p-10 shadow-sm h-full flex flex-col">
+                <h3 className="text-xl sm:text-2xl font-black text-[#312455] mb-2 leading-tight">
+                  Envie-nos uma Mensagem
+                </h3>
+                <p className="text-slate-400 text-xs font-light mb-6">
+                  Preencha o formulário abaixo e a nossa equipa entrará em contacto direto.
+                </p>
+                <ContactForm />
+              </div>
             </div>
+
           </div>
         </div>
+      </section>
+
+      {/* FULL WIDTH MAP */}
+      <section className="w-full h-[400px] md:h-[450px] relative overflow-hidden bg-slate-50 border-t border-slate-100">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3942.270912185208!2d13.230713774883392!3d-8.854371991200155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1a51f3b5e17e2d2d%3A0x8f2b6e1dff9c9c9a!2sLuanda%2C%20Angola!5e0!3m2!1sen!2sus!4v1640000000000!5m2!1sen!2sus"
+          width="100%"
+          height="100%"
+          style={{ border: 0 }}
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          title="Localização da Prime Academy"
+          className="absolute inset-0"
+        />
       </section>
     </div>
   )

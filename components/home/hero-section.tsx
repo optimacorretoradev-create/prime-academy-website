@@ -2,119 +2,216 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Star, TrendingUp } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { Star, TrendingUp, Zap, Shield, Cpu, Coins, Globe, Lightbulb } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import Image from 'next/image'
+
+const slides = [
+  {
+    title: "Prime Academy",
+    subtitle: "A Sua Academia Online de Gestão",
+    description: "Formação Executiva Avançada 100% Online em Novas Tecnologias de Gestão Administrativa e Secretarial. Estude ao seu próprio ritmo com certificação de excelência.",
+    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&q=80"
+  },
+  {
+    title: "Gestão Inteligente",
+    subtitle: "Inovação e Processos Corporativos",
+    description: "Domine as ferramentas tecnológicas mais modernas do mercado de trabalho, otimize fluxos de gestão e lidere a transformação digital de qualquer organização.",
+    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1920&q=80"
+  },
+  {
+    title: "Secretariado de Elite",
+    subtitle: "Assessoria e Comunicação de Alto Nível",
+    description: "Qualifique-se com as melhores práticas internacionais em assessoria de liderança, protocolo institucional, planeamento executivo e gestão de topo.",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1920&q=80"
+  },
+  {
+    title: "Futuro Executivo",
+    subtitle: "Certificação e Sucesso Global",
+    description: "Impulsione a sua carreira com certificações valorizadas pelo mercado de trabalho, apoio contínuo de mentores especialistas e uma plataforma e-learning moderna disponível 24h.",
+    image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1920&q=80"
+  }
+]
+
+const partnerBrands = [
+  { icon: Shield, name: 'ARSEG' },
+  { icon: Zap, name: 'ZAP' },
+  { icon: Cpu, name: 'PRODEL' },
+  { icon: Coins, name: 'RECREDIT' },
+  { icon: Globe, name: 'ENBI' },
+  { icon: Lightbulb, name: 'ENDE' },
+]
 
 export function HeroSection() {
+  const [currentSlide, setCurrentSlide] = useState(0)
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length)
+    }, 6000)
+    return () => clearInterval(timer)
+  }, [])
+
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-      {/* Video Background */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover"
-        poster="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1920&q=80"
-      >
-        <source
-          src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
-          type="video/mp4"
-        />
-      </video>
-
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/70 via-primary/60 to-primary/80" />
-
-      {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 py-20 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-4xl mx-auto"
-        >
-          {/* Trust Badges */}
+    <section className="relative min-h-screen w-full flex items-stretch overflow-hidden">
+      {/* Background Images Slideshow - Spans full screen with fallback brand dark background to avoid white flashes */}
+      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-primary">
+        <AnimatePresence>
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="flex flex-wrap items-center justify-center gap-4 mb-8"
+            key={currentSlide}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+            className="absolute inset-0 w-full h-full"
           >
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm">
-              <Star className="h-4 w-4 text-accent fill-accent" />
-              <span>+10.353 Profissionais Capacitados</span>
-            </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm">
-              <TrendingUp className="h-4 w-4 text-accent" />
-              <span>Metodologia 80% Prática</span>
-            </div>
+            <Image
+              src={slides[currentSlide].image}
+              alt="Prime Academy Background"
+              fill
+              className="object-cover"
+              priority
+            />
           </motion.div>
+        </AnimatePresence>
+        {/* Darkening Overlay for maximum text contrast */}
+        <div className="absolute inset-0 bg-black/45 z-10" />
+      </div>
 
-          {/* Main Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 text-balance uppercase tracking-wide"
-          >
-            Prime Academy
-            <span className="block text-accent mt-2 text-2xl md:text-3xl lg:text-4xl font-semibold capitalize tracking-normal">
-              Novas Tecnologias de Gestão e Secretariado Executivo
-            </span>
-          </motion.h1>
+      {/* Decorative Glow Diagonal (Lavender) - Desktop Only */}
+      <div className="absolute inset-y-0 left-0 w-[55%] bg-gradient-to-r from-secondary/20 to-secondary/5 z-10 hidden md:block [clip-path:polygon(0_0,100%_0,88%_100%,0_100%)] blur-[2px]" />
 
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-lg md:text-xl text-white/95 mb-10 max-w-3xl mx-auto text-pretty font-light"
-          >
-            Formação Executiva Avançada em Novas Tecnologias de Gestão Administrativa e Secretarial. Capacitando organizações e líderes desde 2018 para o sucesso organizacional sustentável.
-          </motion.p>
+      {/* Left Slanted Panel - Holds typography and brand colors (highly transparent white/purple) */}
+      <div className="relative z-20 w-full md:w-[53%] bg-primary/45 md:bg-primary/39 backdrop-blur-xl flex flex-col justify-center px-6 sm:px-12 md:pl-16 lg:pl-24 md:pr-24 py-32 md:[clip-path:polygon(0_0,100%_0,86%_100%,0_100%)] shadow-2xl transition-all duration-500">
+        <div className="max-w-xl text-left my-auto h-[380px] flex flex-col justify-center">
+          {/* Trust Badges */}
+          <div className="flex flex-wrap items-center gap-3 mb-6">
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full text-white text-xs border border-white/10">
+              <Star className="h-3.5 w-3.5 text-secondary fill-secondary" />
+              <span className="font-semibold">+10.353 Profissionais Capacitados</span>
+            </div>
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full text-white text-xs border border-white/10">
+              <TrendingUp className="h-3.5 w-3.5 text-secondary" />
+              <span className="font-semibold">Metodologia 80% Prática</span>
+            </div>
+          </div>
+
+          {/* Dynamic Content Transitions */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentSlide}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+            >
+              {/* Dynamic Main Headline */}
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-tight uppercase">
+                {slides[currentSlide].title}
+                <span className="block text-secondary mt-3 text-lg sm:text-2xl lg:text-3xl font-semibold normal-case tracking-normal text-white/90">
+                  {slides[currentSlide].subtitle}
+                </span>
+              </h1>
+
+              {/* Dynamic Subtitle */}
+              <p className="text-base sm:text-lg text-white/80 mb-8 max-w-lg font-light leading-relaxed text-pretty">
+                {slides[currentSlide].description}
+              </p>
+            </motion.div>
+          </AnimatePresence>
 
           {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
+          <div className="flex flex-row items-center gap-4">
             <Button
               asChild
               size="lg"
-              className="bg-accent text-accent-foreground hover:bg-accent/90 rounded-xl shadow-lg hover:shadow-xl transition-all text-base px-8"
+              className="bg-secondary text-white hover:bg-secondary/90 rounded-full shadow-lg hover:shadow-xl transition-all text-sm sm:text-base px-8 py-5 sm:py-6 font-semibold"
             >
-              <Link href="/courses">Ver cursos</Link>
+              <Link href="/enroll">Inscreva-se Já</Link>
             </Button>
             <Button
               asChild
               size="lg"
               variant="outline"
-              className="border-white text-white hover:bg-white hover:text-primary rounded-xl text-base px-8"
+              className="border-secondary/60 text-secondary hover:bg-secondary hover:text-white rounded-full text-sm sm:text-base px-8 py-5 sm:py-6 font-semibold transition-all"
             >
-              <Link href="/enroll">Inscreva-se já</Link>
+              <Link href="/courses">Ver Cursos</Link>
             </Button>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
+
+        {/* Partners Infinite Horizontal Scroll Carousel (Below CTAs, inside slanted panel) */}
+        <div className="max-w-xl w-full border-t border-white/10 pt-6 mt-8 shrink-0">
+          <p className="text-white/40 text-[10px] sm:text-xs uppercase tracking-widest mb-4 font-semibold">
+            Confiança e Prestígio com Grandes Marcas
+          </p>
+
+          {/* Infinite Marquee Container */}
+          <div className="relative w-full overflow-hidden whitespace-nowrap [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
+            <div className="inline-flex animate-marquee gap-10 items-center py-1">
+              {/* Slide 1 */}
+              <div className="flex items-center gap-10 shrink-0">
+                {partnerBrands.map((brand, idx) => {
+                  const Icon = brand.icon
+                  return (
+                    <div
+                      key={`hero-brand-1-${idx}`}
+                      className="flex items-center gap-2 text-white/50 hover:text-white hover:scale-105 transition-all duration-300 pointer-events-none select-none"
+                    >
+                      <Icon className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
+                      <span className="text-sm sm:text-base font-semibold tracking-wide">{brand.name}</span>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Duplicate Slide 2 for seamless loop animation */}
+              <div className="flex items-center gap-10 shrink-0">
+                {partnerBrands.map((brand, idx) => {
+                  const Icon = brand.icon
+                  return (
+                    <div
+                      key={`hero-brand-2-${idx}`}
+                      className="flex items-center gap-2 text-white/50 hover:text-white hover:scale-105 transition-all duration-300 pointer-events-none select-none"
+                    >
+                      <Icon className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
+                      <span className="text-sm sm:text-base font-semibold tracking-wide">{brand.name}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Injecting CSS Keyframes inline dynamically */}
+          <style dangerouslySetInnerHTML={{
+            __html: `
+            @keyframes marquee {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(-50%); }
+            }
+            .animate-marquee {
+              animation: marquee 30s linear infinite;
+            }
+          `}} />
+        </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5 }}
-          className="w-6 h-10 rounded-full border-2 border-white/50 flex items-start justify-center p-2"
-        >
-          <motion.div className="w-1.5 h-2.5 bg-white/70 rounded-full" />
-        </motion.div>
-      </motion.div>
+      {/* Sleek Dynamic Slide Pagination Dots */}
+      <div className="absolute bottom-10 right-12 md:right-24 z-20 flex gap-2.5 items-center bg-black/35 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/10 shadow-xl">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`h-2 rounded-full transition-all duration-500 ease-out ${index === currentSlide
+              ? "w-7 bg-secondary shadow-[0_0_8px_rgba(138,102,168,0.7)]"
+              : "w-2 bg-white/30 hover:bg-white/60"
+              }`}
+            aria-label={`Ir para slide ${index + 1}`}
+          />
+        ))}
+      </div>
     </section>
   )
 }

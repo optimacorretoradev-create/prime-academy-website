@@ -15,25 +15,26 @@ export default async function GalleryPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero */}
-      <section className="relative py-20 md:py-28 overflow-hidden">
-        {/* Background Image */}
+      {/* ── HERO BANNER (Top) ── */}
+      <section className="relative py-24 md:py-32 overflow-hidden bg-[#312455]">
+        {/* Background Image with elegant overlay */}
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&q=80)' }}
         />
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/85 to-primary/75" />
-        {/* Decorative Grid Pattern */}
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#312455]/95 via-[#312455]/90 to-[#312455]/80" />
         
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
-            Galeria de Trabalhos e Eventos
+        {/* Decorative blur elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#8a66a8]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-[#8a66a8]/5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
+        
+        <div className="container mx-auto px-4 relative z-10 text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+            Galeria de Momentos
           </h1>
-          <p className="text-primary-foreground/90 max-w-2xl mx-auto text-lg md:text-xl text-pretty">
-            Explore momentos especiais das nossas formaturas, aulas práticas e workshops.
-            Veja o impacto que a Prime Academy tem na vida dos nossos alunos.
+          <p className="text-white/90 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed text-pretty">
+            Explore fotos das nossas formaturas, workshops e momentos práticos que marcam a evolução dos nossos profissionais em Angola.
           </p>
         </div>
       </section>
