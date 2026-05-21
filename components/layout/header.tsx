@@ -30,7 +30,7 @@ export function Header() {
   const { user, logout, isLoading } = useAuth()
   const pathname = usePathname()
 
-  if (pathname === '/login' || pathname === '/signup') {
+  if (pathname === '/login' || pathname === '/signup' || pathname.startsWith('/dashboard') || pathname.startsWith('/admin')) {
     return null
   }
 

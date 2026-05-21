@@ -2,13 +2,19 @@
 
 import { MessageCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { usePathname } from 'next/navigation'
 
 interface WhatsAppButtonProps {
   phoneNumber?: string
 }
 
 export function WhatsAppButton({ phoneNumber = '+244923456789' }: WhatsAppButtonProps) {
+  const pathname = usePathname()
   const whatsappUrl = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}`
+
+  if (pathname === '/login' || pathname === '/signup' || pathname.startsWith('/dashboard') || pathname.startsWith('/admin')) {
+    return null
+  }
 
   return (
     <motion.a
