@@ -3,8 +3,15 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Facebook, Instagram, Phone, Mail, MapPin, ChevronUp, ArrowUpRight } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 
 export function Footer() {
+  const pathname = usePathname()
+
+  if (pathname === '/login' || pathname === '/signup') {
+    return null
+  }
+
   const quickLinks = [
     { href: '/', label: 'Início' },
     { href: '/about', label: 'Sobre Nós' },

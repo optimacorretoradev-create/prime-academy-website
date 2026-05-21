@@ -30,6 +30,10 @@ export function Header() {
   const { user, logout, isLoading } = useAuth()
   const pathname = usePathname()
 
+  if (pathname === '/login' || pathname === '/signup') {
+    return null
+  }
+
   const handleLogout = () => {
     logout()
     setIsOpen(false)
