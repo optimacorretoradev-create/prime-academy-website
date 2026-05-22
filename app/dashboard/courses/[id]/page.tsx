@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getCourses } from '@/lib/hygraph'
-import { CourseDetailPublicGate } from '@/components/courses/course-detail-public-gate'
+import { DashboardShell } from '@/components/dashboard/dashboard-shell'
+import { CourseDetailBody } from '@/components/courses/course-detail-body'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -13,18 +14,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const course = courses.find((c) => c.id === resolvedParams.id)
 
   if (!course) {
-    return {
-      title: 'Curso Não Encontrado - Prime Academy',
-    }
+    return { title: 'Curso Não Encontrado - Prime Academy' }
   }
 
   return {
-    title: `${course.name} - Prime Academy`,
+    title: `${course.name} - Painel | Prime Academy`,
     description: course.description,
   }
 }
 
-export default async function CourseDetailsPage({ params }: PageProps) {
+export default async function DashboardCourseDetailsPage({ params }: PageProps) {
   const resolvedParams = await params
   const courses = await getCourses()
   const course = courses.find((c) => c.id === resolvedParams.id)
@@ -46,6 +45,8 @@ export default async function CourseDetailsPage({ params }: PageProps) {
   ]
 
   return (
-    <CourseDetailPublicGate course={course} syllabus={syllabus} highlights={highlights} />
+    <DashboardShell activeNav="explore" lockScrollLayout>
+      <CourseDetailBody course={course} syllabus={syllabus} highlights={highlights} variant="dashboard" />
+    </DashboardShell>
   )
 }

@@ -2,10 +2,8 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
-import { Header } from '@/components/layout/header'
-import { Footer } from '@/components/layout/footer'
-import { WhatsAppButton } from '@/components/layout/whatsapp-button'
 import { AuthProvider } from '@/contexts/auth-context'
+import { ConditionalChrome } from '@/components/layout/conditional-chrome'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -35,12 +33,7 @@ export default function RootLayout({
     <html lang="pt" className={`${inter.variable} bg-background`} suppressHydrationWarning>
       <body className="font-sans antialiased min-h-screen flex flex-col" suppressHydrationWarning>
         <AuthProvider>
-          <Header />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-          <WhatsAppButton />
+          <ConditionalChrome>{children}</ConditionalChrome>
         </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

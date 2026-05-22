@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { BookOpen, Clock, Play, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { Course } from '@/lib/hygraph'
+import { getTrainerForCourse } from '@/lib/course-trainers'
+import { getCoursePriceDisplay } from '@/lib/format-price'
 
 interface CoursesGridProps {
   courses: Course[]
@@ -18,19 +20,13 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedType, setSelectedType] = useState('Todos')
 
-  const getTrainerInfo = (courseId: string) => {
-    const trainersList = [
-      { name: "Dr. António Banza", avatar: "/images/trainers/trainer4.png", price: "Kz 45.000" },
-      { name: "Dra. Isabel Santos", avatar: "/images/trainers/trainer2.png", price: "Kz 35.000" },
-      { name: "Dr. Francisco Manuel", avatar: "/images/trainers/trainer5.png", price: "Kz 40.000" },
-      { name: "Dra. Maria Antónia", avatar: "/images/trainers/trainer1.png", price: "Kz 55.000" },
-      { name: "Dra. Patrícia Costa", avatar: "/images/trainers/trainer6.png", price: "Grátis" },
-      { name: "Dra. Ana Paula Silva", avatar: "/images/trainers/trainer3.png", price: "Kz 50.000" },
-      { name: "Dr. Manuel Santos", avatar: "/images/trainers/trainer7.png", price: "Kz 60.000" },
-      { name: "Dr. Carlos Mendes", avatar: "/images/trainers/trainer8.png", price: "Kz 42.000" },
-    ]
-    const index = (parseInt(courseId) - 1) % trainersList.length
-    return trainersList[index >= 0 ? index : 0]
+  const getTrainerInfo = (courseId: string, coursePrice: string) => {
+    const trainer = getTrainerForCourse(courseId)
+    return {
+      name: trainer.name,
+      avatar: trainer.avatar,
+      price: getCoursePriceDisplay(courseId, coursePrice),
+    }
   }
 
   const filteredCourses = courses.filter((course) => {
@@ -46,7 +42,7 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
   })
 
   const featuredCourse = courses.find((c) => c.id === '5') || courses[0]
-  const featuredTrainer = featuredCourse ? getTrainerInfo(featuredCourse.id) : null
+  const featuredTrainer = featuredCourse ? getTrainerInfo(featuredCourse.id, featuredCourse.price) : null
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -164,7 +160,7 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
         <AnimatePresence mode="popLayout">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredCourses.map((course, index) => {
-              const trainer = getTrainerInfo(course.id)
+              const trainer = getTrainerInfo(course.id, course.price)
               return (
                 <motion.div
                   key={course.id}
