@@ -1,10 +1,13 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 
 /** Cliente com JWT do utilizador (respeita RLS) */
 export function createUserClient(accessToken: string): SupabaseClient {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Supabase environment variables are not set')
+  }
   return createClient(supabaseUrl, supabaseAnonKey, {
     global: { headers: { Authorization: `Bearer ${accessToken}` } },
     auth: { persistSession: false, autoRefreshToken: false },
@@ -13,6 +16,9 @@ export function createUserClient(accessToken: string): SupabaseClient {
 
 /** Cliente service role — bypass RLS (apenas servidor) */
 export function createServiceClient(): SupabaseClient | null {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return null
+  }
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!serviceKey) return null
   return createClient(supabaseUrl, serviceKey, {
