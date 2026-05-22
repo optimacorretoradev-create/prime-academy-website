@@ -299,11 +299,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
           ))}
         </div>
 
-        <div
-          className={`pt-4 border-t flex flex-col gap-3 ${
-            isDashboard ? 'border-slate-100' : 'border-border'
-          }`}
-        >
+        <div className={isDashboard ? 'pt-2' : 'pt-4 border-t border-border'}>
           <Button
             asChild
             className={
@@ -313,17 +309,6 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
             }
           >
             <Link href={`/enroll?course=${course.id}`}>Inscrever-se Agora</Link>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            className={
-              isDashboard
-                ? 'w-full rounded-2xl h-12 text-sm font-bold border-[#312455]/30 text-[#312455] hover:bg-[#312455]/5 cursor-pointer'
-                : 'w-full rounded-xl h-12 text-sm font-semibold border-primary text-primary hover:bg-primary/5 cursor-pointer'
-            }
-          >
-            <Link href="/contact">Pedir Orçamento Especial</Link>
           </Button>
         </div>
       </CardContent>

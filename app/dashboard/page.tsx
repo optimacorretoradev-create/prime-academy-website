@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useAuth } from '@/contexts/auth-context'
+import { useNotifications } from '@/contexts/notifications-context'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
@@ -170,29 +171,7 @@ function DashboardPageContent() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [currentDate, setCurrentDate] = useState('')
   const [showNotifications, setShowNotifications] = useState(false)
-  const [notifications, setNotifications] = useState([
-    {
-      id: 'n1',
-      title: 'Nova publicação de material',
-      description: 'O Prof. Marcos adicionou "Guia de Atalhos Excel Avançado" na sua biblioteca.',
-      time: 'Há 5 min',
-      read: false,
-    },
-    {
-      id: 'n2',
-      title: 'Inscrição confirmada!',
-      description: 'A sua inscrição no curso "Gestão de Projectos" foi efetuada com sucesso.',
-      time: 'Há 1 hora',
-      read: false,
-    },
-    {
-      id: 'n3',
-      title: 'Certificado de Excel disponível',
-      description: 'O seu certificado oficial homologado de Excel Avançado já está pronto para download.',
-      time: 'Há 2 dias',
-      read: true,
-    }
-  ])
+  const { notifications, unreadCount, markRead, markAllRead } = useNotifications()
   
   // User profile extensions state
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
@@ -848,7 +827,7 @@ function DashboardPageContent() {
               >
                 <Bell className="h-5 w-5" />
                 <AnimatePresence>
-                  {notifications.filter(n => !n.read).length > 0 && (
+                  {unreadCount > 0 && (
                     <motion.span 
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
@@ -856,7 +835,7 @@ function DashboardPageContent() {
                       transition={{ type: 'spring', stiffness: 500, damping: 25 }}
                       className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center px-1.5 ring-2 ring-white leading-none shadow-sm shadow-red-950/20"
                     >
-                      {notifications.filter(n => !n.read).length}
+                      {unreadCount}
                     </motion.span>
                   )}
                 </AnimatePresence>
@@ -886,7 +865,7 @@ function DashboardPageContent() {
                           <h3 className="font-extrabold text-xs tracking-tight">Notificações</h3>
                         </div>
                         <span className="bg-white/20 text-[9px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full">
-                          {notifications.filter(n => !n.read).length} Novas
+                          {unreadCount} Novas
                         </span>
                       </div>
                       
@@ -899,31 +878,31 @@ function DashboardPageContent() {
                           notifications.map((notif) => (
                             <div 
                               key={notif.id} 
-                              onClick={() => {
-                                setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, read: true } : n))
-                              }}
+                              onClick={() => markRead(notif.id)}
                               className={`p-4 text-left transition-colors duration-200 cursor-pointer hover:bg-slate-50 flex gap-3 ${
-                                !notif.read ? 'bg-[#f8fafc]/40' : ''
+                                !notif.lida ? 'bg-[#f8fafc]/40' : ''
                               }`}
                             >
                               <div className="mt-0.5">
-                                <div className={`w-2 h-2 rounded-full ${!notif.read ? 'bg-[#8a66a8]' : 'bg-transparent'}`} />
+                                <div className={`w-2 h-2 rounded-full ${!notif.lida ? 'bg-[#8a66a8]' : 'bg-transparent'}`} />
                               </div>
                               <div className="flex-1 space-y-0.5">
-                                <p className="font-black text-xs text-[#312455]">{notif.title}</p>
-                                <p className="text-[10px] text-slate-500 font-medium leading-relaxed">{notif.description}</p>
-                                <span className="text-[9px] text-[#8a66a8] font-bold block pt-1">{notif.time}</span>
+                                <p className="font-black text-xs text-[#312455]">{notif.titulo}</p>
+                                <p className="text-[10px] text-slate-500 font-medium leading-relaxed">{notif.descricao}</p>
+                                {notif.time && (
+                                  <span className="text-[9px] text-[#8a66a8] font-bold block pt-1">{notif.time}</span>
+                                )}
                               </div>
                             </div>
                           ))
                         )}
                       </div>
 
-                      {notifications.some(n => !n.read) && (
+                      {notifications.some(n => !n.lida) && (
                         <div className="p-3 bg-slate-50 border-t border-slate-100 text-center">
                           <button 
-                            onClick={() => {
-                              setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+                            onClick={async () => {
+                              await markAllRead()
                               toast.success('Todas as notificações foram marcadas como lidas!')
                             }}
                             className="text-[10px] font-extrabold text-[#312455] hover:text-[#8a66a8] uppercase tracking-wider transition-colors cursor-pointer"

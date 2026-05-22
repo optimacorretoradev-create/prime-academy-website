@@ -20,8 +20,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useAuth } from '@/contexts/auth-context'
+import { useNotifications } from '@/contexts/notifications-context'
 
-export type DashboardNavId = 'courses' | 'pdfs' | 'students' | 'explore' | 'settings'
+export type DashboardNavId = 'courses' | 'pdfs' | 'students' | 'explore' | 'settings' | 'admin'
 
 interface DashboardShellProps {
   children: ReactNode
@@ -42,22 +43,7 @@ export function DashboardShell({
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [displayName, setDisplayName] = useState('')
   const [showNotifications, setShowNotifications] = useState(false)
-  const [notifications, setNotifications] = useState([
-    {
-      id: 'n1',
-      title: 'Nova publicação de material',
-      description: 'O Prof. Marcos adicionou "Guia de Atalhos Excel Avançado" na sua biblioteca.',
-      time: 'Há 5 min',
-      read: false,
-    },
-    {
-      id: 'n2',
-      title: 'Inscrição confirmada!',
-      description: 'A sua inscrição no curso "Gestão de Projectos" foi efetuada com sucesso.',
-      time: 'Há 1 hora',
-      read: false,
-    },
-  ])
+  const { notifications, unreadCount, markRead, markAllRead } = useNotifications()
 
   useEffect(() => {
     const options: Intl.DateTimeFormatOptions = {
@@ -98,7 +84,7 @@ export function DashboardShell({
 
   if (!user) return null
 
-  const isInstructor = user.role === 'instrutor'
+  const isInstructor = user.role === 'instrutor' || user.role === 'admin'
 
   const navLinks: { id: DashboardNavId; label: string; href: string; icon: typeof BookOpen }[] = [
     {
@@ -191,14 +177,13 @@ export function DashboardShell({
           </div>
           {navLinks.map((link) => renderNavItem(link))}
           {isInstructor && (
-            <div className="pt-4 pr-4">
-              <Link
-                href="/admin"
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-white/70 hover:bg-white/5 hover:text-white transition-all"
-              >
-                <ShieldCheck className="h-4.5 w-4.5 text-white/60" />
-                Painel Geral Admin
-              </Link>
+            <div className="pt-4">
+              {renderNavItem({
+                id: 'admin',
+                label: 'Base de Dados',
+                href: '/admin',
+                icon: ShieldCheck,
+              })}
             </div>
           )}
         </nav>
@@ -239,6 +224,11 @@ export function DashboardShell({
               </div>
               <nav className="flex-1 pl-4 py-6 space-y-1 overflow-y-auto">
                 {navLinks.map((link) => renderNavItem(link, () => setSidebarOpen(false)))}
+                {isInstructor &&
+                  renderNavItem(
+                    { id: 'admin', label: 'Base de Dados', href: '/admin', icon: ShieldCheck },
+                    () => setSidebarOpen(false)
+                  )}
               </nav>
               <div className="p-4 border-t border-white/10">
                 <button
@@ -294,9 +284,9 @@ export function DashboardShell({
                 }`}
               >
                 <Bell className="h-5 w-5" />
-                {notifications.filter((n) => !n.read).length > 0 && (
+                {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center px-1.5 ring-2 ring-white">
-                    {notifications.filter((n) => !n.read).length}
+                    {unreadCount}
                   </span>
                 )}
               </Button>
@@ -306,22 +296,38 @@ export function DashboardShell({
                   <div className="absolute right-0 mt-2 w-80 bg-white border border-slate-100 rounded-[2rem] shadow-xl z-50 overflow-hidden">
                     <div className="p-4 bg-[#312455] text-white text-xs font-extrabold">Notificações</div>
                     <div className="divide-y divide-slate-100 max-h-60 overflow-y-auto">
-                      {notifications.map((notif) => (
-                        <button
-                          key={notif.id}
-                          type="button"
-                          onClick={() =>
-                            setNotifications((prev) =>
-                              prev.map((n) => (n.id === notif.id ? { ...n, read: true } : n))
-                            )
-                          }
-                          className={`w-full p-4 text-left hover:bg-slate-50 ${!notif.read ? 'bg-[#f8fafc]/40' : ''}`}
-                        >
-                          <p className="font-black text-xs text-[#312455]">{notif.title}</p>
-                          <p className="text-[10px] text-slate-500 mt-0.5">{notif.description}</p>
-                        </button>
-                      ))}
+                      {notifications.length === 0 ? (
+                        <p className="p-4 text-xs text-slate-400 text-center">
+                          Sem notificações de momento.
+                        </p>
+                      ) : (
+                        notifications.map((notif) => (
+                          <button
+                            key={notif.id}
+                            type="button"
+                            onClick={() => markRead(notif.id)}
+                            className={`w-full p-4 text-left hover:bg-slate-50 ${!notif.lida ? 'bg-[#f8fafc]/40' : ''}`}
+                          >
+                            <p className="font-black text-xs text-[#312455]">{notif.titulo}</p>
+                            <p className="text-[10px] text-slate-500 mt-0.5">{notif.descricao}</p>
+                            {notif.time && (
+                              <p className="text-[9px] text-slate-400 mt-1">{notif.time}</p>
+                            )}
+                          </button>
+                        ))
+                      )}
                     </div>
+                    {notifications.some((n) => !n.lida) && (
+                      <div className="p-2 border-t border-slate-100">
+                        <button
+                          type="button"
+                          onClick={() => markAllRead()}
+                          className="w-full text-[10px] font-bold text-[#8a66a8] hover:underline cursor-pointer py-2"
+                        >
+                          Marcar todas como lidas
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </>
               )}
