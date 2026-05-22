@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { AuthProvider } from '@/contexts/auth-context'
+import { NotificationsProvider } from '@/contexts/notifications-context'
 import { ConditionalChrome } from '@/components/layout/conditional-chrome'
 
 const inter = Inter({ 
@@ -33,7 +34,9 @@ export default function RootLayout({
     <html lang="pt" className={`${inter.variable} bg-background`} suppressHydrationWarning>
       <body className="font-sans antialiased min-h-screen flex flex-col" suppressHydrationWarning>
         <AuthProvider>
-          <ConditionalChrome>{children}</ConditionalChrome>
+          <NotificationsProvider>
+            <ConditionalChrome>{children}</ConditionalChrome>
+          </NotificationsProvider>
         </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

@@ -47,7 +47,7 @@ export function Header() {
           {/* Left Side: Logo */}
           <Link href="/" className="flex items-center gap-2 group shrink-0">
             <div className="transition-transform group-hover:scale-105">
-              <Image src="/logo.svg" alt="Prime Academy Logo" width={200} height={54} className="h-7 md:h-8 w-auto" priority />
+              <Image src="/prime.png" alt="Prime Academy Logo" width={200} height={54} className="h-7 md:h-8 w-auto" priority />
             </div>
           </Link>
 

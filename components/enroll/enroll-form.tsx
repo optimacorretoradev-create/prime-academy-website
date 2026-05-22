@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { CheckCircle, Loader2, Send } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Course } from '@/lib/hygraph'
+import { createInscricao } from '@/lib/enrollments-service'
+import { useAuth } from '@/contexts/auth-context'
 
 interface EnrollFormProps {
   courses: Course[]
@@ -39,6 +41,16 @@ export function EnrollForm({ courses }: EnrollFormProps) {
   const [isSuccess, setIsSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const { user, isLoading } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      const redirectPath = `/enroll${preselectedCourse ? `?course=${encodeURIComponent(preselectedCourse)}` : ''}`
+      router.replace(`/login?redirect=${encodeURIComponent(redirectPath)}`)
+    }
+  }, [isLoading, user, preselectedCourse, router])
+
   useEffect(() => {
     if (preselectedCourse) {
       const match = courses.find(
@@ -67,6 +79,16 @@ export function EnrollForm({ courses }: EnrollFormProps) {
         throw new Error('Erro ao enviar inscrição')
       }
 
+      const matchedCourse = courses.find((c) => c.name === formData.course)
+      await createInscricao({
+        nome: formData.name,
+        email: formData.email,
+        telefone: formData.phone,
+        curso_id: matchedCourse?.id ?? formData.course,
+        curso_nome: formData.course,
+        mensagem: formData.message || undefined,
+      })
+
       setIsSuccess(true)
       setFormData({ name: '', email: '', phone: '', course: '', message: '' })
     } catch (err) {
@@ -74,6 +96,14 @@ export function EnrollForm({ courses }: EnrollFormProps) {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  if (isLoading || !user) {
+    return (
+      <div className="min-h-[360px] flex items-center justify-center">
+        <span className="text-sm text-slate-500">A validar sessão e redirecionar para login...</span>
+      </div>
+    )
   }
 
   if (isSuccess) {
@@ -88,7 +118,8 @@ export function EnrollForm({ courses }: EnrollFormProps) {
         </div>
         <h2 className="text-2xl font-bold text-foreground mb-3">Inscrição recebida!</h2>
         <p className="text-muted-foreground mb-6">
-          Obrigado pelo seu interesse. A nossa equipa entrará em contacto em breve.
+          O pedido foi registado e aguarda aprovação. Receberá uma notificação no painel quando for
+          analisado.
         </p>
         <Button
           onClick={() => setIsSuccess(false)}
