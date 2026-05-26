@@ -10,7 +10,7 @@ import {
   Download, Upload, Plus, CheckCircle2, Globe, Users, FileText, 
   ChevronRight, ShieldCheck, Menu, X, Bell, Calendar, Search, 
   BookOpenCheck, LayoutDashboard, Settings, Compass, Eye, EyeOff,
-  Lock, UserCircle, Mail, Tag, Star, Loader2
+  Lock, UserCircle, Mail, Tag, Star, Loader2, Video
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -21,6 +21,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 import { getCourses, type Course } from '@/lib/hygraph'
+import { VirtualRoomsTab } from '@/components/dashboard/virtual-rooms-tab'
 
 // Active programs in "Meus Cursos" — catalogId links to Hygraph when listed in Explorar
 const defaultCourses: ActiveProgram[] = [
@@ -155,7 +156,7 @@ function CourseSkeleton() {
   )
 }
 
-const DASHBOARD_TABS = ['courses', 'pdfs', 'students', 'explore', 'settings'] as const
+const DASHBOARD_TABS = ['courses', 'online-classes', 'pdfs', 'students', 'explore', 'settings'] as const
 type DashboardTab = (typeof DASHBOARD_TABS)[number]
 
 function isDashboardTab(value: string | null): value is DashboardTab {
@@ -517,6 +518,11 @@ function DashboardPageContent() {
       id: 'courses' as const,
       label: isInstructor ? 'Minhas Turmas' : 'Meus Cursos',
       icon: BookOpen,
+    },
+    {
+      id: 'online-classes' as const,
+      label: 'Aulas Online',
+      icon: Video,
     },
     {
       id: 'pdfs' as const,
@@ -1116,21 +1122,11 @@ function DashboardPageContent() {
                 transition={{ duration: 0.3 }}
                 className="space-y-6"
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-black text-[#312455]">
-                      {isInstructor ? 'Formações em Docência' : 'Os Meus Programas Activos'}
-                    </h2>
-                    <p className="text-xs text-slate-500">Acompanhamento e evolução do seu desenvolvimento.</p>
-                  </div>
-                  {!isInstructor && (
-                    <button
-                      onClick={() => handleTabChange('explore')}
-                      className="text-[#8a66a8] hover:text-[#312455] transition-colors flex items-center gap-1 text-xs font-bold hover:underline"
-                    >
-                      Explorar mais cursos <ArrowRight className="h-3.5 w-3.5" />
-                    </button>
-                  )}
+                <div>
+                  <h2 className="text-xl font-black text-[#312455]">
+                    {isInstructor ? 'Formações em Docência' : 'Os Meus Programas Activos'}
+                  </h2>
+                  <p className="text-xs text-slate-500">Acompanhamento e evolução do seu desenvolvimento.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1184,7 +1180,7 @@ function DashboardPageContent() {
                           asChild
                           className="w-full bg-[#312455] hover:bg-[#8a66a8] text-white rounded-2xl h-11 font-bold text-xs shadow-sm cursor-pointer transition-all duration-300 mt-auto"
                         >
-                          <Link href="/courses">
+                          <Link href="/dashboard?tab=online-classes">
                             <Play className="mr-2 h-4 w-4" />
                             {course.progress > 0 ? 'Continuar Curso' : 'Iniciar Curso'}
                           </Link>
@@ -1193,6 +1189,26 @@ function DashboardPageContent() {
                     </Card>
                   ))}
                 </div>
+              </motion.div>
+            )}
+
+            {/* D1.2 ONLINE CLASSES TAB */}
+            {!isTabChanging && activeTab === 'online-classes' && (
+              <motion.div
+                key="online-classes-tab"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.3 }}
+              >
+                <VirtualRoomsTab
+                  isInstructor={isInstructor}
+                  availableCourses={defaultCourses.map(c => ({
+                    id: c.id,
+                    name: c.name,
+                    online: c.online
+                  }))}
+                />
               </motion.div>
             )}
 

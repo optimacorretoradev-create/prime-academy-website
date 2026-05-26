@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { getCourses } from '@/lib/hygraph'
 import { DashboardShell } from '@/components/dashboard/dashboard-shell'
 import { CourseDetailBody } from '@/components/courses/course-detail-body'
@@ -29,7 +29,7 @@ export default async function DashboardCourseDetailsPage({ params }: PageProps) 
   const course = courses.find((c) => c.id === resolvedParams.id)
 
   if (!course) {
-    notFound()
+    redirect('/dashboard?tab=explore')
   }
 
   const syllabus = course.syllabus || [

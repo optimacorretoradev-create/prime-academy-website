@@ -138,12 +138,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(false)
     }
   }
-
   const logout = async () => {
     try {
+      setUser(null) // Instant synchronous update to clear user profile and trigger immediate visual change
       setIsLoading(true)
       await supabase.auth.signOut()
-      setUser(null)
       // Limpar qualquer localStorage relacionado (notificações, etc.)
       if (typeof window !== 'undefined') {
         const keys = Object.keys(localStorage).filter((k) =>
@@ -153,12 +152,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (err) {
       console.error('[auth] Erro ao terminar sessão:', err)
-      setUser(null)
     } finally {
       setIsLoading(false)
     }
   }
-
   return (
     <AuthContext.Provider value={{ user, isLoading, login, signup, logout }}>
       {children}

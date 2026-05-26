@@ -30,14 +30,13 @@ export default function AboutPage() {
   ]
 
   const trainers = [
-    { name: 'Dra. Maria Antónia', role: 'Protocolo & Secretariado', avatar: '/images/trainers/trainer1.png' },
-    { name: 'Dra. Isabel Santos', role: 'Gestão de Processos', avatar: '/images/trainers/trainer2.png' },
-    { name: 'Dra. Ana Paula Silva', role: 'Liderança Executiva', avatar: '/images/trainers/trainer3.png' },
-    { name: 'Dr. António Banza', role: 'Tecnologias de Gestão', avatar: '/images/trainers/trainer4.png' },
-    { name: 'Dr. Francisco Manuel', role: 'Comunicação Institucional', avatar: '/images/trainers/trainer5.png' },
-    { name: 'Dra. Patrícia Costa', role: 'Gestão de Pessoas', avatar: '/images/trainers/trainer6.png' },
-    { name: 'Dr. Manuel Santos', role: 'Finanças Corporativas', avatar: '/images/trainers/trainer7.png' },
-    { name: 'Dr. Carlos Mendes', role: 'Logística & Supply Chain', avatar: '/images/trainers/trainer8.png' },
+    { name: 'Lourença Ricardo', role: 'Protocolo & Secretariado', avatar: '/images/trainers/trainer1.jpeg' },
+    { name: 'Hosana Inglês', role: 'Gestão de Processos', avatar: '/images/trainers/trainer2.png' },
+    { name: 'Claúdia Roceth', role: 'Liderança Executiva', avatar: '/images/trainers/trainer3.png' },
+    { name: 'Isabel Gaspar', role: 'Tecnologias de Gestão', avatar: '/images/trainers/trainer4.jpeg' },
+    { name: 'Valéria Serra', role: 'Gestão de Pessoas', avatar: '/images/trainers/trainer6.png' },
+    { name: 'Santos Egas Moniz', role: 'Finanças Corporativas', avatar: '/images/trainers/trainer7.png' },
+    { name: 'Eduardo Chilowa', role: 'Logística & Supply Chain', avatar: '/images/trainers/trainer8.png' },
   ]
 
   const targetAudience = [
@@ -90,23 +89,23 @@ export default function AboutPage() {
               {/* Main large photo */}
               <div className="absolute top-0 left-0 w-[58%] h-[70%] rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80"
-                  alt="Formadora Prime Academy"
+                  src="/images/1.jpeg"
+                  alt="Equipa Prime Academy"
                   className="w-full h-full object-cover"
                 />
               </div>
               {/* Top-right photo */}
               <div className="absolute top-0 right-0 w-[38%] h-[45%] rounded-3xl overflow-hidden shadow-xl border-4 border-white">
                 <img
-                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&q=80"
-                  alt="Formação em equipa"
+                  src="/images/2.jpeg"
+                  alt="Profissionais Prime Academy"
                   className="w-full h-full object-cover"
                 />
               </div>
               {/* Bottom-right photo */}
               <div className="absolute bottom-0 right-0 w-[55%] h-[50%] rounded-3xl overflow-hidden shadow-xl border-4 border-white">
                 <img
-                  src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=500&q=80"
+                  src="/images/3.jpeg"
                   alt="Sala de formação executiva"
                   className="w-full h-full object-cover"
                 />

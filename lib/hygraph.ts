@@ -42,7 +42,7 @@ export interface ContactInfo {
 
 // Mock Data
 const coursesData: Course[] = [
-  // 1. Destaque: Gestão Administrativa Digital
+  // 1. Gestão Administrativa Digital
   {
     id: '1',
     name: 'Ferramentas de Produtividade Avançada (Office 365/Google Workspace)',
@@ -69,87 +69,6 @@ const coursesData: Course[] = [
       'Inclui modelos práticos de controlo de tarefas diárias'
     ]
   },
-  // 2. Destaque: Liderança e Comunicação
-  {
-    id: '7',
-    name: 'Liderança e Gestão de RH',
-    description: 'Desenvolva competências de liderança inspiradora, gestão estratégica de recursos humanos, motivação de equipas e resolução de conflitos.',
-    category: 'Liderança e Comunicação',
-    duration: '45 horas',
-    lessons: 12,
-    price: 'Sob consulta',
-    image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80',
-    rating: 4.8,
-    online: true,
-    level: 'Avançado',
-    syllabus: [
-      { title: 'Módulo 1: Liderança Inspiradora e Equipas', topics: ['Auto-liderança e inteligência emocional', 'Delegação de tarefas e empoderamento (Empowerment)', 'Criação de uma cultura de feedback construtivo'] },
-      { title: 'Módulo 2: Atração, Seleção e Retenção de Talentos', topics: ['Perfil de competências e anúncios de recrutamento', 'Técnicas de entrevista de seleção estruturadas', 'Processo de integração (Onboarding) de novos colaboradores'] },
-      { title: 'Módulo 3: Gestão de Desempenho e Carreiras', topics: ['Avaliação de desempenho por competências e metas', 'Planos de desenvolvimento individual (PDI)', 'Planos de sucessão e políticas de remuneração'] },
-      { title: 'Módulo 4: Clima, Motivação e Resolução de Conflitos', topics: ['Teorias de motivação organizacional aplicadas', 'Mediação e negociação de conflitos interpessoais', 'Legislação laboral básica (Lei Geral do Trabalho em Angola)'] }
-    ],
-    highlights: [
-      'Orientado para líderes, coordenadores e profissionais de RH',
-      'Uso de ferramentas de avaliação de perfil comportamental (DISC)',
-      'Aulas gravadas com encontros síncronos de mentoria',
-      'Certificado de especialização em Liderança e RH'
-    ]
-  },
-  // 3. Destaque: Tecnologias Inovadoras
-  {
-    id: '13',
-    name: 'Inteligencia Artificial para automação de tarefas administrativas',
-    description: 'Utilização prática de ferramentas de IA (como ChatGPT e Copilot) para automatizar e otimizar tarefas administrativas diárias.',
-    category: 'Tecnologias Inovadoras',
-    duration: '30 horas',
-    lessons: 8,
-    price: 'Sob consulta',
-    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80',
-    rating: 4.9,
-    online: true,
-    level: 'Intermédio',
-    pdfUrl: '/pdf/ia_automacao_tarefas.pdf',
-    syllabus: [
-      { title: 'Módulo 1: Introdução à IA Generativa', topics: ['Como funcionam os Grandes Modelos de Linguagem (LLMs)', 'Principais ferramentas: ChatGPT, Claude, Microsoft Copilot e Gemini', 'Limitações da IA e cuidados com privacidade e segurança de dados'] },
-      { title: 'Módulo 2: Técnicas de Prompt Engineering', topics: ['Princípios básicos de construção de prompts eficazes', 'Prompts de contexto, papel e restrições para bons outputs', 'Criação de prompts para escrita de e-mails, atas e relatórios'] },
-      { title: 'Módulo 3: IA na Prática Administrativa', topics: ['Pesquisa rápida e síntese automática de documentos longos', 'Criação automática de roteiros e ideias de apresentações', 'Tradução automática de correspondência internacional'] },
-      { title: 'Módulo 4: Excel e Produtividade com IA', topics: ['Como escrever folhas de cálculo (Excel) complexas usando o ChatGPT', 'Análise rápida de dados em tabelas com auxílio do Copilot', 'Introdução à criação de imagens e gráficos com IA'] }
-    ],
-    highlights: [
-      'Aulas práticas focadas em ganhos imediatos de tempo de trabalho',
-      'Caderno de prompts de utilidade administrativa prontos para usar',
-      'Não necessita de competências em programação ou TI avançada',
-      'Certificado de competência em Inteligência Artificial Administrativa'
-    ]
-  },
-  // 4. Destaque: Secretariado Estratégico
-  {
-    id: '9',
-    name: 'Secretariado para Alta Direcção',
-    description: 'Capacitação executiva focada em assessoria estratégica, organização de gabinetes de alta direção, protocolo e etiqueta empresarial.',
-    category: 'Secretariado Estratégico',
-    duration: '60 horas',
-    lessons: 15,
-    price: 'Sob consulta',
-    image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80',
-    rating: 4.9,
-    online: false,
-    level: 'Avançado',
-    pdfUrl: '/pdf/secretariado_alta_direccao.pdf',
-    syllabus: [
-      { title: 'Módulo 1: Assessoria Executiva de Alta Performance', topics: ['O perfil do secretário como parceiro de gestão', 'Confidencialidade, ética e discrição de gabinete', 'Tomada de decisões autónomas autorizadas'] },
-      { title: 'Módulo 2: Gestão Avançada de Gabinete', topics: ['Coordenação de agendas de múltiplos gestores', 'Filtro e triagem de telefonemas e visitas estratégicas', 'Organização de reuniões do Conselho de Administração'] },
-      { title: 'Módulo 3: Protocolo do Estado e Relações Públicas', topics: ['Precedências protocolares e recepção de autoridades', 'Organização de jantares e almoços oficiais de negócios', 'Diplomacia e regras internacionais de cortesia'] },
-      { title: 'Módulo 4: Gestão de Documentos Confidenciais', topics: ['Classificação e arquivo seguro de atas e relatórios', 'Segurança física e digital da informação sensível', 'Redação de correspondência executiva avançada'] }
-    ],
-    highlights: [
-      'O curso mais prestigiado para assessoria executiva em Angola',
-      'Simulações práticas de crises operacionais de gabinete',
-      'Foco em imagem profissional e comunicação corporativa',
-      'Certificado executivo reconhecido internacionalmente'
-    ]
-  },
-  // Restantes Cursos de Gestão Administrativa Digital
   {
     id: '2',
     name: 'Gestão de Documentos e Arquivos Electrónicos',
@@ -201,7 +120,7 @@ const coursesData: Course[] = [
       'Certificado de conclusão imediato'
     ]
   },
-  // Restantes Cursos de Liderança e Comunicação
+  // 2. Liderança e Comunicação
   {
     id: '4',
     name: 'Comunicação Institucional',
@@ -222,7 +141,7 @@ const coursesData: Course[] = [
     ],
     highlights: [
       'Estudos de caso reais de crises corporativas em Angola',
-      'Simulações práticas de entrevistas e notas de imprensa',
+      'Simulações práticas de interviews e notas de imprensa',
       'Direcionado a assessores, diretores e consultores de imagem',
       'Certificação oficial de excelência corporativa'
     ]
@@ -278,6 +197,31 @@ const coursesData: Course[] = [
     ]
   },
   {
+    id: '7',
+    name: 'Liderança e Gestão de RH',
+    description: 'Desenvolva competências de liderança inspiradora, gestão estratégica de recursos humanos, motivação de equipas e resolução de conflitos.',
+    category: 'Liderança e Comunicação',
+    duration: '45 horas',
+    lessons: 12,
+    price: 'Sob consulta',
+    image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80',
+    rating: 4.8,
+    online: true,
+    level: 'Avançado',
+    syllabus: [
+      { title: 'Módulo 1: Liderança Inspiradora e Equipas', topics: ['Auto-liderança e inteligência emocional', 'Delegação de tarefas e empoderamento (Empowerment)', 'Criação de uma cultura de feedback construtivo'] },
+      { title: 'Módulo 2: Atração, Seleção e Retenção de Talentos', topics: ['Perfil de competências e anúncios de recrutamento', 'Técnicas de entrevista de seleção estruturadas', 'Processo de integração (Onboarding) de novos colaboradores'] },
+      { title: 'Módulo 3: Gestão de Desempenho e Carreiras', topics: ['Avaliação de desempenho por competências e metas', 'Planos de desenvolvimento individual (PDI)', 'Planos de sucessão e políticas de remuneração'] },
+      { title: 'Módulo 4: Clima, Motivação e Resolução de Conflitos', topics: ['Teorias de motivação organizacional aplicadas', 'Mediação e negociação de conflitos interpessoais', 'Legislação laboral básica (Lei Geral do Trabalho em Angola)'] }
+    ],
+    highlights: [
+      'Orientado para líderes, coordenadores e profissionais de RH',
+      'Uso de ferramentas de avaliação de perfil comportamental (DISC)',
+      'Aulas gravadas com encontros síncronos de mentoria',
+      'Certificado de especialização em Liderança e RH'
+    ]
+  },
+  {
     id: '8',
     name: 'Oratória e Persuasão',
     description: 'Perca o medo de falar em público, aprenda a estruturar discursos impactantes e domine técnicas de argumentação e persuasão de alto nível.',
@@ -302,7 +246,33 @@ const coursesData: Course[] = [
       'Certificado em Oratória e Comunicação Persuasiva'
     ]
   },
-  // Restantes Cursos de Secretariado Estratégico
+  // 3. Secretariado Estratégico
+  {
+    id: '9',
+    name: 'Secretariado para Alta Direcção',
+    description: 'Capacitação executiva focada em assessoria estratégica, organização de gabinetes de alta direção, protocolo e etiqueta empresarial.',
+    category: 'Secretariado Estratégico',
+    duration: '60 horas',
+    lessons: 15,
+    price: 'Sob consulta',
+    image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80',
+    rating: 4.9,
+    online: false,
+    level: 'Avançado',
+    pdfUrl: '/pdf/secretariado_alta_direccao.pdf',
+    syllabus: [
+      { title: 'Módulo 1: Assessoria Executiva de Alta Performance', topics: ['O perfil do secretário como parceiro de gestão', 'Confidencialidade, ética e discrição de gabinete', 'Tomada de decisões autónomas autorizadas'] },
+      { title: 'Módulo 2: Gestão Avançada de Gabinete', topics: ['Coordenação de agendas de múltiplos gestores', 'Filtro e triagem de telefonemas e visitas estratégicas', 'Organização de reuniões do Conselho de Administração'] },
+      { title: 'Módulo 3: Protocolo do Estado e Relações Públicas', topics: ['Precedências protocolares e recepção de autoridades', 'Organização de jantares e almoços oficiais de negócios', 'Diplomacia e regras internacionais de cortesia'] },
+      { title: 'Módulo 4: Gestão de Documentos Confidenciais', topics: ['Classificação e arquivo seguro de atas e relatórios', 'Segurança física e digital da informação sensível', 'Redação de correspondência executiva avançada'] }
+    ],
+    highlights: [
+      'O curso mais prestigiado para assessoria executiva em Angola',
+      'Simulações práticas de crises operacionais de gabinete',
+      'Foco em imagem profissional e comunicação corporativa',
+      'Certificado executivo reconhecido internacionalmente'
+    ]
+  },
   {
     id: '10',
     name: 'Gestão de Gabinete de Altos Gestores',
@@ -325,7 +295,7 @@ const coursesData: Course[] = [
       'Orientado a libertar tempo produtivo do gestor assistido',
       'Estudo de ferramentas digitais de acompanhamento e controlo',
       'Certificado de especialização em Gestão Operacional de Gabinetes',
-      'Acesso a materiais exclusivos e templates de relatórios de apoio'
+      'Acesso a materiais exclusivos and templates de relatórios de apoio'
     ]
   },
   {
@@ -378,7 +348,33 @@ const coursesData: Course[] = [
       'Certificado profissional básico de secretariado executivo'
     ]
   },
-  // Restantes Cursos de Tecnologias Inovadoras
+  // 4. Tecnologias Inovadoras
+  {
+    id: '13',
+    name: 'Inteligencia Artificial para automação de tarefas administrativas',
+    description: 'Utilização prática de ferramentas de IA (como ChatGPT e Copilot) para automatizar e otimizar tarefas administrativas diárias.',
+    category: 'Tecnologias Inovadoras',
+    duration: '30 horas',
+    lessons: 8,
+    price: 'Sob consulta',
+    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80',
+    rating: 4.9,
+    online: true,
+    level: 'Intermédio',
+    pdfUrl: '/pdf/ia_automacao_tarefas.pdf',
+    syllabus: [
+      { title: 'Módulo 1: Introdução à IA Generativa', topics: ['Como funcionam os Grandes Modelos de Linguagem (LLMs)', 'Principais ferramentas: ChatGPT, Claude, Microsoft Copilot e Gemini', 'Limitações da IA e cuidados com privacidade e segurança de dados'] },
+      { title: 'Módulo 2: Técnicas de Prompt Engineering', topics: ['Princípios básicos de construção de prompts eficazes', 'Prompts de contexto, papel e restrições para bons outputs', 'Criação de prompts para escrita de e-mails, atas e relatórios'] },
+      { title: 'Módulo 3: IA na Prática Administrativa', topics: ['Pesquisa rápida e síntese automática de documentos longos', 'Criação automática de roteiros e ideias de apresentações', 'Tradução automática de correspondência internacional'] },
+      { title: 'Módulo 4: Excel e Produtividade com IA', topics: ['Como escrever folhas de cálculo (Excel) complexas usando o ChatGPT', 'Análise rápida de dados em tabelas com auxílio do Copilot', 'Introdução à criação de imagens e gráficos com IA'] }
+    ],
+    highlights: [
+      'Aulas práticas focadas em ganhos imediatos de tempo de trabalho',
+      'Caderno de prompts de utilidade administrative prontos para usar',
+      'Não necessita de competências em programação ou TI avançada',
+      'Certificado de competência em Inteligência Artificial Administrativa'
+    ]
+  },
   {
     id: '14',
     name: 'Tecnologias de Comunicação e Gestão de Informação',

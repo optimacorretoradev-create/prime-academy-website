@@ -16,13 +16,14 @@ import {
   Compass,
   Settings,
   Users,
+  Video,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useAuth } from '@/contexts/auth-context'
 import { useNotifications } from '@/contexts/notifications-context'
 
-export type DashboardNavId = 'courses' | 'pdfs' | 'students' | 'explore' | 'settings' | 'admin'
+export type DashboardNavId = 'courses' | 'online-classes' | 'pdfs' | 'students' | 'explore' | 'settings' | 'admin'
 
 interface DashboardShellProps {
   children: ReactNode
@@ -92,6 +93,12 @@ export function DashboardShell({
       label: isInstructor ? 'Minhas Turmas' : 'Meus Cursos',
       href: '/dashboard',
       icon: BookOpen,
+    },
+    {
+      id: 'online-classes',
+      label: 'Aulas Online',
+      href: '/dashboard?tab=online-classes',
+      icon: Video,
     },
     {
       id: 'pdfs',

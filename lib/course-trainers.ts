@@ -5,21 +5,28 @@ export interface CourseTrainer {
 }
 
 const trainersByCourseId: Record<string, CourseTrainer> = {
-  '1': { name: 'Dr. António Banza', avatar: '/images/trainers/trainer4.png', role: 'Sistemas & Tecnologias de Gestão' },
-  '2': { name: 'Dra. Isabel Santos', avatar: '/images/trainers/trainer2.png', role: 'Gestão de Processos & Inovação' },
-  '3': { name: 'Dr. Francisco Manuel', avatar: '/images/trainers/trainer5.png', role: 'Comunicação & Protocolo Institucional' },
-  '4': { name: 'Dra. Maria Antónia', avatar: '/images/trainers/trainer1.png', role: 'Protocolo & Secretariado de Direção' },
-  '5': { name: 'Dra. Patrícia Costa', avatar: '/images/trainers/trainer6.png', role: 'Gestão de Pessoas & Cultura Organizacional' },
-  '6': { name: 'Dra. Ana Paula Silva', avatar: '/images/trainers/trainer3.png', role: 'Liderança & Desenvolvimento Executivo' },
-  '7': { name: 'Dr. Manuel Santos', avatar: '/images/trainers/trainer7.png', role: 'Finanças Corporativas & Auditoria' },
-  '8': { name: 'Dr. Carlos Mendes', avatar: '/images/trainers/trainer8.png', role: 'Logística & Cadeia de Abastecimento' },
+  '1': { name: 'Isabel Gaspar', avatar: '/images/trainers/trainer4.jpeg', role: 'Sistemas & Tecnologias de Gestão' },
+  '2': { name: 'Hosana Inglês', avatar: '/images/trainers/trainer2.png', role: 'Gestão de Processos & Inovação' },
+  '3': { name: 'Claúdia Roceth', avatar: '/images/trainers/trainer3.png', role: 'Comunicação & Protocolo Institucional' },
+  '4': { name: 'Lourença Ricardo', avatar: '/images/trainers/trainer1.jpeg', role: 'Protocolo & Secretariado de Direção' },
+  '5': { name: 'Valéria Serra', avatar: '/images/trainers/trainer6.png', role: 'Gestão de Pessoas & Cultura Organizacional' },
+  '6': { name: 'Claúdia Roceth', avatar: '/images/trainers/trainer3.png', role: 'Liderança & Desenvolvimento Executivo' },
+  '7': { name: 'Santos Egas Moniz', avatar: '/images/trainers/trainer7.png', role: 'Liderança & Gestão de Recursos Humanos' },
+  '8': { name: 'Eduardo Chilowa', avatar: '/images/trainers/trainer8.png', role: 'Oratória & Comunicação Persuasiva' },
+  '9': { name: 'Lourença Ricardo', avatar: '/images/trainers/trainer1.jpeg', role: 'Secretariado Executivo de Alta Direção' },
+  '10': { name: 'Isabel Gaspar', avatar: '/images/trainers/trainer4.jpeg', role: 'Gestão de Gabinete & Protocolo' },
+  '11': { name: 'Hosana Inglês', avatar: '/images/trainers/trainer2.png', role: 'Protocolo & Etiqueta Empresarial' },
+  '12': { name: 'Valéria Serra', avatar: '/images/trainers/trainer6.png', role: 'Secretariado & Apoio Executivo' },
+  '13': { name: 'Eduardo Chilowa', avatar: '/images/trainers/trainer8.png', role: 'Tecnologias Inovadoras & IA' },
+  '14': { name: 'Santos Egas Moniz', avatar: '/images/trainers/trainer7.png', role: 'Gestão de Informação & Comunicação Digital' },
+  '15': { name: 'Claúdia Roceth', avatar: '/images/trainers/trainer3.png', role: 'Cibersegurança Corporativa' },
 }
 
 const trainersList = Object.values(trainersByCourseId)
 
 const defaultTrainer: CourseTrainer = {
-  name: 'Dra. Maria Antónia',
-  avatar: '/images/trainers/trainer1.png',
+  name: 'Lourença Ricardo',
+  avatar: '/images/trainers/trainer1.jpeg',
   role: 'Formadora Prime Academy',
 }
 
