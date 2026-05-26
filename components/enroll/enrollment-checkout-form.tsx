@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Course } from '@/lib/hygraph'
+import { getCoursePriceDisplay, getCoursePriceAmount } from '@/lib/format-price'
 import { createInscricao } from '@/lib/enrollments-service'
 import { useAuth } from '@/contexts/auth-context'
 import { useToast } from '@/hooks/use-toast'
@@ -313,11 +314,16 @@ export function EnrollmentCheckoutForm({
               <p className="text-xs uppercase tracking-wider text-white/60 font-semibold mb-2">
                 Investimento
               </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-bold text-white">AOA</span>
-                <span className="text-3xl font-bold text-accent">365.585,00</span>
-              </div>
-              <p className="text-white/60 text-xs mt-3">AOA 30.465,42 / mês cobrado anualmente</p>
+              {selectedCourse ? (
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-bold text-white">AOA</span>
+                  <span className="text-3xl font-bold text-accent">
+                    {getCoursePriceAmount(selectedCourse.id).toLocaleString('pt-AO')}
+                  </span>
+                </div>
+              ) : (
+                <p className="text-white/50 text-sm italic">Selecione um curso para ver o valor</p>
+              )}
             </motion.div>
           </div>
 
@@ -336,75 +342,7 @@ export function EnrollmentCheckoutForm({
             {/* Banco */}
             <div className="pb-4 border-b border-white/10">
               <p className="text-xs uppercase tracking-wider text-white/50 font-semibold mb-2">Banco</p>
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-sm text-white/90 flex-1">{bankInfo.banco}</p>
-                <button
-                  type="button"
-                  onClick={() => handleCopyToClipboard(bankInfo.banco, 'banco')}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0"
-                  title="Copiar"
-                >
-                  <AnimatePresence mode="wait">
-                    {copiedField === 'banco' ? (
-                      <motion.div
-                        key="check"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                      >
-                        <Check className="h-4 w-4 text-green-400" />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="copy"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                      >
-                        <Copy className="h-4 w-4 text-white/60" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </button>
-              </div>
-            </div>
-
-            {/* Conta */}
-            <div className="pb-4 border-b border-white/10">
-              <p className="text-xs uppercase tracking-wider text-white/50 font-semibold mb-2">
-                Número de Conta
-              </p>
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-sm font-mono font-semibold text-white/90 flex-1">{bankInfo.conta}</p>
-                <button
-                  type="button"
-                  onClick={() => handleCopyToClipboard(bankInfo.conta, 'conta')}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0"
-                  title="Copiar"
-                >
-                  <AnimatePresence mode="wait">
-                    {copiedField === 'conta' ? (
-                      <motion.div
-                        key="check"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                      >
-                        <Check className="h-4 w-4 text-green-400" />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="copy"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                      >
-                        <Copy className="h-4 w-4 text-white/60" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </button>
-              </div>
+              <p className="text-sm text-white/90">{bankInfo.banco}</p>
             </div>
 
             {/* IBAN */}

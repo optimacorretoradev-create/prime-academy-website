@@ -6,43 +6,38 @@ import { motion } from 'framer-motion'
 export function TrainersSection() {
   const trainers = [
     {
-      name: "Dra. Maria Antónia",
+      name: "Lourença Ricardo",
       role: "Protocolo & Secretariado de Direção",
-      image: "/images/trainers/trainer1.png"
+      image: "/images/trainers/trainer1.jpeg"
     },
     {
-      name: "Dra. Isabel Santos",
+      name: "Hosana Inglês",
       role: "Gestão de Processos & Inovação",
       image: "/images/trainers/trainer2.png"
     },
     {
-      name: "Dra. Ana Paula Silva",
+      name: "Claúdia Roceth",
       role: "Liderança & Desenvolvimento Executivo",
       image: "/images/trainers/trainer3.png"
     },
     {
-      name: "Dr. António Banza",
+      name: "Isabel Gaspar",
       role: "Sistemas & Tecnologias de Gestão",
-      image: "/images/trainers/trainer4.png"
+      image: "/images/trainers/trainer4.jpeg"
     },
     {
-      name: "Dr. Francisco Manuel",
-      role: "Comunicação & Protocolo Institucional",
-      image: "/images/trainers/trainer5.png"
-    },
-    {
-      name: "Dra. Patrícia Costa",
+      name: "Valéria Serra",
       role: "Gestão de Pessoas & Cultura Organizacional",
       image: "/images/trainers/trainer6.png"
     },
     {
-      name: "Dr. Manuel Santos",
-      role: "Finanças Corporativas & Auditoria",
+      name: "Santos Egas Moniz",
+      role: "Liderança & Gestão de Recursos Humanos",
       image: "/images/trainers/trainer7.png"
     },
     {
-      name: "Dr. Carlos Mendes",
-      role: "Logística & Cadeia de Abastecimento",
+      name: "Eduardo Chilowa",
+      role: "Tecnologias Inovadoras & IA",
       image: "/images/trainers/trainer8.png"
     }
   ]

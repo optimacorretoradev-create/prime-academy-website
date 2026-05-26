@@ -12,25 +12,25 @@ const slides = [
     title: "Prime Academy",
     subtitle: "A Sua Academia Online de Gestão",
     description: "Formação Executiva Avançada 100% Online em Novas Tecnologias de Gestão Administrativa e Secretarial. Estude ao seu próprio ritmo com certificação de excelência.",
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&q=80"
+    image: "/images/hero/slide1.jpg"
   },
   {
     title: "Gestão Inteligente",
     subtitle: "Inovação e Processos Corporativos",
     description: "Domine as ferramentas tecnológicas mais modernas do mercado de trabalho, otimize fluxos de gestão e lidere a transformação digital de qualquer organização.",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1920&q=80"
+    image: "/images/hero/slide2.jpg"
   },
   {
     title: "Secretariado de Elite",
     subtitle: "Assessoria e Comunicação de Alto Nível",
     description: "Qualifique-se com as melhores práticas internacionais em assessoria de liderança, protocolo institucional, planeamento executivo e gestão de topo.",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1920&q=80"
+    image: "/images/hero/slide3.jpg"
   },
   {
     title: "Futuro Executivo",
     subtitle: "Certificação e Sucesso Global",
     description: "Impulsione a sua carreira com certificações valorizadas pelo mercado de trabalho, apoio contínuo de mentores especialistas e uma plataforma e-learning moderna disponível 24h.",
-    image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1920&q=80"
+    image: "/images/hero/slide4.jpg"
   }
 ]
 
@@ -75,15 +75,17 @@ export function HeroSection() {
             />
           </motion.div>
         </AnimatePresence>
-        {/* Darkening Overlay for maximum text contrast */}
-        <div className="absolute inset-0 bg-black/45 z-10" />
+        {/* Smooth brand gradient vignette - deep brand purple `#312455` concentrated on the left for text readability, fading quickly to reveal the full image on the right */}
+        <div 
+          className="absolute inset-0 z-10" 
+          style={{
+            background: 'linear-gradient(to right, #312455 0%, rgba(49, 36, 85, 0.95) 20%, rgba(49, 36, 85, 0.6) 38%, rgba(49, 36, 85, 0.15) 55%, transparent 75%)'
+          }}
+        />
       </div>
 
-      {/* Decorative Glow Diagonal (Lavender) - Desktop Only */}
-      <div className="absolute inset-y-0 left-0 w-[55%] bg-gradient-to-r from-secondary/20 to-secondary/5 z-10 hidden md:block [clip-path:polygon(0_0,100%_0,88%_100%,0_100%)] blur-[2px]" />
-
-      {/* Left Slanted Panel - Holds typography and brand colors (highly transparent white/purple) */}
-      <div className="relative z-20 w-full md:w-[53%] bg-primary/45 md:bg-primary/39 backdrop-blur-xl flex flex-col justify-center px-6 sm:px-12 md:pl-16 lg:pl-24 md:pr-24 py-32 md:[clip-path:polygon(0_0,100%_0,86%_100%,0_100%)] shadow-2xl transition-all duration-500">
+      {/* Left Typography Container - positioned cleanly over the fading gradient without cutting the image */}
+      <div className="relative z-20 w-full md:w-[50%] flex flex-col justify-center px-6 sm:px-12 md:pl-16 lg:pl-24 md:pr-8 py-32 transition-all duration-500">
         <div className="max-w-xl text-left my-auto h-[380px] flex flex-col justify-center">
           {/* Trust Badges */}
           <div className="flex flex-wrap items-center gap-3 mb-6">
