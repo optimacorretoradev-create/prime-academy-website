@@ -19,7 +19,7 @@ async function isAdminUser(token: string) {
     .maybeSingle()
 
   if (perfilError || !perfil?.cargo) return false
-  return ['admin', 'instrutor'].includes(perfil.cargo)
+  return perfil.cargo === 'admin'
 }
 
 async function notifyAllAdmins(
@@ -32,7 +32,7 @@ async function notifyAllAdmins(
   const { data: admins, error: adminsError } = await supabaseAdmin
     .from('perfis')
     .select('id')
-    .in('cargo', ['admin', 'instrutor'])
+    .eq('cargo', 'admin')
 
   if (adminsError) {
     throw new Error(adminsError.message)

@@ -16,12 +16,12 @@ import {
   type AdminPerfil,
 } from '@/components/admin/admin-user-detail-panel'
 
-type TabId = 'todos' | 'aluno' | 'instrutor'
+type TabId = 'todos' | 'aluno' | 'admin'
 type SortKey = 'nome' | 'criado_em'
 
 const TABS: { id: TabId; label: string }[] = [
   { id: 'aluno', label: 'Alunos' },
-  { id: 'instrutor', label: 'Instrutores' },
+  { id: 'admin', label: 'Administradores' },
   { id: 'todos', label: 'Todos' },
 ]
 
@@ -102,7 +102,7 @@ export function AdminUsersPanel({
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <Input
-              placeholder="Pesquisar aluno, instrutor, email ou ID..."
+              placeholder="Pesquisar aluno, administrador, email ou ID..."
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
               className="pl-11 h-11 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white"

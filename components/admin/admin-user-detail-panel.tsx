@@ -16,7 +16,7 @@ export interface AdminPerfil {
   id: string
   nome: string
   email: string
-  cargo: 'aluno' | 'instrutor'
+  cargo: 'aluno' | 'admin'
   foto_url: string | null
   criado_em: string
 }
@@ -65,7 +65,7 @@ export function AdminUserDetailPanel({
         </div>
         <h2 className="text-xl font-black text-[#312455]">{perfil.nome}</h2>
         <p className="text-sm text-slate-500 mt-1">
-          {perfil.cargo === 'instrutor' ? 'Instrutor Prime Academy' : 'Aluno Prime Academy'}
+          {perfil.cargo === 'admin' ? 'Administrador Prime Academy' : 'Aluno Prime Academy'}
         </p>
         <div className="flex items-center justify-center gap-3 mt-5">
           <a
@@ -83,8 +83,8 @@ export function AdminUserDetailPanel({
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Sobre</h3>
           <p className="text-sm text-slate-600 leading-relaxed">
             Conta registada na plataforma Prime Academy.{' '}
-            {perfil.cargo === 'instrutor'
-              ? 'Tem permissões de gestão de conteúdos e administração.'
+            {perfil.cargo === 'admin'
+              ? 'Tem permissões totais de administração do sistema.'
               : 'Tem acesso aos cursos e materiais de formação disponíveis.'}
           </p>
         </div>
@@ -136,7 +136,7 @@ export function AdminUserDetailPanel({
               onClick={() => onPromover(perfil)}
             >
               <UserCheck className="w-4 h-4 mr-2" />
-              Promover a Instrutor
+              Promover a Admin
             </Button>
           ) : (
             <Button
@@ -145,20 +145,20 @@ export function AdminUserDetailPanel({
               onClick={() => onRevogar(perfil)}
             >
               <UserX className="w-4 h-4 mr-2" />
-              Revogar cargo de Instrutor
+              Revogar cargo de Admin
             </Button>
           )}
         </div>
 
         <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-50 border border-slate-100">
-          {perfil.cargo === 'instrutor' ? (
+          {perfil.cargo === 'admin' ? (
             <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
           ) : (
             <GraduationCap className="w-4 h-4 text-[#8a66a8] shrink-0" />
           )}
           <span className="text-xs text-slate-600">
-            {perfil.cargo === 'instrutor'
-              ? 'Acesso ao painel admin e gestão de turmas'
+            {perfil.cargo === 'admin'
+              ? 'Acesso ao painel admin'
               : 'Acesso ao painel de estudante'}
           </span>
         </div>

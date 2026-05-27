@@ -95,12 +95,9 @@ export function TrainersSection() {
               {/* Trainer Bio details */}
               <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 z-20 flex flex-col justify-end">
                 <span className="inline-block w-8 h-1 bg-[#8a66a8] rounded-full mb-3 transform origin-left group-hover:w-12 transition-all duration-300" />
-                <h3 className="text-base md:text-lg font-black text-white leading-tight mb-1 group-hover:text-[#8a66a8] transition-colors duration-200 uppercase tracking-wide">
+                <h3 className="text-base md:text-lg font-black text-white leading-tight group-hover:text-[#8a66a8] transition-colors duration-200 uppercase tracking-wide">
                   {trainer.name}
                 </h3>
-                <p className="text-[11px] md:text-xs text-slate-300 font-medium leading-relaxed group-hover:text-white transition-colors duration-200">
-                  {trainer.role}
-                  </p>
               </div>
             </div>
           ))}

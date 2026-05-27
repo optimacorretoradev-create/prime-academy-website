@@ -3,12 +3,6 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-  DialogTitle,
-} from '@/components/ui/dialog'
 
 export function CtaSection() {
   return (
@@ -50,33 +44,6 @@ export function CtaSection() {
                   Começar Agora
                 </Link>
               </Button>
-
-              {/* Dialog for Watch Video using exact structural concept */}
-              <Dialog>
-                <DialogTrigger asChild>
-                  <button className="group flex items-center justify-center gap-3 cursor-pointer select-none">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white/40 bg-transparent text-white group-hover:scale-105 group-hover:border-white/80 transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-                      <svg className="w-3 h-3 text-white fill-current translate-x-[1px]" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </div>
-                    <span className="text-xs md:text-sm font-bold tracking-wide text-white/90 group-hover:text-white transition-colors duration-200">
-                      Ver Vídeo
-                    </span>
-                  </button>
-                </DialogTrigger>
-                
-                <DialogContent className="max-w-4xl p-0 overflow-hidden bg-black border-neutral-800 aspect-video rounded-xl sm:rounded-2xl">
-                  <DialogTitle className="sr-only">Apresentação da Prime Academy</DialogTitle>
-                  <iframe
-                    className="w-full h-full border-none"
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
-                    title="Prime Academy Presentation"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </DialogContent>
-              </Dialog>
             </div>
           </div>
         </motion.div>

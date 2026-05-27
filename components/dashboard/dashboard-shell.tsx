@@ -85,7 +85,7 @@ export function DashboardShell({
 
   if (!user) return null
 
-  const isInstructor = user.role === 'instrutor' || user.role === 'admin'
+  const isInstructor = user.role === 'admin'
 
   const navLinks: { id: DashboardNavId; label: string; href: string; icon: typeof BookOpen }[] = [
     {
@@ -174,7 +174,7 @@ export function DashboardShell({
           </h2>
           <p className="text-[10px] text-white/50 font-semibold truncate max-w-full mt-0.5">{user.email}</p>
           <Badge className="mt-2 bg-[#8a66a8]/20 text-[#c1a7d6] border border-[#8a66a8]/30 uppercase text-[8px] font-extrabold tracking-widest px-2.5 py-0.5 rounded-full">
-            {isInstructor ? 'Instrutor' : 'Estudante'}
+            {isInstructor ? 'Administrador' : 'Estudante'}
           </Badge>
         </div>
 

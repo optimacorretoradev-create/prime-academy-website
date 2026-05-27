@@ -6,14 +6,14 @@ import { supabase } from '@/lib/supabase'
 interface User {
   name: string
   email: string
-  role: 'aluno' | 'instrutor' | 'admin'
+  role: 'aluno' | 'admin'
 }
 
 interface AuthContextType {
   user: User | null
   isLoading: boolean
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
-  signup: (name: string, email: string, password: string, role?: 'aluno' | 'instrutor') => Promise<{ success: boolean; error?: string }>
+  signup: (name: string, email: string, password: string, role?: 'aluno' | 'admin') => Promise<{ success: boolean; error?: string }>
   logout: () => void
 }
 
@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const userData: User = {
           name: data.nome,
           email: data.email,
-          role: data.cargo as 'aluno' | 'instrutor' | 'admin',
+          role: data.cargo as 'aluno' | 'admin',
         }
         setUser(userData)
       } else {
@@ -110,7 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const signup = async (name: string, email: string, password: string, role: 'aluno' | 'instrutor' = 'aluno') => {
+  const signup = async (name: string, email: string, password: string, role: 'aluno' | 'admin' = 'aluno') => {
     try {
       setIsLoading(true)
       const { data, error } = await supabase.auth.signUp({

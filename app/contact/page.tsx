@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getContactInfo } from '@/lib/hygraph'
 import { ContactForm } from '@/components/contact/contact-form'
+import { HowToReachUs } from '@/components/contact/how-to-reach-us'
 import { Phone, Mail, MapPin, Facebook, Instagram, MessageCircle } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -77,15 +78,6 @@ export default async function ContactPage() {
                   <div className="space-y-1">
                     <h4 className="font-bold text-[#312455] text-base">Telefone</h4>
                     <a href={`tel:${contactInfo.phone}`} className="block text-slate-500 text-xs hover:text-[#8a66a8] transition-colors">{contactInfo.phone}</a>
-                    <a 
-                      href={`https://wa.me/${contactInfo.whatsappNumber.replace(/[^0-9]/g, '')}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block text-slate-500 text-xs hover:text-[#25D366] transition-colors font-medium flex items-center gap-1 mt-0.5"
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#25D366] animate-ping inline-block" />
-                      WhatsApp Business
-                    </a>
                   </div>
                 </div>
 
@@ -139,7 +131,7 @@ export default async function ContactPage() {
               <div className="relative aspect-[21/9] sm:aspect-[21/10] w-full overflow-hidden rounded-3xl shadow-sm border border-slate-100 mt-6">
                 <div 
                   className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1000&q=80)' }}
+                  style={{ backgroundImage: 'url(/images/contact.jpg)' }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#312455]/40 via-transparent to-transparent" />
               </div>
@@ -162,20 +154,8 @@ export default async function ContactPage() {
         </div>
       </section>
 
-      {/* FULL WIDTH MAP */}
-      <section className="w-full h-[400px] md:h-[450px] relative overflow-hidden bg-slate-50 border-t border-slate-100">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3942.270912185208!2d13.230713774883392!3d-8.854371991200155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1a51f3b5e17e2d2d%3A0x8f2b6e1dff9c9c9a!2sLuanda%2C%20Angola!5e0!3m2!1sen!2sus!4v1640000000000!5m2!1sen!2sus"
-          width="100%"
-          height="100%"
-          style={{ border: 0 }}
-          allowFullScreen
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          title="Localização da Prime Academy"
-          className="absolute inset-0"
-        />
-      </section>
+      {/* HOW TO REACH US — Route Planner + Satellite Map */}
+      <HowToReachUs />
     </div>
   )
 }
