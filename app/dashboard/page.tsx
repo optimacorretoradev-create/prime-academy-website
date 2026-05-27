@@ -475,7 +475,7 @@ function DashboardPageContent() {
     }, 850)
   }
 
-  const isInstructor = user.role === 'instrutor'
+  const isInstructor = user.role === 'admin'
 
   // Dynamic categories from loaded courses
   const exploreCategories = ['Todos', ...Array.from(new Set(exploreCourses.map(c => c.category)))]
@@ -587,7 +587,7 @@ function DashboardPageContent() {
           <h2 className="font-extrabold text-sm tracking-tight text-white line-clamp-1">{displayName || user.name}</h2>
           <p className="text-[10px] text-white/50 font-semibold truncate max-w-full mt-0.5">{user.email}</p>
           <Badge className="mt-2 bg-[#8a66a8]/20 hover:bg-[#8a66a8]/35 text-[#c1a7d6] border border-[#8a66a8]/30 uppercase text-[8px] font-extrabold tracking-widest px-2.5 py-0.5 rounded-full">
-            {isInstructor ? 'Instrutor' : 'Estudante'}
+            {isInstructor ? 'Administrador' : 'Estudante'}
           </Badge>
         </div>
 
@@ -716,7 +716,7 @@ function DashboardPageContent() {
                 <h2 className="font-extrabold text-sm tracking-tight text-white line-clamp-1">{displayName || user.name}</h2>
                 <p className="text-[10px] text-white/50 font-semibold truncate max-w-full mt-0.5">{user.email}</p>
                 <Badge className="mt-2 bg-[#8a66a8]/20 text-[#c1a7d6] border border-[#8a66a8]/30 uppercase text-[8px] font-extrabold tracking-widest px-2.5 py-0.5 rounded-full">
-                  {isInstructor ? 'Instrutor' : 'Estudante'}
+                  {isInstructor ? 'Administrador' : 'Estudante'}
                 </Badge>
               </div>
 
@@ -959,11 +959,11 @@ function DashboardPageContent() {
                     </span>
                   </div>
                   <h1 className="text-2xl md:text-3xl font-black tracking-tight text-white leading-tight">
-                    {isInstructor ? `Olá, Prof. ${(displayName || user.name).split(' ')[0]}!` : `Olá, Aluno ${(displayName || user.name).split(' ')[0]}!`}
+                    {isInstructor ? `Olá, Admin ${(displayName || user.name).split(' ')[0]}!` : `Olá, Aluno ${(displayName || user.name).split(' ')[0]}!`}
                   </h1>
                   <p className="text-white/70 text-sm max-w-xl">
                     {isInstructor 
-                      ? 'Bem-vindo ao seu painel docente. Aqui pode gerir os seus materiais de apoio e acompanhar o progresso pedagógico de cada aluno.'
+                      ? 'Bem-vindo ao seu painel de administração. Aqui pode gerir os seus materiais de apoio e acompanhar o progresso pedagógico de cada aluno.'
                       : 'Pronto para expandir o seu conhecimento hoje? Continue o seu percurso de aprendizagem de onde parou.'}
                   </p>
                 </div>
@@ -1651,7 +1651,7 @@ function DashboardPageContent() {
                           <div>
                             <p className="text-sm font-black text-[#312455]">{settingsName || user.name}</p>
                             <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mt-0.5">
-                              {isInstructor ? 'Instrutor / Docente' : 'Estudante / Formando'} · Prime Academy
+                              {isInstructor ? 'Administrador' : 'Estudante / Formando'} · Prime Academy
                             </p>
                           </div>
                         </div>
@@ -1723,7 +1723,7 @@ function DashboardPageContent() {
                             <Tag className="h-3.5 w-3.5 text-[#8a66a8]" />Tipo de Conta
                           </Label>
                           <Input
-                            value={isInstructor ? 'Instrutor / Docente' : 'Estudante / Formando'}
+                            value={isInstructor ? 'Administrador' : 'Estudante / Formando'}
                             disabled
                             className="rounded-xl h-10 text-sm border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed"
                           />

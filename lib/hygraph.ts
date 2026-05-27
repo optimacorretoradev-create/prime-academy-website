@@ -430,57 +430,165 @@ const coursesData: Course[] = [
 const galleryImagesData: GalleryImage[] = [
   {
     id: 'g1',
-    imageUrl: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&q=80',
-    caption: 'Cerimónia de entrega de certificados 2025',
-    category: 'Eventos'
+    imageUrl: '/Galeria/Cerimonia/cer (5).jpeg',
+    caption: 'Momento de excelência: Graduação de profissionais qualificados em 2025',
+    category: 'Destaque'
   },
   {
     id: 'g2',
-    imageUrl: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80',
-    caption: 'Aula prática de Gestão de Projectos',
-    category: 'Aulas'
-  },
-  {
-    id: 'g3',
-    imageUrl: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80',
-    caption: 'Workshop de Excel Avançado',
-    category: 'Workshops'
-  },
-  {
-    id: 'g4',
-    imageUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80',
-    caption: 'Seminário de Liderança em Angola',
-    category: 'Eventos'
-  },
-  {
-    id: 'g5',
-    imageUrl: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80',
+    imageUrl: '/Galeria/Aulas/A (1).jpeg',
     caption: 'Formação Avançada de Secretariado Executivo',
     category: 'Aulas'
   },
   {
-    id: 'g6',
-    imageUrl: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&q=80',
-    caption: 'Sessão de Mentoria Executiva Individualizada',
+    id: 'g3',
+    imageUrl: '/Galeria/W. Gestao de viagens/g3.jpeg',
+    caption: 'Workshop intensivo de desenvolvimento profissional',
     category: 'Workshops'
   },
   {
-    id: 'g7',
-    imageUrl: 'https://images.unsplash.com/photo-1531538606174-0f90ff5dce83?w=800&q=80',
+    id: 'g4',
+    imageUrl: '/Galeria/Cerimonia/cer (12).jpeg',
+    caption: 'Cerimónia de Liderança Executiva em Luanda',
+    category: 'Cerimónia'
+  },
+  {
+    id: 'g5',
+    imageUrl: '/Galeria/Aulas/A (2).jpeg',
+    caption: 'Sessão de Mentoria Executiva Individualizada',
+    category: 'Aulas'
+  },
+  {
+    id: 'g6',
+    imageUrl: '/Galeria/Aulas/A (3).jpeg',
     caption: 'Aula Prática de Tecnologias de Gestão',
     category: 'Aulas'
   },
   {
+    id: 'g7',
+    imageUrl: '/Galeria/Aulas/A (4).jpeg',
+    caption: 'Sessão Prática de Gestão Administrativa Digital',
+    category: 'Aulas'
+  },
+  {
     id: 'g8',
-    imageUrl: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&q=80',
-    caption: 'Encerramento de Bootcamp Executivo',
-    category: 'Eventos'
+    imageUrl: '/Galeria/W. Gestao de viagens/g1.jpeg',
+    caption: 'Workshop de Gestão de Viagens Corporativas',
+    category: 'Workshops'
   },
   {
     id: 'g9',
-    imageUrl: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&q=80',
-    caption: 'Palestra Geral sobre Gestão Estratégica',
+    imageUrl: '/Galeria/W. Gestao de viagens/g2.jpeg',
+    caption: 'Sessão Prática de Planeamento de Itinerários',
     category: 'Workshops'
+  },
+  {
+    id: 'g10',
+    imageUrl: '/Galeria/W. Gestao de viagens/g4.jpeg',
+    caption: 'Workshop Avançado de Gestão de Eventos',
+    category: 'Workshops'
+  },
+  {
+    id: 'g11',
+    imageUrl: '/Galeria/W. Gestao de viagens/g5.jpeg',
+    caption: 'Treinamento em Logística e Coordenação',
+    category: 'Workshops'
+  },
+  {
+    id: 'g12',
+    imageUrl: '/Galeria/W. Gestao de viagens/g6.jpeg',
+    caption: 'Aula Prática de Orçamentação de Viagens',
+    category: 'Workshops'
+  },
+  {
+    id: 'g13',
+    imageUrl: '/Galeria/W. Gestao de viagens/g7.jpeg',
+    caption: 'Encerramento do Workshop de Gestão de Viagens',
+    category: 'Workshops'
+  },
+  {
+    id: 'g14',
+    imageUrl: '/Galeria/Cerimonia/cer (1).jpeg',
+    caption: 'Cerimónia de Abertura - Turma 2025',
+    category: 'Cerimónia'
+  },
+  {
+    id: 'g15',
+    imageUrl: '/Galeria/Cerimonia/cer (2).jpeg',
+    caption: 'Palestra de Abertura com Convidado Especial',
+    category: 'Cerimónia'
+  },
+  {
+    id: 'g16',
+    imageUrl: '/Galeria/Cerimonia/cer (3).jpeg',
+    caption: 'Apresentação de Certificados - Bloco 1',
+    category: 'Cerimónia'
+  },
+  {
+    id: 'g17',
+    imageUrl: '/Galeria/Cerimonia/cer (4).jpeg',
+    caption: 'Momento de Celebração com Participantes',
+    category: 'Cerimónia'
+  },
+  {
+    id: 'g18',
+    imageUrl: '/Galeria/Cerimonia/cer (6).jpeg',
+    caption: 'Foto de Grupo - Turma Formada',
+    category: 'Cerimónia'
+  },
+  {
+    id: 'g19',
+    imageUrl: '/Galeria/Cerimonia/cer (7).jpeg',
+    caption: 'Discurso de Encerramento',
+    category: 'Cerimónia'
+  },
+  {
+    id: 'g20',
+    imageUrl: '/Galeria/Cerimonia/cer (8).jpeg',
+    caption: 'Entrega de Certificados - Bloco 2',
+    category: 'Cerimónia'
+  },
+  {
+    id: 'g21',
+    imageUrl: '/Galeria/Cerimonia/cer (9).jpeg',
+    caption: 'Abraços e Despedidas na Cerimónia',
+    category: 'Cerimónia'
+  },
+  {
+    id: 'g22',
+    imageUrl: '/Galeria/Cerimonia/cer (10).jpeg',
+    caption: 'Coquetel de Encerramento',
+    category: 'Cerimónia'
+  },
+  {
+    id: 'g23',
+    imageUrl: '/Galeria/Cerimonia/cer (11).jpeg',
+    caption: 'Momento Solene de Apresentação de Honras',
+    category: 'Cerimónia'
+  },
+  {
+    id: 'g24',
+    imageUrl: '/Galeria/Formacao/f1.jpeg',
+    caption: 'Aprendizagem prática e colaborativa em sala de aula',
+    category: 'Formações'
+  },
+  {
+    id: 'g25',
+    imageUrl: '/Galeria/Formacao/f2.jpeg',
+    caption: 'Sessão de Formação Intensiva',
+    category: 'Formações'
+  },
+  {
+    id: 'g26',
+    imageUrl: '/Galeria/Formacao/f3.jpeg',
+    caption: 'Aula Teórica e Prática Integrada',
+    category: 'Formações'
+  },
+  {
+    id: 'g27',
+    imageUrl: '/Galeria/Formacao/f4.jpeg',
+    caption: 'Dinâmica de Grupo na Formação',
+    category: 'Formações'
   }
 ]
 

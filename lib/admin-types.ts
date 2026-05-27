@@ -8,9 +8,8 @@ export type NotificationTipo =
   | 'nova_inscricao'
   | 'inscricao_processada'
   | 'inscricao_pendente_pagamento'
-  | 'promovido_instrutor'
+  | 'promovido_admin'
   | 'cargo_revogado'
-  | 'designado_instrutor_curso'
 
 export interface Inscricao {
   id: string
@@ -38,13 +37,3 @@ export interface AppNotification {
   time?: string
 }
 
-export interface CursoInstrutor {
-  id: string
-  curso_id: string
-  curso_nome: string
-  instrutor_id: string
-  designado_por: string | null
-  criado_em: string
-  atualizado_em: string
-  instrutor?: { nome: string; email: string }
-}

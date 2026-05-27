@@ -14,7 +14,6 @@ import { useAuth } from '@/contexts/auth-context'
 import { DashboardShell } from '@/components/dashboard/dashboard-shell'
 import { AdminUsersPanel } from '@/components/admin/admin-users-panel'
 import { AdminEnrollmentsPanel } from '@/components/admin/admin-enrollments-panel'
-import { AdminCoursesInstructorsPanel } from '@/components/admin/admin-courses-instructors-panel'
 import type { AdminPerfil } from '@/components/admin/admin-user-detail-panel'
 import { AdminUserDetailPanel } from '@/components/admin/admin-user-detail-panel'
 import { Button } from '@/components/ui/button'
@@ -25,14 +24,13 @@ import { getCourses } from '@/lib/hygraph'
 import type { Course } from '@/lib/hygraph'
 import { fetchInscricoes } from '@/lib/enrollments-service'
 
-type AdminSection = 'utilizadores' | 'inscricoes' | 'cursos'
-type TabId = 'todos' | 'aluno' | 'instrutor'
+type AdminSection = 'utilizadores' | 'inscricoes'
+type TabId = 'todos' | 'aluno' | 'admin'
 type SortKey = 'nome' | 'criado_em'
 
 const SECTIONS: { id: AdminSection; label: string; icon: typeof Users }[] = [
   { id: 'utilizadores', label: 'Utilizadores', icon: Users },
   { id: 'inscricoes', label: 'Inscrições', icon: ClipboardList },
-  { id: 'cursos', label: 'Cursos & Instrutores', icon: BookOpen },
 ]
 
 export default function AdminPage() {
@@ -59,7 +57,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!isLoading && !user) router.push('/login')
-    if (!isLoading && user && user.role !== 'instrutor' && user.role !== 'admin')
+    if (!isLoading && user && user.role !== 'admin')
       router.push('/dashboard')
   }, [user, isLoading, router])
 
@@ -94,7 +92,7 @@ export default function AdminPage() {
   }, [])
 
   useEffect(() => {
-    if (user?.role === 'instrutor' || user?.role === 'admin') {
+    if (user?.role === 'admin') {
       fetchPerfis()
       refreshPending()
     }
@@ -133,7 +131,7 @@ export default function AdminPage() {
       return
     }
 
-    const novoCargo = action === 'promover' ? 'instrutor' : 'aluno'
+    const novoCargo = action === 'promover' ? 'admin' : 'aluno'
     const { error } = await supabase
       .from('perfis')
       .update({ cargo: novoCargo, atualizado_em: new Date().toISOString() })
@@ -152,13 +150,13 @@ export default function AdminPage() {
     if (action === 'promover') {
       const notif = await createNotification({
         perfilId: perfil.id,
-        tipo: 'promovido_instrutor',
-        titulo: 'Promovido a Instrutor',
+        tipo: 'promovido_admin',
+        titulo: 'Promovido a Administrador',
         descricao:
-          'Foi promovido ao cargo de Instrutor na Prime Academy. Já pode aceder às ferramentas de gestão e ao painel admin.',
+          'Foi promovido ao cargo de Administrador na Prime Academy. Já pode aceder às ferramentas de gestão e ao painel admin.',
       })
       if (notif.ok) {
-        toast.success(`${perfil.nome} promovido(a) a Instrutor! Notificação enviada.`)
+        toast.success(`${perfil.nome} promovido(a) a Administrador! Notificação enviada.`)
       } else {
         toast.warning(
           `${perfil.nome} promovido(a), mas a notificação falhou: ${notif.error}`
@@ -170,7 +168,7 @@ export default function AdminPage() {
         tipo: 'cargo_revogado',
         titulo: 'Cargo atualizado',
         descricao:
-          'O seu cargo na Prime Academy foi alterado para Aluno. O acesso de instrutor foi revogado.',
+          'O seu cargo na Prime Academy foi alterado para Aluno. O acesso de administrador foi revogado.',
       })
       if (notif.ok) {
         toast.success(`${perfil.nome} revertido(a) para Aluno. Notificação enviada.`)
@@ -180,8 +178,6 @@ export default function AdminPage() {
     }
     setUpdatingId(null)
   }
-
-  const instrutores = perfis.filter((p) => p.cargo === 'instrutor')
 
   const handleExport = () => {
     const filtered = perfis.filter((p) => {
@@ -261,12 +257,12 @@ export default function AdminPage() {
                 {confirmModal.action === 'promover' && (
                   <>
                     Promover <strong className="text-[#312455]">{confirmModal.perfil.nome}</strong>{' '}
-                    a Instrutor? Será notificado no painel (sino).
+                    a Administrador? Será notificado no painel (sino).
                   </>
                 )}
                 {confirmModal.action === 'revogar' && (
                   <>
-                    Revogar cargo de instrutor de{' '}
+                    Revogar cargo de administrador de{' '}
                     <strong className="text-[#312455]">{confirmModal.perfil.nome}</strong>?
                     Será notificado da alteração.
                   </>
@@ -395,14 +391,6 @@ export default function AdminPage() {
           <AdminEnrollmentsPanel
             adminPerfilId={adminPerfilId}
             onUpdated={refreshPending}
-          />
-        )}
-
-        {section === 'cursos' && (
-          <AdminCoursesInstructorsPanel
-            courses={courses}
-            instrutores={instrutores}
-            adminPerfilId={adminPerfilId}
           />
         )}
       </div>

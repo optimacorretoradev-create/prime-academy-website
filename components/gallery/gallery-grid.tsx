@@ -61,7 +61,7 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
               Últimos Destaques da Academia
             </h2>
             <p className="text-slate-500 text-sm mt-1 max-w-lg">
-              Acompanhe de perto as nossas atividades executivas mais marcantes em Luanda.
+              Descubra os momentos marcantes de nossa comunidade — formações intensivas, workshops práticos e celebrações de excelência profissional.
             </p>
           </div>
 
@@ -95,7 +95,7 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
                     {mainHighlight.caption}
                   </h3>
                   <p className="text-slate-500 text-sm font-light leading-relaxed">
-                    Fotografia oficial registada durante o evento recente. Demonstra a dedicação e o envolvimento profissional de toda a comunidade Prime Academy.
+                    Capture um momento de conquista e transformação. Estes profissionais completaram sua jornada de desenvolvimento e abraçam novos desafios com confiança e competência.
                   </p>
                   <div className="flex items-center gap-1.5 text-xs font-bold text-[#8a66a8] uppercase pt-2">
                     <span>Ver em Tamanho Cheio</span>

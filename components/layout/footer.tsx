@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { Facebook, Instagram, Phone, Mail, MapPin, ChevronUp, ArrowUpRight } from 'lucide-react'
+import { Facebook, Instagram, Phone, Mail, MapPin, ChevronUp } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
 export function Footer() {
@@ -47,32 +47,6 @@ export function Footer() {
 
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
         
-        {/* Top Section: Newsletter Subscription Banner matching the structure of reference image */}
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 pb-12 mb-12 border-b border-primary-foreground/10">
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-black tracking-wider text-white uppercase text-center lg:text-left">
-            SUBSCREVA A NOSSA NEWSLETTER!
-          </h2>
-          
-          <form 
-            onSubmit={(e) => e.preventDefault()}
-            className="w-full max-w-md bg-white rounded-full p-1.5 flex items-center justify-between shadow-[0_0_20px_rgba(255,255,255,0.05)]"
-          >
-            <input 
-              type="email" 
-              placeholder="O seu endereço de e-mail" 
-              className="bg-transparent border-0 outline-none text-neutral-800 placeholder-neutral-400 px-4 py-2 w-full text-xs md:text-sm font-medium focus:ring-0"
-              required
-            />
-            <button 
-              type="submit"
-              className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-[#8a66a8] hover:bg-[#785496] text-white flex items-center justify-center transition-all duration-300 hover:scale-105 shrink-0"
-              aria-label="Subscrever"
-            >
-              <ArrowUpRight className="h-4.5 w-4.5 md:h-5 md:w-5" />
-            </button>
-          </form>
-        </div>
-
         {/* Middle Section: Columns matching the structure of reference image */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           
@@ -88,7 +62,7 @@ export function Footer() {
               />
             </Link>
             <p className="text-sm text-primary-foreground/80 leading-relaxed font-light">
-              Líderes em capacitação e desenvolvimento profissional em Angola. Oferecemos as melhores formações teóricas e práticas com certificação de excelência.
+              Capacitação e desenvolvimento profissional de excelência em Angola.
             </p>
           </div>
 
@@ -115,10 +89,6 @@ export function Footer() {
               Contactos
             </h3>
             <ul className="space-y-3 text-sm text-primary-foreground/80 font-light">
-              <li className="flex items-start gap-2.5">
-                <MapPin className="h-4.5 w-4.5 text-[#8a66a8] mt-0.5 flex-shrink-0" />
-                <span className="leading-snug">Rua 28 de Maio, Edifício 30, 6º Andar Lado Esquerdo, Maianga, Luanda, Angola</span>
-              </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="h-4.5 w-4.5 text-[#8a66a8] flex-shrink-0" />
                 <a href="tel:+244921394946" className="hover:text-white transition-colors duration-200">(+244) 921 394 946</a>
@@ -133,15 +103,12 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Column 4: Institutional Info & Socials */}
+          {/* Column 4: Socials */}
           <div className="space-y-4">
             <h3 className="font-bold text-sm tracking-widest text-white uppercase border-l-2 border-[#8a66a8] pl-2.5">
-              Oficialização Digital
+              Redes Sociais
             </h3>
-            <p className="text-xs text-primary-foreground/80 leading-relaxed font-light">
-              Portal institucional operado pela Prime Academy. Todos os direitos reservados. Certificados autenticados digitalmente e rastreáveis.
-            </p>
-            <div className="flex gap-3 pt-1">
+            <div className="flex gap-3">
               <a 
                 href="https://facebook.com/primeacademy" 
                 target="_blank" 

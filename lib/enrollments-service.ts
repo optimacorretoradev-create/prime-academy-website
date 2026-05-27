@@ -17,7 +17,7 @@ async function notifyAdminsAboutInscricao(params: {
     const { data: admins } = await supabase
       .from('perfis')
       .select('id')
-      .in('cargo', ['admin', 'instrutor'])
+      .eq('cargo', 'admin')
 
     if (admins && admins.length > 0) {
       for (const admin of admins) {
@@ -174,89 +174,6 @@ export async function updateInscricaoEstado(
     inscricao_id: inscricao.id,
     curso_id: inscricao.curso_id,
     curso_nome: inscricao.curso_nome,
-  })
-
-  return { ok: true }
-}
-
-export async function fetchCursoInstrutores(): Promise<
-  import('@/lib/admin-types').CursoInstrutor[]
-> {
-  const { data, error } = await supabase.from('curso_instrutores').select('*')
-
-  if (!error && data && data.length > 0) {
-    const instrutorIds = [...new Set(data.map((r) => r.instrutor_id))]
-    const { data: perfis } = await supabase
-      .from('perfis')
-      .select('id, nome, email')
-      .in('id', instrutorIds)
-    const perfilMap = new Map(perfis?.map((p) => [p.id, p]) ?? [])
-
-    return data.map((row) => {
-      const p = perfilMap.get(row.instrutor_id)
-      return {
-        id: row.id,
-        curso_id: row.curso_id,
-        curso_nome: row.curso_nome,
-        instrutor_id: row.instrutor_id,
-        designado_por: row.designado_por,
-        criado_em: row.criado_em,
-        atualizado_em: row.atualizado_em,
-        instrutor: p ? { nome: p.nome, email: p.email } : undefined,
-      }
-    })
-  }
-
-  if (typeof window === 'undefined') return []
-  try {
-    const raw = localStorage.getItem('prime_academy_curso_instrutores')
-    return raw ? JSON.parse(raw) : []
-  } catch {
-    return []
-  }
-}
-
-export async function assignCursoInstrutor(params: {
-  curso_id: string
-  curso_nome: string
-  instrutor_id: string
-  designado_por: string
-}): Promise<{ ok: boolean; error?: string }> {
-  const row = {
-    curso_id: params.curso_id,
-    curso_nome: params.curso_nome,
-    instrutor_id: params.instrutor_id,
-    designado_por: params.designado_por,
-    atualizado_em: new Date().toISOString(),
-  }
-
-  const { error } = await supabase.from('curso_instrutores').upsert(row, {
-    onConflict: 'curso_id,instrutor_id',
-  })
-
-  if (error) {
-    if (typeof window !== 'undefined') {
-      const list = await fetchCursoInstrutores()
-      const filtered = list.filter((c) => c.curso_id !== params.curso_id)
-      const entry = {
-        id: `local-${params.curso_id}`,
-        ...row,
-        criado_em: new Date().toISOString(),
-        designado_por: params.designado_por,
-      }
-      localStorage.setItem(
-        'prime_academy_curso_instrutores',
-        JSON.stringify([...filtered, entry])
-      )
-    }
-  }
-
-  await createNotification({
-    perfilId: params.instrutor_id,
-    tipo: 'designado_instrutor_curso',
-    titulo: 'Designado para um curso',
-    descricao: `Foi designado como instrutor responsável pelo curso "${params.curso_nome}".`,
-    metadata: { curso_id: params.curso_id },
   })
 
   return { ok: true }

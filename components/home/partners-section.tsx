@@ -80,7 +80,7 @@ export function PartnersSection() {
           100% { transform: translateX(-50%); }
         }
         .animate-partners-marquee {
-          animation: partnersMarquee 35s linear infinite;
+          animation: partnersMarquee 50s linear infinite;
         }
         .animate-partners-marquee:hover {
           animation-play-state: paused;

@@ -62,7 +62,7 @@ export async function verifyAdminFromToken(
     }
   }
 
-  if (!cargo || !['admin', 'instrutor'].includes(cargo)) return null
+  if (!cargo || cargo !== 'admin') return null
 
   return { id: user.id, email: user.email ?? '' }
 }
