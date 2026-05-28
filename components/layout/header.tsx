@@ -65,13 +65,13 @@ export function Header() {
 
           {/* Left Side: Logo with white filter */}
           <Link href="/" className="flex items-center gap-2 group shrink-0">
-            <div className="transition-transform group-hover:scale-105">
+            <div className="transition-transform group-hover:scale-105 -translate-y-2">
               <Image 
                 src="/logo.svg" 
                 alt="Prime Academy Logo" 
                 width={200} 
                 height={54} 
-                className="h-7 md:h-8 w-auto transition-all" 
+                className="h-85 md:h-58 w-auto transition-all" 
                 style={{ filter: 'brightness(0) invert(1)' }}
                 priority 
               />
