@@ -53,15 +53,17 @@ export function Footer() {
           {/* Column 1: Logo and About */}
           <div className="space-y-4">
             <Link href="/" className="inline-block group">
-              <Image 
-                src="/logo.svg" 
-                alt="Prime Academy Logo" 
-                width={180} 
-                height={48} 
-                className="h-10 w-auto invert brightness-0 transition-transform group-hover:scale-103" 
-              />
+              <div className="transition-transform group-hover:scale-105 -translate-y-31">
+                <Image 
+                  src="/logo.svg" 
+                  alt="Prime Academy Logo" 
+                  width={180} 
+                  height={48} 
+                  className="h-85 md:h-58 w-auto invert brightness-0 transition-transform" 
+                />
+              </div>
             </Link>
-            <p className="text-sm text-primary-foreground/80 leading-relaxed font-light">
+            <p className="text-sm text-primary-foreground/80 leading-relaxed font-light -translate-y-45">
               Capacitação e desenvolvimento profissional de excelência em Angola.
             </p>
           </div>
