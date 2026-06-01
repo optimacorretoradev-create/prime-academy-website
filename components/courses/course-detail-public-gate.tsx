@@ -3,12 +3,12 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
-import { CourseDetailBody, type SyllabusModule } from '@/components/courses/course-detail-body'
-import type { Course } from '@/lib/hygraph'
+import { CourseDetailBody } from '@/components/courses/course-detail-body'
+import type { Course, SyllabusModule } from '@/lib/hygraph'
 
 interface CourseDetailPublicGateProps {
   course: Course
-  syllabus: SyllabusModule[]
+  syllabus: string | SyllabusModule[]
   highlights: string[]
 }
 

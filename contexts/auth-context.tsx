@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 
 interface User {
+  id: string
   name: string
   email: string
   role: 'aluno' | 'admin'
@@ -33,6 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (data && !error) {
         const userData: User = {
+          id: id,
           name: data.nome,
           email: data.email,
           role: data.cargo as 'aluno' | 'admin',

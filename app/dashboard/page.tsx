@@ -21,35 +21,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 import { getCourses, type Course } from '@/lib/hygraph'
+import { supabase } from '@/lib/supabase'
 import { VirtualRoomsTab } from '@/components/dashboard/virtual-rooms-tab'
 
-// Active programs in "Meus Cursos" — catalogId links to Hygraph when listed in Explorar
-const defaultCourses: ActiveProgram[] = [
-  {
-    id: '1',
-    catalogId: '1',
-    name: 'Gestão de Projectos',
-    description: 'Aprenda a gerir projectos de forma eficiente com metodologias ágeis e tradicionais.',
-    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80',
-    progress: 45,
-    totalLessons: 12,
-    completedLessons: 5,
-    category: 'Gestão',
-    online: false,
-  },
-  {
-    id: '2',
-    catalogId: '2',
-    name: 'Excel Avançado',
-    description: 'Domine o Excel com fórmulas avançadas, tabelas dinâmicas e dashboards.',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
-    progress: 20,
-    totalLessons: 10,
-    completedLessons: 2,
-    category: 'Informática',
-    online: true,
-  },
-]
+
 
 function isAttendingCatalogCourse(
   course: Course,
@@ -262,6 +237,93 @@ function DashboardPageContent() {
   const [searchTimer, setSearchTimer] = useState<NodeJS.Timeout | null>(null)
   const [exploreSearch, setExploreSearch] = useState('')
   const [exploreCategory, setExploreCategory] = useState('Todos')
+  const [activeCourses, setActiveCourses] = useState<ActiveProgram[]>([])
+
+  useEffect(() => {
+    async function loadActiveCourses() {
+      try {
+        // Blindagem total contra IDs indefinidos ou strings "undefined"
+        if (!user || !user.id || user.id === 'undefined' || typeof user.id !== 'string') {
+          console.log('Aguardando sessão do utilizador estabilizar...');
+          return;
+        }
+
+        // 1. Busca simples nas matrículas usando a coluna real do diagrama
+        const { data: matriculas, error: matriculaError } = await supabase
+          .from('matriculas')
+          .select('id, curso_id_catalogo, progresso_percentagem')
+          .eq('perfil_id', user.id);
+
+        if (matriculaError) {
+          console.error('Error fetching matriculas:', JSON.stringify(matriculaError, null, 2));
+          return;
+        }
+
+        if (!matriculas || matriculas.length === 0) {
+          console.log('Nenhuma matrícula ativa encontrada para este aluno.');
+          setActiveCourses([]);
+          return;
+        }
+
+        // 2. Mapear dados e buscar os cursos e as contagens de aulas via Promise.all
+        const coursesWithDetails = await Promise.all(
+          matriculas.map(async (item) => {
+            if (!item.curso_id_catalogo) return null;
+
+            // Buscar dados do curso correspondente na tabela cursos
+            const { data: curso } = await supabase
+              .from('cursos')
+              .select('id, slug, titulo, descricao, categoria, imagem_url')
+              .eq('id', item.curso_id_catalogo)
+              .single();
+
+            if (!curso) return null;
+
+            // Buscar módulos deste curso para contar as aulas correspondentes
+            const { data: modulos } = await supabase
+              .from('modulos')
+              .select('id')
+              .eq('curso_id', curso.id);
+
+            let totalAulas = 0;
+            if (modulos && modulos.length > 0) {
+              const moduloIds = modulos.map(m => m.id);
+              const { count } = await supabase
+                .from('aulas')
+                .select('id', { count: 'exact', head: true })
+                .in('modulo_id', moduloIds);
+              
+              totalAulas = count || 0;
+            }
+
+            // Retorna o objeto mapeado exatamente no formato que o layout Tailwind premium espera
+            return {
+              id: curso.id,
+              name: curso.titulo,
+              description: curso.descricao,
+              image: curso.imagem_url,
+              category: curso.categoria,
+              progress: item.progresso_percentagem || 0,
+              totalLessons: totalAulas,
+              completedLessons: Math.floor(((item.progresso_percentagem || 0) * totalAulas) / 100),
+              online: true,
+              catalogId: curso.id
+            };
+          })
+        );
+
+        // Filtrar registros nulos e atualizar o estado global dos cursos ativos
+        const validCourses = coursesWithDetails.filter(Boolean) as ActiveProgram[];
+        setActiveCourses(validCourses);
+
+      } catch (err) {
+        console.error('Runtime error loading active courses:', err);
+      }
+    }
+
+    loadActiveCourses()
+  }, [user, user?.id])
+
   const [enrolledCourses, setEnrolledCourses] = useState<string[]>([])
 
   // Load explore courses on mount
@@ -1038,7 +1100,7 @@ function DashboardPageContent() {
                       </div>
                     </CardHeader>
                     <CardContent className="pt-2">
-                      <div className="text-3xl font-black text-[#312455]">{defaultCourses.length}</div>
+                      <div className="text-3xl font-black text-[#312455]">{activeCourses.length}</div>
                       <p className="text-[10px] text-slate-400 mt-1 font-medium">Programas de especialização</p>
                     </CardContent>
                   </Card>
@@ -1052,7 +1114,7 @@ function DashboardPageContent() {
                     </CardHeader>
                     <CardContent className="pt-2">
                       <div className="text-3xl font-black text-[#312455]">
-                        {defaultCourses.reduce((acc, c) => acc + c.completedLessons, 0)}
+                        {activeCourses.reduce((acc, c) => acc + c.completedLessons, 0)}
                       </div>
                       <p className="text-[10px] text-slate-400 mt-1 font-medium">Aulas assistidas até hoje</p>
                     </CardContent>
@@ -1130,7 +1192,7 @@ function DashboardPageContent() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {defaultCourses.map((course) => (
+                  {activeCourses.map((course) => (
                     <Card key={course.id} className="overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 rounded-3xl bg-white flex flex-col group">
                       <div className="relative h-48 w-full overflow-hidden">
                         <Image
@@ -1143,12 +1205,9 @@ function DashboardPageContent() {
                         {/* Overlay gradient */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                         
-                        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                        <div className="absolute bottom-4 left-4 right-4">
                           <Badge className="bg-[#8a66a8] text-white border-none uppercase text-[9px] font-bold tracking-widest px-3 py-1 rounded-full">
                             {course.category}
-                          </Badge>
-                          <Badge className={`border-none uppercase text-[9px] font-bold tracking-widest px-3 py-1 rounded-full ${course.online ? 'bg-emerald-500/90 text-white' : 'bg-white/90 text-[#312455]'}`}>
-                            {course.online ? 'Online' : 'Presencial'}
                           </Badge>
                         </div>
                       </div>
@@ -1203,7 +1262,7 @@ function DashboardPageContent() {
               >
                 <VirtualRoomsTab
                   isInstructor={isInstructor}
-                  availableCourses={defaultCourses.map(c => ({
+                  availableCourses={activeCourses.map(c => ({
                     id: c.id,
                     name: c.name,
                     online: c.online
@@ -1310,7 +1369,7 @@ function DashboardPageContent() {
                               onChange={(e) => setSelectedCourseId(e.target.value)}
                               className="w-full h-10 rounded-xl border border-slate-200 bg-white text-xs text-[#312455] px-3 focus:outline-none focus:ring-2 focus:ring-[#8a66a8] transition-all"
                             >
-                              {defaultCourses.map(c => (
+                              {activeCourses.map(c => (
                                 <option key={c.id} value={c.id}>{c.name}</option>
                               ))}
                             </select>
@@ -1525,7 +1584,7 @@ function DashboardPageContent() {
                     <AnimatePresence mode="popLayout">
                     {filteredExploreCourses.map((course) => {
                       const { attending: isAttending, label: attendanceLabel } =
-                        isAttendingCatalogCourse(course, defaultCourses, enrolledCourses)
+                        isAttendingCatalogCourse(course, activeCourses, enrolledCourses)
                       return (
                         <motion.div
                           key={course.id}
@@ -1549,10 +1608,8 @@ function DashboardPageContent() {
                                 <Badge className="bg-[#8a66a8] text-white border-none uppercase text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded-full">
                                   {course.category}
                                 </Badge>
-                                <Badge className={`border-none text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded-full ${
-                                  course.online ? 'bg-emerald-500/90 text-white' : 'bg-white/90 text-[#312455]'
-                                }`}>
-                                  {course.online ? 'Online' : 'Presencial'}
+                                <Badge className="bg-emerald-500/90 text-white border-none uppercase text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded-full">
+                                  Presencial / Online
                                 </Badge>
                               </div>
                               {/* "A Frequentar" ribbon for active courses */}

@@ -22,16 +22,24 @@ interface AdminEnrollmentsPanelProps {
 export function AdminEnrollmentsPanel({ adminPerfilId, onUpdated }: AdminEnrollmentsPanelProps) {
   const [inscricoes, setInscricoes] = useState<Inscricao[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [filter, setFilter] = useState<'pendente' | 'aceite' | 'rejeitado' | 'todos'>('pendente')
   const [actingId, setActingId] = useState<string | null>(null)
   const { refresh: refreshNotifications } = useNotifications()
 
   const load = useCallback(async () => {
     setLoading(true)
-    const data =
-      filter === 'todos' ? await fetchInscricoes() : await fetchInscricoes(filter)
-    setInscricoes(data)
-    setLoading(false)
+    setError(null)
+    try {
+      const data =
+        filter === 'todos' ? await fetchInscricoes() : await fetchInscricoes(filter)
+      setInscricoes(data)
+    } catch (e: any) {
+      console.error('[AdminEnrollmentsPanel] Erro ao carregar:', e)
+      setError(e.message || 'Erro desconhecido ao carregar inscrições.')
+    } finally {
+      setLoading(false)
+    }
   }, [filter])
 
   useEffect(() => {
@@ -40,16 +48,22 @@ export function AdminEnrollmentsPanel({ adminPerfilId, onUpdated }: AdminEnrollm
 
   const handleEstado = async (inscricao: Inscricao, estado: 'aceite' | 'rejeitado') => {
     setActingId(inscricao.id)
+    
+    // Atualização Otimista
+    setInscricoes((prev) => prev.filter((i) => i.id !== inscricao.id))
+
     const { ok, error } = await updateInscricaoEstado(inscricao, estado, adminPerfilId)
+    
     if (!ok) {
       toast.error(error || 'Erro ao atualizar inscrição')
+      // Rollback se falhar
+      setInscricoes((prev) => [inscricao, ...prev].sort((a,b) => new Date(b.criado_em).getTime() - new Date(a.criado_em).getTime()))
     } else {
       toast.success(
         estado === 'aceite'
-          ? `Inscrição de ${inscricao.nome} aceite. Notificação enviada.`
-          : `Inscrição de ${inscricao.nome} rejeitada. Notificação enviada.`
+          ? `Inscrição de ${inscricao.nome} aceite.`
+          : `Inscrição de ${inscricao.nome} rejeitada.`
       )
-      await load()
       // Atualizar sino de notificações
       await refreshNotifications()
       onUpdated?.()
@@ -107,6 +121,14 @@ export function AdminEnrollmentsPanel({ adminPerfilId, onUpdated }: AdminEnrollm
       <div className="flex-1 min-h-0 overflow-y-auto divide-y divide-slate-100">
         {loading ? (
           <div className="p-12 text-center text-slate-400 text-sm">A carregar…</div>
+        ) : error ? (
+          <div className="p-12 text-center text-red-500">
+            <p className="font-semibold">Erro ao carregar inscrições:</p>
+            <p className="text-sm">{error}</p>
+            <Button variant="outline" className="mt-4" onClick={load}>
+              Tentar novamente
+            </Button>
+          </div>
         ) : inscricoes.length === 0 ? (
           <div className="p-12 text-center text-slate-400">
             <Clock className="w-10 h-10 mx-auto mb-3 opacity-40" />
@@ -125,6 +147,21 @@ export function AdminEnrollmentsPanel({ adminPerfilId, onUpdated }: AdminEnrollm
                 {ins.telefone && (
                   <p className="text-xs text-slate-400 mt-1">{ins.telefone}</p>
                 )}
+                {ins.modalidade && (
+                  <p className="text-xs font-semibold text-[#8a66a8] mt-1">
+                    📚 Formato: <span className="capitalize">{ins.modalidade}</span>
+                  </p>
+                )}
+                {ins.comprovativo_url && (
+                  <a 
+                    href={ins.comprovativo_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 mt-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+                  >
+                    📎 Ver Comprovativo Bancário
+                  </a>
+                )}
                 {ins.mensagem && (
                   <p className="text-xs text-slate-500 mt-2 italic line-clamp-2">{ins.mensagem}</p>
                 )}
@@ -140,21 +177,29 @@ export function AdminEnrollmentsPanel({ adminPerfilId, onUpdated }: AdminEnrollm
                     <Button
                       size="sm"
                       className="rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white h-9"
-                      disabled={actingId === ins.id}
+                      disabled={actingId !== null}
                       onClick={() => handleEstado(ins, 'aceite')}
                     >
-                      <CheckCircle className="w-4 h-4 mr-1" />
-                      Aceitar
+                      {actingId === ins.id ? (
+                        <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
+                      ) : (
+                        <CheckCircle className="w-4 h-4 mr-1" />
+                      )}
+                      {actingId === ins.id ? 'A processar...' : 'Aceitar'}
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       className="rounded-lg border-red-200 text-red-600 hover:bg-red-50 h-9"
-                      disabled={actingId === ins.id}
+                      disabled={actingId !== null}
                       onClick={() => handleEstado(ins, 'rejeitado')}
                     >
-                      <XCircle className="w-4 h-4 mr-1" />
-                      Rejeitar
+                      {actingId === ins.id ? (
+                        <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
+                      ) : (
+                        <XCircle className="w-4 h-4 mr-1" />
+                      )}
+                      {actingId === ins.id ? 'A processar...' : 'Rejeitar'}
                     </Button>
                   </>
                 )}

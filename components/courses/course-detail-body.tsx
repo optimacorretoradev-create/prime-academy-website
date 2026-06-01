@@ -1,31 +1,85 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Clock, BookOpen, ChevronRight, CheckCircle2, Award, ArrowLeft } from 'lucide-react'
+import { Clock, BookOpen, ChevronRight, CheckCircle2, Award, ArrowLeft, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import type { Course } from '@/lib/hygraph'
-import { getTrainerForCourse } from '@/lib/course-trainers'
+import type { Course, SyllabusModule } from '@/lib/hygraph'
 import { getCoursePriceDisplay } from '@/lib/format-price'
+import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/contexts/auth-context'
+import { toast } from 'sonner'
 
-export interface SyllabusModule {
-  title: string
-  topics: string[]
+// Parse a Markdown string (RichText from Hygraph) into structured syllabus modules.
+// Supports ## headings as module titles and - / * list items as topics.
+function parseSyllabus(syllabus: string | SyllabusModule[] | undefined): SyllabusModule[] {
+  if (!syllabus) return []
+  if (Array.isArray(syllabus)) return syllabus
+  
+  const modules: SyllabusModule[] = []
+  let current: SyllabusModule | null = null
+
+  for (const raw of syllabus.split('\n')) {
+    const line = raw.trim()
+    if (!line) continue
+
+    if (line.startsWith('## ') || line.startsWith('# ')) {
+      if (current) modules.push(current)
+      current = { title: line.replace(/^#+\s*/, ''), topics: [] }
+    } else if ((line.startsWith('- ') || line.startsWith('* ')) && current) {
+      current.topics.push(line.replace(/^[-*]\s*/, ''))
+    } else if (line.startsWith('**') && line.endsWith('**') && current === null) {
+      // Bold-only line treated as module title when no heading found
+      current = { title: line.replace(/\*\*/g, ''), topics: [] }
+    }
+  }
+  if (current) modules.push(current)
+  return modules
 }
 
 interface CourseDetailBodyProps {
   course: Course
-  syllabus: SyllabusModule[]
+  syllabus: string | SyllabusModule[]
   highlights: string[]
   variant: 'public' | 'dashboard'
 }
 
 export function CourseDetailBody({ course, syllabus, highlights, variant }: CourseDetailBodyProps) {
+  const { user } = useAuth()
+  const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null)
+  
+  useEffect(() => {
+    async function checkEnrollment() {
+      if (!user) {
+        setIsEnrolled(false)
+        return
+      }
+      
+      const { data, error } = await supabase
+        .from('inscricoes')
+        .select('id')
+        .eq('perfil_id', user.id)
+        .eq('curso_id', course.id)
+        .in('estado', ['pendente', 'aceite'])
+        .maybeSingle()
+        
+      if (!error && data) {
+        setIsEnrolled(true)
+      } else {
+        setIsEnrolled(false)
+      }
+    }
+    checkEnrollment()
+  }, [user, course.id])
+
   const isDashboard = variant === 'dashboard'
   const backHref = isDashboard ? '/dashboard?tab=explore' : '/courses'
   const backLabel = isDashboard ? 'Explorar Cursos' : 'Cursos'
-  const trainer = getTrainerForCourse(course.id)
   const priceDisplay = getCoursePriceDisplay(course.id, course.price)
+  const syllabusModules = parseSyllabus(syllabus)
 
   const breadcrumb = (
     <div
@@ -173,7 +227,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
           Conteúdo Programático
         </h2>
         <div className="space-y-4 pb-4">
-          {syllabus.map((module, i) => (
+          {syllabusModules.length > 0 ? syllabusModules.map((module, i) => (
             <Card
               key={i}
               className={`border rounded-2xl overflow-hidden shadow-sm ${
@@ -209,7 +263,11 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
                 </ul>
               </CardContent>
             </Card>
-          ))}
+          )) : (
+            <p className={`text-sm italic ${isDashboard ? 'text-slate-400' : 'text-muted-foreground'}`}>
+              Programa do curso em breve.
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -226,39 +284,6 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
         <div className={`absolute inset-0 ${isDashboard ? 'bg-[#312455]/25' : 'bg-primary/20'}`} />
       </div>
       <CardContent className="p-5 md:p-6 space-y-5">
-        <div
-          className={`flex items-center gap-3 p-3 rounded-2xl border ${
-            isDashboard ? 'bg-[#f8fafc] border-slate-100' : 'bg-muted/30 border-border'
-          }`}
-        >
-          <div className="relative h-12 w-12 shrink-0 rounded-full overflow-hidden ring-2 ring-white shadow-md">
-            <Image
-              src={trainer.avatar}
-              alt={trainer.name}
-              fill
-              className="object-cover"
-              sizes="48px"
-            />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p
-              className={`text-[10px] font-bold uppercase tracking-wider ${
-                isDashboard ? 'text-[#8a66a8]' : 'text-accent'
-              }`}
-            >
-              Formador
-            </p>
-            <p
-              className={`text-sm font-black leading-tight line-clamp-2 mt-0.5 ${
-                isDashboard ? 'text-[#312455]' : 'text-primary'
-              }`}
-            >
-              {trainer.name}
-            </p>
-            <p className="text-[10px] text-slate-500 font-medium line-clamp-1 mt-0.5">{trainer.role}</p>
-          </div>
-        </div>
-
         <div
           className={`rounded-2xl px-4 py-3 border ${
             isDashboard ? 'bg-[#312455]/5 border-[#312455]/10' : 'bg-primary/5 border-primary/10'
@@ -300,16 +325,34 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
         </div>
 
         <div className={isDashboard ? 'pt-2' : 'pt-4 border-t border-border'}>
-          <Button
-            asChild
-            className={
-              isDashboard
-                ? 'w-full bg-[#312455] hover:bg-[#8a66a8] text-white rounded-2xl h-12 text-sm font-bold shadow-md cursor-pointer'
-                : 'w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-12 text-sm font-semibold shadow-md cursor-pointer'
-            }
-          >
-            <Link href={`/enroll?course=${course.id}`}>Inscrever-se Agora</Link>
-          </Button>
+          {isEnrolled === null ? (
+            <Button disabled className="w-full h-12 rounded-2xl">
+              <Loader2 className="h-4 w-4 animate-spin" />
+            </Button>
+          ) : isEnrolled ? (
+            <Button
+              disabled
+              onClick={() => toast.info('Você já se inscreveu neste curso.')}
+              className={
+                isDashboard
+                  ? 'w-full bg-slate-200 text-slate-500 rounded-2xl h-12 text-sm font-bold cursor-not-allowed'
+                  : 'w-full bg-muted text-muted-foreground rounded-xl h-12 text-sm font-semibold cursor-not-allowed'
+              }
+            >
+              Inscrito
+            </Button>
+          ) : (
+            <Button
+              asChild
+              className={
+                isDashboard
+                  ? 'w-full bg-[#312455] hover:bg-[#8a66a8] text-white rounded-2xl h-12 text-sm font-bold shadow-md cursor-pointer'
+                  : 'w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-12 text-sm font-semibold shadow-md cursor-pointer'
+              }
+            >
+              <Link href={`/enroll?course=${course.id}`}>Inscrever-se Agora</Link>
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

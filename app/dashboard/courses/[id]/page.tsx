@@ -32,10 +32,7 @@ export default async function DashboardCourseDetailsPage({ params }: PageProps) 
     redirect('/dashboard?tab=explore')
   }
 
-  const syllabus = course.syllabus || [
-    { title: 'Módulo 1: Fundamentos do Curso', topics: ['Visão geral', 'Conceitos chave', 'Boas práticas'] },
-    { title: 'Módulo 2: Aplicação Prática', topics: ['Estudos de caso', 'Exercícios reais', 'Resolução de problemas'] },
-  ]
+  const syllabus = course.syllabus || ''
 
   const highlights = course.highlights || [
     'Acesso vitalício ao material de estudo do curso',

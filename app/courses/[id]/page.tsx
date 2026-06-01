@@ -10,7 +10,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const resolvedParams = await params
   const courses = await getCourses()
-  const course = courses.find((c) => c.id === resolvedParams.id)
+  const course = courses.find((c) => c.id === resolvedParams.id || c.slug === resolvedParams.id)
 
   if (!course) {
     return {
@@ -27,16 +27,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function CourseDetailsPage({ params }: PageProps) {
   const resolvedParams = await params
   const courses = await getCourses()
-  const course = courses.find((c) => c.id === resolvedParams.id)
+  const course = courses.find((c) => c.id === resolvedParams.id || c.slug === resolvedParams.id)
 
   if (!course) {
     notFound()
   }
 
-  const syllabus = course.syllabus || [
-    { title: 'Módulo 1: Fundamentos do Curso', topics: ['Visão geral', 'Conceitos chave', 'Boas práticas'] },
-    { title: 'Módulo 2: Aplicação Prática', topics: ['Estudos de caso', 'Exercícios reais', 'Resolução de problemas'] },
-  ]
+  const syllabus = course.syllabus || ''
 
   const highlights = course.highlights || [
     'Acesso vitalício ao material de estudo do curso',

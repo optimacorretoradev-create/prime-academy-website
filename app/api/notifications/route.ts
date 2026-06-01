@@ -83,41 +83,25 @@ function formatNotifications(rows: Record<string, unknown>[]): AppNotification[]
 export async function GET(request: Request) {
   try {
     const token = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '').trim()
-    if (!token) {
-      return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
-    }
+    if (!token) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
 
     const userClient = createUserClient(token)
-    const {
-      data: { user },
-      error: authError,
-    } = await userClient.auth.getUser()
-
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Sessão inválida' }, { status: 401 })
-    }
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
+    if (authError || !user) return NextResponse.json({ error: 'Sessão inválida' }, { status: 401 })
 
     const supabaseAdmin = getSupabaseAdmin()
     const { data, error } = await supabaseAdmin
-      .from('notificacoes')
-      .select('*')
-      .eq('perfil_id', user.id)
-      .order('criado_em', { ascending: false })
-      .limit(50)
+        .from('notificacoes')
+        .select('*')
+        .eq('perfil_id', user.id)
+        .order('criado_em', { ascending: false })
+        .limit(50)
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
-    }
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-    return NextResponse.json({
-      notifications: formatNotifications(data ?? []),
-      perfilId: user.id,
-    })
+    return NextResponse.json({ notifications: formatNotifications(data ?? []) }, { status: 200 })
   } catch (e) {
-    return NextResponse.json(
-      { error: e instanceof Error ? e.message : 'Erro interno' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Erro interno' }, { status: 500 })
   }
 }
 
