@@ -183,27 +183,19 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                      <span className="absolute top-3 left-3 bg-white/95 text-slate-800 font-bold text-[10px] tracking-wide uppercase py-1 px-2.5 rounded-full shadow-sm">
-                        {course.category}
-                      </span>
-                      <span className="absolute top-3 right-3 bg-[#8a66a8] text-white font-bold text-[10px] tracking-wide uppercase py-1 px-2.5 rounded-full shadow-sm">
-                        {course.online ? 'Online' : 'Presencial'}
-                      </span>
-                    </div>
-
-                    {/* Formador + Preço */}
-                    <div className="px-4 pt-4 pb-3 flex items-center justify-between border-b border-slate-100">
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={trainer.avatar}
-                          alt={trainer.name}
-                          className="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0"
-                        />
-                        <span className="text-xs font-bold text-slate-700 leading-tight line-clamp-1">
-                          {trainer.name}
+                      <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
+                        <span className="bg-white/95 text-slate-800 font-bold text-[10px] tracking-wide uppercase py-1 px-2.5 rounded-full shadow-sm">
+                          {course.category}
+                        </span>
+                        <span className="bg-emerald-500/90 text-white font-bold text-[10px] tracking-wide uppercase py-1 px-2.5 rounded-full shadow-sm">
+                          Presencial / Online
                         </span>
                       </div>
-                      <span className="text-sm font-black text-[#8a66a8] shrink-0 ml-2">
+                    </div>
+
+                    {/* Preço */}
+                    <div className="px-4 pt-4 pb-3 flex items-center justify-end border-b border-slate-100">
+                      <span className="text-sm font-black text-[#8a66a8]">
                         {trainer.price}
                       </span>
                     </div>

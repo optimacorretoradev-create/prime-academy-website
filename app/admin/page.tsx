@@ -216,7 +216,7 @@ export default function AdminPage() {
 
   const selectedPerfil = perfis.find((p) => p.id === selectedId) ?? null
 
-  if (isLoading || !user || (user.role !== 'instrutor' && user.role !== 'admin')) {
+  if (isLoading || !user || user.role !== 'admin') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#312455]" />

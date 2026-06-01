@@ -46,7 +46,8 @@ export async function createInscricao(input: {
   curso_id: string
   curso_nome: string
   mensagem?: string
-  comprovativo_enviado?: boolean
+  modalidade: 'online' | 'presencial'
+  comprovativo_url?: string | null
 }): Promise<{ ok: boolean; error?: string; inscricao?: Inscricao }> {
   const email = input.email.toLowerCase().trim()
   const perfilId = await findPerfilIdByEmail(email)
@@ -59,6 +60,8 @@ export async function createInscricao(input: {
     curso_id: input.curso_id,
     curso_nome: input.curso_nome,
     mensagem: input.mensagem ?? null,
+    modalidade: input.modalidade,
+    comprovativo_url: input.comprovativo_url ?? null,
     estado: 'pendente' as InscricaoEstado,
   }
 
@@ -67,6 +70,7 @@ export async function createInscricao(input: {
     .insert(row)
     .select('*')
     .single()
+
 
   if (!error && data) {
     if (perfilId) {
@@ -95,7 +99,6 @@ export async function createInscricao(input: {
 }
 
 export async function fetchInscricoes(estado?: InscricaoEstado): Promise<Inscricao[]> {
-  try {
     let query = supabase.from('inscricoes').select('*').order('criado_em', { ascending: false })
 
     if (estado) {
@@ -104,77 +107,38 @@ export async function fetchInscricoes(estado?: InscricaoEstado): Promise<Inscric
 
     const { data, error } = await query
 
-    if (!error && data) {
-      return data as Inscricao[]
+    if (error) {
+      console.error('[Supabase Error] fetchInscricoes:', error)
+      throw error // Propaga o erro para o componente tratar
     }
 
-    console.warn('[inscricoes] Erro ao carregar:', error?.message)
-    return []
-  } catch (e) {
-    console.error('[inscricoes] Falha ao carregar:', e)
-    return []
-  }
+    return (data as Inscricao[]) || []
 }
+
+import { getAccessToken } from '@/lib/admin-api'
 
 export async function updateInscricaoEstado(
   inscricao: Inscricao,
   estado: 'aceite' | 'rejeitado',
   adminPerfilId?: string
 ): Promise<{ ok: boolean; error?: string }> {
-  const now = new Date().toISOString()
-
-  const { error } = await supabase
-    .from('inscricoes')
-    .update({ estado, atualizado_em: now })
-    .eq('id', inscricao.id)
-
-  if (error) {
-    return { ok: false, error: error.message }
+  const token = await getAccessToken()
+  if (!token) {
+    return { ok: false, error: 'Sessão inválida.' }
   }
 
-  let perfilId = inscricao.perfil_id ?? (await findPerfilIdByEmail(inscricao.email))
-
-  if (estado === 'aceite' && perfilId) {
-    await supabase.from('matriculas').upsert(
-      {
-        perfil_id: perfilId,
-        curso_id_catalogo: inscricao.curso_id,
-        curso_nome: inscricao.curso_nome,
-        inscricao_id: inscricao.id,
-      },
-      { onConflict: 'perfil_id,curso_id_catalogo' }
-    )
-  }
-
-  if (perfilId) {
-    await createNotification({
-      perfilId,
-      tipo: estado === 'aceite' ? 'inscricao_aceite' : 'inscricao_rejeitado',
-      titulo:
-        estado === 'aceite'
-          ? 'Inscrição aprovada!'
-          : 'Inscrição não aprovada',
-      descricao:
-        estado === 'aceite'
-          ? `A sua inscrição no curso "${inscricao.curso_nome}" foi aceite. Já pode aceder ao conteúdo no painel.`
-          : `O pedido de inscrição em "${inscricao.curso_nome}" foi revisto e não foi aprovado neste momento.`,
-      metadata: {
-        curso_id: inscricao.curso_id,
-        inscricao_id: inscricao.id,
-        admin_id: adminPerfilId,
-      },
-    })
-  }
-
-  // Notificar admins sobre processamento de inscrição
-  await notifyAdminsAboutInscricao({
-    tipo: 'inscricao_processada',
-    titulo: estado === 'aceite' ? 'Inscrição aceite' : 'Inscrição rejeitada',
-    descricao: `Inscrição de ${inscricao.nome} no curso "${inscricao.curso_nome}" foi ${estado === 'aceite' ? 'aceite' : 'rejeitada'}.`,
-    inscricao_id: inscricao.id,
-    curso_id: inscricao.curso_id,
-    curso_nome: inscricao.curso_nome,
+  const res = await fetch(`/api/admin/enrollments/${inscricao.id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ estado, inscricao }),
   })
 
+  const json = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    return { ok: false, error: json.error || 'Erro ao atualizar inscrição' }
+  }
   return { ok: true }
 }

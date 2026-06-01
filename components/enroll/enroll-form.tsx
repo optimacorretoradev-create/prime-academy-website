@@ -87,6 +87,7 @@ export function EnrollForm({ courses }: EnrollFormProps) {
         curso_id: matchedCourse?.id ?? formData.course,
         curso_nome: formData.course,
         mensagem: formData.message || undefined,
+        modalidade: matchedCourse?.online ? 'online' : 'presencial',
       })
 
       setIsSuccess(true)

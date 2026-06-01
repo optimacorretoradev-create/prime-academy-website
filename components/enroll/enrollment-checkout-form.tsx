@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
@@ -21,10 +21,11 @@ import {
   Banknote,
   ChevronRight,
   ChevronLeft,
+  X,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Course } from '@/lib/hygraph'
-import { getCoursePriceDisplay, getCoursePriceAmount } from '@/lib/format-price'
+import { getCoursePriceDisplay } from '@/lib/format-price'
 import { createInscricao } from '@/lib/enrollments-service'
 import { useAuth } from '@/contexts/auth-context'
 import { useToast } from '@/hooks/use-toast'
@@ -40,6 +41,7 @@ interface BankInfo {
   banco: string
   conta: string
   iban: string
+  titular: string
 }
 
 interface UserProfile {
@@ -55,13 +57,14 @@ export function EnrollmentCheckoutForm({
   const preselectedCourse = searchParams.get('course')
   const router = useRouter()
 
-  // Form state
   const [formData, setFormData] = useState({
     course: '',
+    modalidade: 'online' as 'online' | 'presencial',
     comprovativo: null as File | null,
   })
 
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
+  const [userAuthId, setUserAuthId] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -71,14 +74,13 @@ export function EnrollmentCheckoutForm({
   const { user, isLoading } = useAuth()
   const { toast } = useToast()
 
-  // Bank info
   const bankInfo: BankInfo = {
-    banco: 'BCI - Banco de Crédito do Investidor',
-    conta: '1234567890',
-    iban: 'AO06.0015.0000.1234.5678.9012.3',
+    banco: 'BAI - Banco Angolano de Investimentos',
+    conta: '1436.2851.1016.0',
+    iban: 'AO06.0040.0000.1436.2851.1016.0',
+    titular: 'Prime Academy Formação Técnica Serv LDA',
   }
 
-  // Redirect if not authenticated
   useEffect(() => {
     if (!isLoading && !user) {
       const redirectPath = `/enroll${preselectedCourse ? `?course=${encodeURIComponent(preselectedCourse)}` : ''}`
@@ -86,12 +88,12 @@ export function EnrollmentCheckoutForm({
     }
   }, [isLoading, user, preselectedCourse, router])
 
-  // Fetch user profile from Supabase
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const { data: authData } = await supabase.auth.getUser()
         if (authData?.user?.id) {
+          setUserAuthId(authData.user.id)
           const { data, error } = await supabase
             .from('perfis')
             .select('nome, email')
@@ -112,7 +114,6 @@ export function EnrollmentCheckoutForm({
     }
   }, [user])
 
-  // Set initial course
   useEffect(() => {
     if (preselectedCourse) {
       const match = courses.find(
@@ -144,6 +145,34 @@ export function EnrollmentCheckoutForm({
     return encodeURIComponent(message)
   }
 
+  const uploadComprovatvoToStorage = async (file: File, inscricaoId: string): Promise<string> => {
+    try {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${fileExt}`
+      const filePath = `comprovativos/${fileName}`
+
+      const { data, error } = await supabase.storage
+        .from('inscricoes')
+        .upload(filePath, file, {
+          contentType: file.type,
+          upsert: true,
+        })
+
+      if (error) {
+        throw new Error(`Erro ao fazer upload: ${error.message}`)
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from('inscricoes')
+        .getPublicUrl(filePath)
+
+      return publicUrlData.publicUrl
+    } catch (err) {
+      console.error('[checkout] Erro ao fazer upload:', err)
+      throw err
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
@@ -152,6 +181,16 @@ export function EnrollmentCheckoutForm({
     try {
       if (!formData.course) {
         throw new Error('Por favor, selecione um curso')
+      }
+      
+      if (!formData.comprovativo) {
+        toast({
+          title: "Atenção",
+          description: "Por favor, faça o upload do seu comprovativo bancário para concluir a inscrição.",
+          variant: "destructive"
+        })
+        setIsSubmitting(false)
+        return
       }
 
       if (!userProfile) {
@@ -163,30 +202,35 @@ export function EnrollmentCheckoutForm({
         throw new Error('Curso não encontrado')
       }
 
-      // 1. Create enrollment in "inscricoes" table
+      const tempInscricaoId = crypto.randomUUID()
+      const comprovativoUrl = await uploadComprovatvoToStorage(formData.comprovativo, tempInscricaoId)
+
       const inscricaoResult = await createInscricao({
         nome: userProfile.nome,
         email: userProfile.email,
         curso_id: formData.course,
         curso_nome: matchedCourse.name,
-        comprovativo_enviado: !!formData.comprovativo,
+        modalidade: formData.modalidade,
+        comprovativo_url: comprovativoUrl,
       })
 
       if (!inscricaoResult.ok) {
         throw new Error(inscricaoResult.error || 'Erro ao criar inscrição')
       }
 
-      // 2. Create notification for admins about pending payment
       try {
         await createNotificationViaApi({
+          perfilId: userAuthId ?? '',
           tipo: 'inscricao_pendente_pagamento',
           titulo: 'Aviso de Pagamento Pendente',
-          descricao: `O utilizador ${userProfile.nome} iniciou o processo de inscrição no curso "${matchedCourse.name}" e está prestes a efetuar o pagamento. Consulte o WhatsApp para validar o comprovativo.`,
+          descricao: `O utilizador ${userProfile.nome} iniciou o processo de inscrição no curso "${matchedCourse.name}" (${formData.modalidade === 'presencial' ? 'Presencial' : 'Online'}). Comprovativo de pagamento enviado.`,
           metadata: {
             aluno_nome: userProfile.nome,
             aluno_email: userProfile.email,
             curso_nome: matchedCourse.name,
             curso_id: formData.course,
+            modalidade: formData.modalidade,
+            comprovativo_url: comprovativoUrl,
             inscricao_id: inscricaoResult.inscricao?.id,
           },
         })
@@ -194,7 +238,6 @@ export function EnrollmentCheckoutForm({
         console.warn('[checkout] Aviso: Notificação de admins não enviada, continuando...', notificationErr)
       }
 
-      // 3. Create notification for the user about enrollment status
       try {
         const { data: authData } = await supabase.auth.getUser()
         if (authData?.user?.id) {
@@ -216,21 +259,16 @@ export function EnrollmentCheckoutForm({
 
       setIsSuccess(true)
 
-      // Show success toast
       toast({
         title: '✓ Inscrição confirmada!',
         description: 'Redirecionando para WhatsApp para enviar o comprovativo...',
-        variant: 'default',
       })
 
-      // Build WhatsApp URL with message
       const whatsappMessage = buildWhatsAppMessage(matchedCourse.name, userProfile.email)
       const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappNumber.replace(/[^0-9]/g, '')}&text=${whatsappMessage}`
 
-      // Redirect to WhatsApp after 2 seconds
       setTimeout(() => {
         window.open(whatsappUrl, '_blank')
-        // Also redirect to dashboard
         router.push('/dashboard')
       }, 2000)
     } catch (err) {
@@ -254,39 +292,59 @@ export function EnrollmentCheckoutForm({
   const selectedCourse = courses.find((c) => c.id === formData.course)
 
   return (
-    <div className="w-full min-h-screen grid grid-cols-1 lg:grid-cols-2">
-      {/* LEFT PANEL - Dark (Informational) */}
+    <div className="w-full min-h-screen flex flex-col">
+      {/* Header Fixed com Breadcrumbs */}
+      <header className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4 py-2 md:px-8 md:py-3">
+        <div className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-1 text-slate-500 hover:text-slate-700 transition-colors flex-shrink-0"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <Link
+            href={selectedCourse ? `/courses/${selectedCourse.id}` : '/dashboard?tab=explore'}
+            className="text-slate-600 hover:text-[#312455] transition-colors font-semibold whitespace-nowrap"
+          >
+            Voltar ao Curso
+          </Link>
+          <span className="text-slate-300 hidden sm:inline">/</span>
+          <span className="text-slate-500 truncate">
+            {selectedCourse ? selectedCourse.name : 'Inscrição'}
+          </span>
+        </div>
+      </header>
+
+      {/* Main Grid com Padding Superior */}
+      <div className="w-full flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 pt-[56px] md:pt-[60px]">
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
-        className="hidden lg:flex flex-col justify-between p-12 bg-gradient-to-br from-primary via-[#312455] to-[#1d1533] relative overflow-hidden"
+        className="order-first flex flex-col justify-between p-4 md:p-6 lg:p-8 bg-gradient-to-br from-primary via-[#312455] to-[#1d1533] relative overflow-hidden"
       >
-        {/* Decorative elements */}
         <div className="absolute -right-32 -top-32 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
         <div className="absolute -left-16 -bottom-16 w-48 h-48 bg-accent/5 rounded-full blur-2xl" />
 
         <div className="relative z-10">
-          {/* Header */}
-          <div className="mb-12">
-            <div className="inline-flex items-center justify-center px-3 py-1 mb-4 rounded-full bg-accent/20 border border-accent/30">
+          <div className="mb-4 md:mb-8">
+            <div className="inline-flex items-center justify-center px-3 py-1 mb-2 rounded-full bg-accent/20 border border-accent/30">
               <span className="text-xs font-semibold text-accent uppercase tracking-wider">
                 Checkout de Inscrição
               </span>
             </div>
-            <h2 className="text-3xl font-bold text-white mb-2">Complete a sua Inscrição</h2>
-            <p className="text-white/70 text-sm">Preencha os dados e proceda ao pagamento</p>
+            <h2 className="text-xl md:text-2xl lg:text-2xl font-bold text-white mb-1">Complete a sua Inscrição</h2>
+            <p className="text-white/70 text-xs">Preencha os dados e proceda ao pagamento</p>
           </div>
 
-          {/* Course Summary Section */}
-          <div className="mb-8 space-y-6">
+          <div className="mb-4 md:mb-6 space-y-4">
             {selectedCourse ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-white/20 transition-colors"
+                className="p-3 md:p-4 lg:p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-white/20 transition-colors"
               >
-                <div className="flex items-start gap-3 mb-4">
+                <div className="flex items-start gap-3 mb-2">
                   <div className="p-2 bg-accent/20 rounded-lg">
                     <BookOpen className="h-5 w-5 text-accent" />
                   </div>
@@ -294,7 +352,7 @@ export function EnrollmentCheckoutForm({
                     <p className="text-xs uppercase tracking-wider text-white/60 font-semibold">
                       Curso Selecionado
                     </p>
-                    <h3 className="text-lg font-bold text-white">{selectedCourse.name}</h3>
+                    <h3 className="text-base md:text-lg lg:text-lg font-bold text-white">{selectedCourse.name}</h3>
                   </div>
                 </div>
               </motion.div>
@@ -304,21 +362,19 @@ export function EnrollmentCheckoutForm({
               </div>
             )}
 
-            {/* Investment Value */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="p-6 bg-gradient-to-r from-accent/30 to-accent/10 border border-accent/50 rounded-2xl"
+              className="p-3 md:p-4 lg:p-4 bg-gradient-to-r from-accent/30 to-accent/10 border border-accent/50 rounded-2xl"
             >
-              <p className="text-xs uppercase tracking-wider text-white/60 font-semibold mb-2">
+              <p className="text-xs uppercase tracking-wider text-white/60 font-semibold mb-1">
                 Investimento
               </p>
               {selectedCourse ? (
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-bold text-white">AOA</span>
-                  <span className="text-3xl font-bold text-accent">
-                    {getCoursePriceAmount(selectedCourse.id).toLocaleString('pt-AO')}
+                  <span className="text-2xl md:text-3xl lg:text-3xl font-bold text-accent">
+                    {getCoursePriceDisplay(selectedCourse.id, selectedCourse.price)}
                   </span>
                 </div>
               ) : (
@@ -327,27 +383,24 @@ export function EnrollmentCheckoutForm({
             </motion.div>
           </div>
 
-          {/* Bank Information Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl space-y-4"
+            className="p-3 md:p-4 lg:p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl space-y-3"
           >
-            <h3 className="text-white font-bold text-lg flex items-center gap-2">
+            <h3 className="text-white font-bold text-base flex items-center gap-2">
               <Banknote className="h-5 w-5 text-accent" />
               Dados Bancários
             </h3>
 
-            {/* Banco */}
-            <div className="pb-4 border-b border-white/10">
-              <p className="text-xs uppercase tracking-wider text-white/50 font-semibold mb-2">Banco</p>
+            <div className="pb-3 border-b border-white/10">
+              <p className="text-xs uppercase tracking-wider text-white/50 font-semibold mb-1">Banco</p>
               <p className="text-sm text-white/90">{bankInfo.banco}</p>
             </div>
 
-            {/* IBAN */}
             <div>
-              <p className="text-xs uppercase tracking-wider text-white/50 font-semibold mb-2">IBAN</p>
+              <p className="text-xs uppercase tracking-wider text-white/50 font-semibold mb-1">IBAN</p>
               <div className="flex items-start justify-between gap-2">
                 <p className="text-sm font-mono font-semibold text-white/90 flex-1 break-all">
                   {bankInfo.iban}
@@ -383,8 +436,13 @@ export function EnrollmentCheckoutForm({
               </div>
             </div>
 
-            <div className="mt-4 p-3 bg-accent/10 border border-accent/30 rounded-lg">
-              <p className="text-xs text-white/80">
+            <div className="pt-3 border-t border-white/10">
+              <p className="text-xs uppercase tracking-wider text-white/50 font-semibold mb-1">Titular</p>
+              <p className="text-sm text-white/90">{bankInfo.titular}</p>
+            </div>
+
+            <div className="mt-2 p-2 bg-accent/10 border border-accent/30 rounded-lg">
+              <p className="text-xs text-white/80 leading-tight">
                 <strong>Nota:</strong> Efetue o pagamento e guarde o comprovativo para validação.
               </p>
             </div>
@@ -392,45 +450,32 @@ export function EnrollmentCheckoutForm({
         </div>
       </motion.div>
 
-      {/* RIGHT PANEL - Light (Action) */}
       <motion.div
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
-        className="flex flex-col justify-center p-8 md:p-12 bg-background"
+        className="order-last flex flex-col justify-center p-4 md:p-6 lg:p-8 bg-background"
       >
-        {/* Breadcrumb Navigation */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mb-8 pb-6 border-b border-border"
         >
-          <button
-            onClick={() => router.back()}
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            <span className="text-sm font-medium">Voltar</span>
-          </button>
-        </motion.div>
-
-        <form onSubmit={handleSubmit} className="w-full space-y-6">
+          <form onSubmit={handleSubmit} className="w-full space-y-4">
           {error && (
             <Alert variant="destructive" className="rounded-xl border-red-200">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
-          {/* Personal Information Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+          <div className="space-y-3">
+            <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
               <div className="w-1 h-6 bg-primary rounded-full" />
               Informações Pessoais
             </h3>
 
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-foreground font-medium">
+            <div className="space-y-1">
+              <Label htmlFor="name" className="text-foreground font-medium text-sm">
                 Nome Completo
               </Label>
               <Input
@@ -441,13 +486,13 @@ export function EnrollmentCheckoutForm({
                 readOnly
                 className="rounded-xl bg-muted/50 cursor-not-allowed border border-border"
               />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[10px] text-muted-foreground">
                 Campo preenchido automaticamente do seu perfil
               </p>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-foreground font-medium">
+            <div className="space-y-1">
+              <Label htmlFor="email" className="text-foreground font-medium text-sm">
                 Email
               </Label>
               <Input
@@ -458,21 +503,20 @@ export function EnrollmentCheckoutForm({
                 readOnly
                 className="rounded-xl bg-muted/50 cursor-not-allowed border border-border"
               />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[10px] text-muted-foreground">
                 Campo preenchido automaticamente do seu perfil
               </p>
             </div>
           </div>
 
-          {/* Course Selection */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+          <div className="space-y-3">
+            <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
               <div className="w-1 h-6 bg-primary rounded-full" />
               Curso Pretendido
             </h3>
 
-            <div className="space-y-2">
-              <Label htmlFor="course" className="text-foreground font-medium">
+            <div className="space-y-1">
+              <Label htmlFor="course" className="text-foreground font-medium text-sm">
                 Curso Selecionado
               </Label>
               {selectedCourse ? (
@@ -492,37 +536,85 @@ export function EnrollmentCheckoutForm({
                   <p className="text-sm text-muted-foreground">Carregando curso...</p>
                 </div>
               )}
-              <p className="text-xs text-muted-foreground">
-                Este campo não pode ser alterado. Volte para selecionar outro curso.
-              </p>
             </div>
           </div>
 
-          {/* Payment Proof Upload */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+          <div className="space-y-3">
+            <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
+              <div className="w-1 h-6 bg-primary rounded-full" />
+              Formato de Aprendizagem
+            </h3>
+
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setFormData((prev) => ({ ...prev, modalidade: 'online' }))}
+                className={`relative p-3 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-1 group ${
+                  formData.modalidade === 'online'
+                    ? 'border-primary bg-primary/10'
+                    : 'border-border bg-muted/30 hover:border-primary/50'
+                }`}
+              >
+                <div className="relative w-5 h-5 rounded-full border-2 border-border group-hover:border-primary/50 transition-colors">
+                  {formData.modalidade === 'online' && (
+                    <div className="absolute inset-1 rounded-full bg-primary animate-pulse" />
+                  )}
+                </div>
+                <span className={`text-xs font-semibold transition-colors ${
+                  formData.modalidade === 'online' ? 'text-primary' : 'text-muted-foreground'
+                }`}>
+                  Online
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setFormData((prev) => ({ ...prev, modalidade: 'presencial' }))}
+                className={`relative p-3 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-1 group ${
+                  formData.modalidade === 'presencial'
+                    ? 'border-primary bg-primary/10'
+                    : 'border-border bg-muted/30 hover:border-primary/50'
+                }`}
+              >
+                <div className="relative w-5 h-5 rounded-full border-2 border-border group-hover:border-primary/50 transition-colors">
+                  {formData.modalidade === 'presencial' && (
+                    <div className="absolute inset-1 rounded-full bg-primary animate-pulse" />
+                  )}
+                </div>
+                <span className={`text-xs font-semibold transition-colors ${
+                  formData.modalidade === 'presencial' ? 'text-primary' : 'text-muted-foreground'
+                }`}>
+                  Presencial
+                </span>
+              </button>
+            </div>
+          </div>
+          
+          <div className="space-y-3">
+            <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
               <div className="w-1 h-6 bg-primary rounded-full" />
               Comprovativo de Pagamento
             </h3>
 
-            <div className="space-y-2">
-              <Label htmlFor="file" className="text-foreground font-medium">
-                Upload do comprovativo bancário (opcional)
+            <div className="space-y-1">
+              <Label htmlFor="file" className="text-foreground font-medium text-sm">
+                Upload do comprovativo bancário (obrigatório)
               </Label>
-              <div className="relative border-2 border-dashed border-border rounded-xl p-8 hover:border-primary/50 transition-colors cursor-pointer overflow-hidden bg-muted/20">
+              <div className="relative border-2 border-dashed border-border rounded-xl p-5 hover:border-primary/50 transition-colors cursor-pointer overflow-hidden bg-muted/20">
                 <input
                   id="file"
                   type="file"
                   accept=".pdf,.jpg,.jpeg,.png"
                   onChange={handleFileChange}
                   className="absolute inset-0 opacity-0 cursor-pointer"
+                  required
                 />
                 <div className="flex flex-col items-center justify-center text-center">
-                  <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                  <p className="text-sm font-medium text-foreground">
+                  <Upload className="h-6 w-6 text-muted-foreground mb-1" />
+                  <p className="text-xs font-medium text-foreground">
                     {uploadFileName || 'Clique para fazer upload'}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-[10px] text-muted-foreground mt-0.5">
                     PDF, JPG ou PNG (máx. 5MB)
                   </p>
                 </div>
@@ -530,43 +622,31 @@ export function EnrollmentCheckoutForm({
             </div>
           </div>
 
-          {/* Support Message */}
-          <div className="p-4 bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/30 dark:border-blue-900/30 rounded-xl">
-            <div className="flex gap-3">
-              <HelpCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-              <div className="text-sm">
-                <p className="text-blue-900 dark:text-blue-200">
-                  Após confirmar, será redirecionado para o WhatsApp para enviar o seu comprovativo.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Submit Button */}
           <Button
             type="submit"
             disabled={isSubmitting || !formData.course}
-            className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-base flex items-center justify-center gap-2"
+            className="w-full h-9 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-xs flex items-center justify-center gap-2"
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-3 w-3 animate-spin" />
                 Processando...
               </>
             ) : (
               <>
                 Confirmar Inscrição
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-3 w-3" />
               </>
             )}
           </Button>
 
-          {/* Info Text */}
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-center text-[10px] text-muted-foreground">
             A sua inscrição será processada após o pagamento ser validado
           </p>
         </form>
+        </motion.div>
       </motion.div>
+      </div>
     </div>
   )
 }

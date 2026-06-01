@@ -2,10 +2,10 @@ export type InscricaoEstado = 'pendente' | 'aceite' | 'rejeitado'
 
 export type NotificationTipo =
   | 'inscricao_aceite'
-  | 'inscricao_rejeitado'
+  | 'inscricao_rejeitada'
+  | 'nova_inscricao'
   | 'inscricao_recebida'
   | 'inscricao_em_analise'
-  | 'nova_inscricao'
   | 'inscricao_processada'
   | 'inscricao_pendente_pagamento'
   | 'promovido_admin'
@@ -20,6 +20,8 @@ export interface Inscricao {
   curso_id: string
   curso_nome: string
   mensagem: string | null
+  modalidade?: 'online' | 'presencial'
+  comprovativo_url?: string | null
   estado: InscricaoEstado
   criado_em: string
   atualizado_em: string
