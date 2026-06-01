@@ -1,0 +1,9 @@
+{
+  "buildCommand": "pnpm run build",
+  "devCommand": "pnpm run dev",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "env": {
+    "NEXT_PUBLIC_DISABLE_IMAGE_OPTIMIZATION": "false"
+  }
+}
