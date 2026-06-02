@@ -7,9 +7,21 @@ export const metadata: Metadata = {
   description: 'Explore os nossos cursos de gestão, informática e idiomas. Formação prática com certificação reconhecida em Angola.',
 }
 
-export default async function CoursesPage() {
-  const courses = await getCourses()
-  const categories = ['Todos', ...new Set(courses.map((c) => c.category))]
+/**
+ * Áreas oficiais da Prime Academy — ordem e ortografia canónicas.
+ * Devem corresponder (case-insensitive) ao campo `categoria` no Hygraph.
+ */
+const OFFICIAL_CATEGORIES = [
+  'TODOS',
+  'GESTÃO ADMINISTRATIVA DIGITAL',
+  'LIDERANÇA E COMUNICAÇÃO',
+  'SECRETARIADO ESTRATÉGICO',
+  'TECNOLOGIAS INOVADORAS',
+] as const
 
-  return <CoursesGrid courses={courses} categories={categories} />
+export default async function CoursesPage() {
+  // Cursos reais vindos do Hygraph — nenhum dado mockado permitido aqui
+  const courses = await getCourses()
+
+  return <CoursesGrid courses={courses} categories={[...OFFICIAL_CATEGORIES]} />
 }

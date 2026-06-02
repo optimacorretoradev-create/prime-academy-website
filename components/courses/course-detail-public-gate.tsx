@@ -4,11 +4,11 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
 import { CourseDetailBody } from '@/components/courses/course-detail-body'
-import type { Course, SyllabusModule } from '@/lib/hygraph'
+import type { Course } from '@/lib/hygraph'
 
 interface CourseDetailPublicGateProps {
   course: Course
-  syllabus: string | SyllabusModule[]
+  syllabus: string
   highlights: string[]
 }
 

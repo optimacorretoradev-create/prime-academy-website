@@ -1,8 +1,3 @@
-export interface SyllabusModule {
-  title: string
-  topics: string[]
-}
-
 export interface Course {
   id: string
   slug?: string
@@ -16,8 +11,8 @@ export interface Course {
   rating: number
   level: string
   online: boolean
-  pdfUrl?: string
-  syllabus?: string | SyllabusModule[]
+  /** HTML gerado pelo Hygraph Rich Text (campo syllabus ou programaDoCurso) */
+  syllabus?: string
   highlights?: string[]
 }
 
@@ -78,8 +73,16 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
   }
 
   const json = await response.json()
+
   if (json.errors) {
-    throw new Error(`Hygraph GraphQL errors: ${JSON.stringify(json.errors)}`)
+    // Erros parciais (ex: campo sem permissão 403) — regista aviso mas não aborta
+    // se o Hygraph devolveu data na mesma (partial success).
+    if (json.data) {
+      console.warn('[Hygraph] Erros parciais na query (campos sem permissão?):', JSON.stringify(json.errors))
+    } else {
+      // Sem data alguma — erro fatal
+      throw new Error(`Hygraph GraphQL errors: ${JSON.stringify(json.errors)}`)
+    }
   }
 
   return json.data
@@ -89,21 +92,26 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
  * Helper mapper to convert Hygraph Course schema to frontend Course interface
  */
 function mapCourse(c: any): Course {
+  // Normalise category: prefer `categoria` (Hygraph field), trim whitespace and uppercase for safe comparison
+  const rawCategory = c.categoria ?? c.category ?? ''
+  const category = rawCategory.toString().trim().toUpperCase() || 'GERAL'
+
   return {
     id: c.id,
     slug: c.slug || c.id,
     name: c.name,
     description: c.description || '',
-    category: c.category || 'Geral', // Fallback if category is missing in Hygraph
+    category,
     duration: c.duration || '',
     lessons: Number(c.lessons) || 0,
     price: c.price || 'Sob consulta',
-    image: c.image?.url || 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80',
+    // c.image é um Asset Picker do Hygraph — extrai .url de forma resiliente
+    image: c.image?.url || '/placeholder.jpg',
     rating: 4.8, // Fallback rating
     level: c.level || 'Todos',
     online: c.online || false,
-    pdfUrl: c.pdfUrl?.url || undefined,
-    syllabus: c.syllabus?.markdown || '',
+    // Lê HTML do Rich Text do campo syllabus
+    syllabus: c.syllabus?.html || '',
     highlights: Array.isArray(c.highlights) ? c.highlights : []
   }
 }
@@ -120,6 +128,8 @@ function mapGalleryImage(img: any): GalleryImage {
   }
 }
 
+// ⛔ fallbackCourses ELIMINADO — a aplicação exibe APENAS dados reais do Hygraph CMS.
+
 const contactInfoData: ContactInfo = {
   phone: '(+244) 921 394 946',
   whatsappNumber: '+244921394946',
@@ -135,11 +145,12 @@ const contactInfoData: ContactInfo = {
  * Fetch all courses (GraphQL)
  */
 export async function getCourses(featured?: boolean): Promise<Course[]> {
-  try {
-    if (!endpoint) {
-      throw new Error('NEXT_PUBLIC_HYGRAPH_ENDPOINT is not configured.')
-    }
+  if (!endpoint) {
+    console.warn('[Hygraph] NEXT_PUBLIC_HYGRAPH_ENDPOINT não configurado — a retornar array vazio.')
+    return []
+  }
 
+  try {
     const query = `
       query GetCursos {
         cursos {
@@ -152,21 +163,20 @@ export async function getCourses(featured?: boolean): Promise<Course[]> {
           price
           image { url }
           level
-          pdfUrl { url }
-          syllabus { markdown }
+          syllabus { html }
           highlights
+          categoria
         }
       }
     `
 
     const data = await hygraphFetch<{ cursos: any[] }>(query)
-    if (data && data.cursos) {
-      return data.cursos.map(mapCourse)
-    }
-    return []
+    // Retorna cursos reais mapeados, ou array vazio se o Hygraph não devolver dados
+    return data?.cursos?.map(mapCourse) ?? []
   } catch (error) {
-    console.error('Error fetching courses from Hygraph:', error)
-    throw error
+    console.error('[Hygraph] Erro ao obter cursos:', error)
+    // Array vazio — sem dados mockados em fallback
+    return []
   }
 }
 
@@ -174,11 +184,12 @@ export async function getCourses(featured?: boolean): Promise<Course[]> {
  * Fetch a single course by slug (GraphQL)
  */
 export async function getCourseBySlug(slug: string): Promise<Course | null> {
-  try {
-    if (!endpoint) {
-      throw new Error('NEXT_PUBLIC_HYGRAPH_ENDPOINT is not configured.')
-    }
+  if (!endpoint) {
+    console.warn('[Hygraph] NEXT_PUBLIC_HYGRAPH_ENDPOINT não configurado — a retornar null.')
+    return null
+  }
 
+  try {
     const query = `
       query GetCourseBySlug($slug: String!) {
         curso(where: { slug: $slug }) {
@@ -191,21 +202,19 @@ export async function getCourseBySlug(slug: string): Promise<Course | null> {
           price
           image { url }
           level
-          pdfUrl { url }
-          syllabus { markdown }
+          syllabus { html }
           highlights
+          categoria
         }
       }
     `
 
     const data = await hygraphFetch<{ curso: any }>(query, { slug })
-    if (data && data.curso) {
-      return mapCourse(data.curso)
-    }
-    return null
+    // Retorna o curso real mapeado, ou null se não existir no CMS
+    return data?.curso ? mapCourse(data.curso) : null
   } catch (error) {
-    console.error(`Error fetching course "${slug}" from Hygraph:`, error)
-    throw error
+    console.error(`[Hygraph] Erro ao obter curso "${slug}":`, error)
+    return null
   }
 }
 
@@ -215,7 +224,7 @@ export async function getCourseBySlug(slug: string): Promise<Course | null> {
 export async function getGalleryImages(): Promise<GalleryImage[]> {
   try {
     if (!endpoint) {
-      throw new Error('NEXT_PUBLIC_HYGRAPH_ENDPOINT is not configured.')
+      return []
     }
 
     const query = `
@@ -235,8 +244,8 @@ export async function getGalleryImages(): Promise<GalleryImage[]> {
     }
     return []
   } catch (error) {
-    console.error('Error fetching gallery images from Hygraph:', error)
-    throw error
+    console.warn('Error fetching gallery images from Hygraph (returning empty array):', error)
+    return []
   }
 }
 

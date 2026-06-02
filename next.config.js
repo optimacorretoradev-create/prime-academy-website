@@ -12,10 +12,18 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'media.graphassets.com',
+        pathname: '/**',
+      },
+      {
+        // Cobre subdomínios regionais do Hygraph CDN (ex: eu-west-2.graphassets.com)
+        protocol: 'https',
+        hostname: '*.graphassets.com',
+        pathname: '/**',
       },
     ],
   },

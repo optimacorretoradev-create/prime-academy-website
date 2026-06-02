@@ -7,42 +7,16 @@ import { Clock, BookOpen, ChevronRight, CheckCircle2, Award, ArrowLeft, Loader2 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import type { Course, SyllabusModule } from '@/lib/hygraph'
+import type { Course } from '@/lib/hygraph'
 import { getCoursePriceDisplay } from '@/lib/format-price'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/auth-context'
 import { toast } from 'sonner'
 
-// Parse a Markdown string (RichText from Hygraph) into structured syllabus modules.
-// Supports ## headings as module titles and - / * list items as topics.
-function parseSyllabus(syllabus: string | SyllabusModule[] | undefined): SyllabusModule[] {
-  if (!syllabus) return []
-  if (Array.isArray(syllabus)) return syllabus
-  
-  const modules: SyllabusModule[] = []
-  let current: SyllabusModule | null = null
-
-  for (const raw of syllabus.split('\n')) {
-    const line = raw.trim()
-    if (!line) continue
-
-    if (line.startsWith('## ') || line.startsWith('# ')) {
-      if (current) modules.push(current)
-      current = { title: line.replace(/^#+\s*/, ''), topics: [] }
-    } else if ((line.startsWith('- ') || line.startsWith('* ')) && current) {
-      current.topics.push(line.replace(/^[-*]\s*/, ''))
-    } else if (line.startsWith('**') && line.endsWith('**') && current === null) {
-      // Bold-only line treated as module title when no heading found
-      current = { title: line.replace(/\*\*/g, ''), topics: [] }
-    }
-  }
-  if (current) modules.push(current)
-  return modules
-}
 
 interface CourseDetailBodyProps {
   course: Course
-  syllabus: string | SyllabusModule[]
+  syllabus: string
   highlights: string[]
   variant: 'public' | 'dashboard'
 }
@@ -79,7 +53,6 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
   const backHref = isDashboard ? '/dashboard?tab=explore' : '/courses'
   const backLabel = isDashboard ? 'Explorar Cursos' : 'Cursos'
   const priceDisplay = getCoursePriceDisplay(course.id, course.price)
-  const syllabusModules = parseSyllabus(syllabus)
 
   const breadcrumb = (
     <div
@@ -226,44 +199,15 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
         >
           Conteúdo Programático
         </h2>
-        <div className="space-y-4 pb-4">
-          {syllabusModules.length > 0 ? syllabusModules.map((module, i) => (
-            <Card
-              key={i}
-              className={`border rounded-2xl overflow-hidden shadow-sm ${
-                isDashboard ? 'border-slate-100 bg-white' : 'border-border/80'
+        <div className="pb-4">
+          {syllabus ? (
+            <div
+              className={`syllabus-richtext leading-relaxed text-sm ${
+                isDashboard ? 'text-slate-600' : 'text-muted-foreground'
               }`}
-            >
-              <div
-                className={`p-4 border-b ${
-                  isDashboard ? 'bg-[#f8fafc] border-slate-100' : 'bg-muted/40 border-border'
-                }`}
-              >
-                <h3 className={`font-bold text-base ${isDashboard ? 'text-[#312455]' : 'text-primary'}`}>
-                  {module.title}
-                </h3>
-              </div>
-              <CardContent className="p-5">
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {module.topics.map((topic, j) => (
-                    <li
-                      key={j}
-                      className={`flex items-start gap-2.5 text-sm ${
-                        isDashboard ? 'text-slate-600' : 'text-muted-foreground'
-                      }`}
-                    >
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 ${
-                          isDashboard ? 'bg-[#8a66a8]' : 'bg-accent'
-                        }`}
-                      />
-                      {topic}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          )) : (
+              dangerouslySetInnerHTML={{ __html: syllabus as string }}
+            />
+          ) : (
             <p className={`text-sm italic ${isDashboard ? 'text-slate-400' : 'text-muted-foreground'}`}>
               Programa do curso em breve.
             </p>
@@ -280,7 +224,16 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
       }`}
     >
       <div className="relative aspect-[16/10]">
-        <Image src={course.image} alt={course.name} fill className="object-cover" sizes="320px" priority />
+        {/* Sanitização da URL — garante URL válida antes de passar ao Next.js Image */}
+        <Image
+          src={course.image?.startsWith('http') ? course.image : '/placeholder.jpg'}
+          alt={course.name}
+          fill
+          unoptimized
+          className="object-cover"
+          sizes="320px"
+          priority
+        />
         <div className={`absolute inset-0 ${isDashboard ? 'bg-[#312455]/25' : 'bg-primary/20'}`} />
       </div>
       <CardContent className="p-5 md:p-6 space-y-5">
