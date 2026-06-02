@@ -10,7 +10,7 @@ import {
   Download, Upload, Plus, CheckCircle2, Globe, Users, FileText, 
   ChevronRight, ShieldCheck, Menu, X, Bell, Calendar, Search, 
   BookOpenCheck, LayoutDashboard, Settings, Compass, Eye, EyeOff,
-  Lock, UserCircle, Mail, Tag, Star, Loader2, Video
+  Lock, UserCircle, Mail, Tag, Star, Loader2, Video, Trash2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -46,13 +46,7 @@ function isAttendingCatalogCourse(
   return { attending: false, label: 'A Frequentar' }
 }
 
-// Mock students for instructor view
-const mockStudents = [
-  { id: 's1', name: 'António Mateus', email: 'antonio@gmail.com', course: 'Gestão de Projectos', progress: 75, status: 'Ativo' },
-  { id: 's2', name: 'Bela de Sousa', email: 'bela.sousa@gmail.com', course: 'Excel Avançado', progress: 40, status: 'Ativo' },
-  { id: 's3', name: 'Carlos Manuel', email: 'carlos.m@gmail.com', course: 'Gestão de Projectos', progress: 15, status: 'Ativo' },
-  { id: 's4', name: 'Daniela Simão', email: 'daniela.s@gmail.com', course: 'Excel Avançado', progress: 90, status: 'Concluído' },
-]
+
 
 interface PDFMaterial {
   id: string
@@ -62,6 +56,7 @@ interface PDFMaterial {
   description: string
   fileName: string
   uploadedAt: string
+  fileUrl?: string
 }
 
 interface ActiveProgram {
@@ -153,6 +148,34 @@ function DashboardPageContent() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [displayName, setDisplayName] = useState('')
 
+  // Student visual hidden PDFs
+  const [hiddenPdfIds, setHiddenPdfIds] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('prime_academy_hidden_pdfs')
+      return saved ? JSON.parse(saved) : []
+    }
+    return []
+  })
+
+  const handleHidePdf = (id: string) => {
+    const confirmHide = window.confirm('Deseja ocultar este material pedagógico da sua biblioteca?')
+    if (!confirmHide) return
+    const updated = [...hiddenPdfIds, id]
+    setHiddenPdfIds(updated)
+    localStorage.setItem('prime_academy_hidden_pdfs', JSON.stringify(updated))
+    toast.success('Material pedagógico removido da sua vista.')
+  }
+
+  const handleNotificationClick = async (notif: any) => {
+    await markRead(notif.id)
+    setShowNotifications(false)
+    if (notif.tipo === 'material') {
+      handleTabChange('pdfs')
+    } else if (notif.tipo === 'aula' || notif.tipo === 'transmissao') {
+      handleTabChange('online-classes')
+    }
+  }
+
   // Loading states
   const [isTabChanging, setIsTabChanging] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
@@ -228,6 +251,8 @@ function DashboardPageContent() {
   const [newPdfDesc, setNewPdfDesc] = useState('')
   const [selectedCourseId, setSelectedCourseId] = useState('1')
   const [newPdfFileName, setNewPdfFileName] = useState('')
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [isUploadingPdf, setIsUploadingPdf] = useState(false)
 
   // Explore tab state
   const [exploreCourses, setExploreCourses] = useState<Course[]>([])
@@ -238,6 +263,8 @@ function DashboardPageContent() {
   const [exploreSearch, setExploreSearch] = useState('')
   const [exploreCategory, setExploreCategory] = useState('Todos')
   const [activeCourses, setActiveCourses] = useState<ActiveProgram[]>([])
+  const [students, setStudents] = useState<{ id: string; name: string; email: string; course: string; progress: number; status: string }[]>([])
+  const [isLoadingStudents, setIsLoadingStudents] = useState(false)
 
   useEffect(() => {
     async function loadActiveCourses() {
@@ -248,69 +275,118 @@ function DashboardPageContent() {
           return;
         }
 
-        // 1. Busca simples nas matrículas usando a coluna real do diagrama
-        const { data: matriculas, error: matriculaError } = await supabase
-          .from('matriculas')
-          .select('id, curso_id_catalogo, progresso_percentagem')
-          .eq('perfil_id', user.id);
+        const isInstructor = user.role === 'admin';
 
-        if (matriculaError) {
-          console.error('Error fetching matriculas:', JSON.stringify(matriculaError, null, 2));
-          return;
+        // 1. Busca simples nas matrículas usando a coluna real do diagrama
+        let matriculas: any[] = [];
+        if (isInstructor) {
+          // Admin/Instructor gets all matriculas
+          const { data, error: matriculaError } = await supabase
+            .from('matriculas')
+            .select('id, curso_id_catalogo, progresso_percentagem');
+
+          if (matriculaError) {
+            console.error('Error fetching matriculas for instructor:', JSON.stringify(matriculaError, null, 2));
+            return;
+          }
+          matriculas = data || [];
+        } else {
+          // Student gets own matriculas
+          const { data, error: matriculaError } = await supabase
+            .from('matriculas')
+            .select('id, curso_id_catalogo, progresso_percentagem')
+            .eq('perfil_id', user.id);
+
+          if (matriculaError) {
+            console.error('Error fetching student matriculas:', JSON.stringify(matriculaError, null, 2));
+            return;
+          }
+          matriculas = data || [];
         }
 
         if (!matriculas || matriculas.length === 0) {
-          console.log('Nenhuma matrícula ativa encontrada para este aluno.');
+          console.log('Nenhuma matrícula ativa encontrada.');
           setActiveCourses([]);
           return;
         }
 
-        // 2. Mapear dados e buscar os cursos e as contagens de aulas via Promise.all
-        const coursesWithDetails = await Promise.all(
-          matriculas.map(async (item) => {
-            if (!item.curso_id_catalogo) return null;
+        // 2. Buscar todos os cursos do catálogo do Hygraph para obter os detalhes
+        const allCatalogCourses = await getCourses() || [];
 
-            // Buscar dados do curso correspondente na tabela cursos
-            const { data: curso } = await supabase
-              .from('cursos')
-              .select('id, slug, titulo, descricao, categoria, imagem_url')
-              .eq('id', item.curso_id_catalogo)
-              .single();
+        let coursesWithDetails: (ActiveProgram | null)[] = [];
 
-            if (!curso) return null;
+        if (isInstructor) {
+          // Group by curso_id_catalogo and average progress
+          const uniqueCoursesMap: Record<string, { catalogId: string, progresso_total: number, count: number }> = {};
+          matriculas.forEach(item => {
+            if (!item.curso_id_catalogo) return;
+            if (!uniqueCoursesMap[item.curso_id_catalogo]) {
+              uniqueCoursesMap[item.curso_id_catalogo] = {
+                catalogId: item.curso_id_catalogo,
+                progresso_total: item.progresso_percentagem || 0,
+                count: 1
+              };
+            } else {
+              uniqueCoursesMap[item.curso_id_catalogo].progresso_total += item.progresso_percentagem || 0;
+              uniqueCoursesMap[item.curso_id_catalogo].count += 1;
+            }
+          });
 
-            // Buscar módulos deste curso para contar as aulas correspondentes
-            const { data: modulos } = await supabase
-              .from('modulos')
-              .select('id')
-              .eq('curso_id', curso.id);
+          coursesWithDetails = Object.values(uniqueCoursesMap).map(item => {
+            const matchedCourse = allCatalogCourses.find(
+              (c) => c.id === item.catalogId || c.slug === item.catalogId
+            );
 
-            let totalAulas = 0;
-            if (modulos && modulos.length > 0) {
-              const moduloIds = modulos.map(m => m.id);
-              const { count } = await supabase
-                .from('aulas')
-                .select('id', { count: 'exact', head: true })
-                .in('modulo_id', moduloIds);
-              
-              totalAulas = count || 0;
+            if (!matchedCourse) {
+              return null;
             }
 
-            // Retorna o objeto mapeado exatamente no formato que o layout Tailwind premium espera
+            const totalAulas = matchedCourse.lessons || 0;
+            const avgProgress = Math.round(item.progresso_total / item.count);
+
             return {
-              id: curso.id,
-              name: curso.titulo,
-              description: curso.descricao,
-              image: curso.imagem_url,
-              category: curso.categoria,
+              id: matchedCourse.id,
+              name: matchedCourse.name,
+              description: matchedCourse.description,
+              image: matchedCourse.image,
+              category: matchedCourse.category,
+              progress: avgProgress,
+              totalLessons: totalAulas,
+              completedLessons: Math.floor((avgProgress * totalAulas) / 100),
+              online: matchedCourse.online || false,
+              catalogId: matchedCourse.id
+            };
+          });
+        } else {
+          // Mapear dados e buscar os detalhes de cada curso matriculado para o aluno
+          coursesWithDetails = matriculas.map((item) => {
+            if (!item.curso_id_catalogo) return null;
+
+            // Encontrar o curso correspondente no catálogo do Hygraph (por id ou slug)
+            const matchedCourse = allCatalogCourses.find(
+              (c) => c.id === item.curso_id_catalogo || c.slug === item.curso_id_catalogo
+            );
+
+            if (!matchedCourse) {
+              return null;
+            }
+
+            const totalAulas = matchedCourse.lessons || 0;
+
+            return {
+              id: matchedCourse.id,
+              name: matchedCourse.name,
+              description: matchedCourse.description,
+              image: matchedCourse.image,
+              category: matchedCourse.category,
               progress: item.progresso_percentagem || 0,
               totalLessons: totalAulas,
               completedLessons: Math.floor(((item.progresso_percentagem || 0) * totalAulas) / 100),
-              online: true,
-              catalogId: curso.id
+              online: matchedCourse.online || false,
+              catalogId: matchedCourse.id
             };
-          })
-        );
+          });
+        }
 
         // Filtrar registros nulos e atualizar o estado global dos cursos ativos
         const validCourses = coursesWithDetails.filter(Boolean) as ActiveProgram[];
@@ -322,7 +398,77 @@ function DashboardPageContent() {
     }
 
     loadActiveCourses()
-  }, [user, user?.id])
+  }, [user, user?.id, user?.role])
+
+  // Load real students under tutelage for admin/instructor view
+  useEffect(() => {
+    async function loadStudents() {
+      if (!user || user.role !== 'admin') return
+      setIsLoadingStudents(true)
+      try {
+        const { data: matriculas, error: matriculasError } = await supabase
+          .from('matriculas')
+          .select('id, perfil_id, curso_id_catalogo, curso_nome, progresso_percentagem')
+
+        if (matriculasError) {
+          console.error('Error fetching students from matriculas:', matriculasError)
+          return
+        }
+
+        if (!matriculas || matriculas.length === 0) {
+          setStudents([])
+          return
+        }
+
+        const perfilIds = Array.from(new Set(matriculas.map(m => m.perfil_id).filter(Boolean)))
+        let profilesMap: Record<string, { nome: string; email: string }> = {}
+
+        if (perfilIds.length > 0) {
+          const { data: profilesData, error: profilesError } = await supabase
+            .from('perfis')
+            .select('id, nome, email')
+            .in('id', perfilIds)
+
+          if (profilesError) {
+            console.error('Error fetching profiles:', profilesError)
+          } else if (profilesData) {
+            profilesData.forEach(p => {
+              profilesMap[p.id] = { nome: p.nome, email: p.email }
+            })
+          }
+        }
+
+        const allCatalogCourses = await getCourses() || []
+
+        const mapped = matriculas.map(m => {
+          const profile = m.perfil_id ? profilesMap[m.perfil_id] : null
+          const matchedCourse = allCatalogCourses.find(
+            (c) => c.id === m.curso_id_catalogo || c.slug === m.curso_id_catalogo
+          )
+
+          const progressVal = m.progresso_percentagem || 0
+          const statusText = progressVal >= 100 ? 'Concluído' : 'Ativo'
+
+          return {
+            id: m.id || Math.random().toString(),
+            name: profile?.nome || 'Utilizador Inativo',
+            email: profile?.email || 'N/A',
+            course: matchedCourse?.name || m.curso_nome || 'Curso Sem Nome',
+            progress: progressVal,
+            status: statusText
+          }
+        })
+
+        setStudents(mapped)
+      } catch (err) {
+        console.error('Runtime error loading students:', err)
+      } finally {
+        setIsLoadingStudents(false)
+      }
+    }
+
+    loadStudents()
+  }, [user, user?.role])
 
   const [enrolledCourses, setEnrolledCourses] = useState<string[]>([])
 
@@ -332,6 +478,9 @@ function DashboardPageContent() {
       try {
         const courses = await getCourses()
         setExploreCourses(courses)
+        if (courses && courses.length > 0) {
+          setSelectedCourseId(courses[0].id)
+        }
       } catch (err) {
         console.error('Error fetching courses:', err)
       }
@@ -384,35 +533,74 @@ function DashboardPageContent() {
     setCurrentDate(today.charAt(0).toUpperCase() + today.slice(1))
   }, [])
 
-  // Load PDFs from localStorage or default ones
+  // Load PDFs from database public.materiais_pdf or fallback
   useEffect(() => {
-    const savedPDFs = localStorage.getItem('prime_academy_pdfs')
-    if (savedPDFs) {
-      setPdfMaterials(JSON.parse(savedPDFs))
-    } else {
-      const initialPDFs: PDFMaterial[] = [
-        {
-          id: 'pdf1',
-          title: 'Manual de Iniciação ao PMBOK v7',
-          courseId: '1',
-          courseName: 'Gestão de Projectos',
-          description: 'Material teórico complementar cobrindo a sétima edição do guia PMBOK.',
-          fileName: 'Manual_PMBOK_v7_Prime.pdf',
-          uploadedAt: new Date().toLocaleDateString('pt-AO'),
-        },
-        {
-          id: 'pdf2',
-          title: 'Guia Prático de Fórmulas e Atalhos Excel',
-          courseId: '2',
-          courseName: 'Excel Avançado',
-          description: 'Lista completa de atalhos e fórmulas essenciais de finanças no Excel.',
-          fileName: 'Guia_Atalhos_Excel_Avançado.pdf',
-          uploadedAt: new Date().toLocaleDateString('pt-AO'),
+    async function loadPdfMaterials() {
+      try {
+        const { data: databasePDFs, error: pdfError } = await supabase
+          .from('materiais_pdf')
+          .select('*')
+          .order('id', { ascending: false })
+
+        if (pdfError) {
+          console.warn('[materials-pdf] Table public.materiais_pdf read failed or not created yet:', pdfError)
+          // Fallback to localStorage or mock
+          const savedPDFs = localStorage.getItem('prime_academy_pdfs')
+          if (savedPDFs) {
+            setPdfMaterials(JSON.parse(savedPDFs))
+          } else {
+            const initialPDFs: PDFMaterial[] = [
+              {
+                id: 'pdf1',
+                title: 'Manual de Iniciação ao PMBOK v7',
+                courseId: '1',
+                courseName: 'Gestão de Projectos',
+                description: 'Material teórico complementar cobrindo a sétima edição do guia PMBOK.',
+                fileName: 'Manual_PMBOK_v7_Prime.pdf',
+                uploadedAt: new Date().toLocaleDateString('pt-AO'),
+              },
+              {
+                id: 'pdf2',
+                title: 'Guia Prático de Fórmulas e Atalhos Excel',
+                courseId: '2',
+                courseName: 'Excel Avançado',
+                description: 'Lista completa de atalhos e fórmulas essenciais de finanças no Excel.',
+                fileName: 'Guia_Atalhos_Excel_Avançado.pdf',
+                uploadedAt: new Date().toLocaleDateString('pt-AO'),
+              }
+            ]
+            setPdfMaterials(initialPDFs)
+            localStorage.setItem('prime_academy_pdfs', JSON.stringify(initialPDFs))
+          }
+          return
         }
-      ]
-      setPdfMaterials(initialPDFs)
-      localStorage.setItem('prime_academy_pdfs', JSON.stringify(initialPDFs))
+
+        if (databasePDFs && databasePDFs.length > 0) {
+          const allCatalogCourses = await getCourses() || []
+          const mappedPDFs: PDFMaterial[] = databasePDFs.map((pdf: any) => {
+            const matchedCourse = allCatalogCourses.find(c => c.id === pdf.curso_id || c.slug === pdf.curso_id)
+            return {
+              id: pdf.id,
+              title: pdf.titulo,
+              courseId: pdf.curso_id,
+              courseName: matchedCourse?.name || 'Curso Geral',
+              description: pdf.descricao,
+              fileName: pdf.nome_arquivo,
+              uploadedAt: pdf.created_at ? new Date(pdf.created_at).toLocaleDateString('pt-AO') : new Date().toLocaleDateString('pt-AO'),
+              fileUrl: pdf.url_arquivo
+            }
+          })
+          setPdfMaterials(mappedPDFs)
+          localStorage.setItem('prime_academy_pdfs', JSON.stringify(mappedPDFs))
+        } else {
+          setPdfMaterials([])
+        }
+      } catch (err) {
+        console.error('Exception loading PDF materials:', err)
+      }
     }
+
+    loadPdfMaterials()
   }, [])
 
   // Prefill settings name from user
@@ -450,35 +638,205 @@ function DashboardPageContent() {
     }, 900)
   }
 
-  // Handle mock PDF file upload
-  const handlePdfUpload = (e: React.FormEvent) => {
+  // Handle PDF file upload with real Supabase Storage & Database integration
+  const handlePdfUpload = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!newPdfTitle || !newPdfDesc || !newPdfFileName) {
       toast.error('Preencha todos os campos do material!')
       return
     }
 
-    const targetCourse = selectedCourseId === '1' ? 'Gestão de Projectos' : 'Excel Avançado'
+    setIsUploadingPdf(true)
+    const targetCourseObj = exploreCourses.find(c => c.id === selectedCourseId)
+    const targetCourseName = targetCourseObj?.name || 'Curso Geral'
+
+    const localId = crypto.randomUUID()
+    const fileNameSafe = newPdfFileName.endsWith('.pdf') ? newPdfFileName : `${newPdfFileName}.pdf`
     
-    const newMaterial: PDFMaterial = {
-      id: crypto.randomUUID(),
-      title: newPdfTitle,
-      courseId: selectedCourseId,
-      courseName: targetCourse,
-      description: newPdfDesc,
-      fileName: newPdfFileName.endsWith('.pdf') ? newPdfFileName : `${newPdfFileName}.pdf`,
-      uploadedAt: new Date().toLocaleDateString('pt-AO'),
+    // Default file url if storage fails
+    let publicUrl = ''
+
+    // 1. Upload to Supabase Storage if file is selected
+    if (selectedFile) {
+      try {
+        const fileExt = selectedFile.name.split('.').pop()
+        const storageFileName = `${crypto.randomUUID()}.${fileExt}`
+
+        const { data: storageData, error: uploadError } = await supabase.storage
+          .from('materiais')
+          .upload(storageFileName, selectedFile, {
+            cacheControl: '3600',
+            upsert: false
+          })
+
+        if (uploadError) {
+          console.warn('[materials-pdf] Storage upload failed, fallback to local URL:', uploadError)
+        } else if (storageData) {
+          const { data: urlData } = supabase.storage
+            .from('materiais')
+            .getPublicUrl(storageFileName)
+          
+          if (urlData) {
+            publicUrl = urlData.publicUrl
+          }
+        }
+      } catch (uploadException) {
+        console.warn('[materials-pdf] Exception during file upload:', uploadException)
+      }
     }
 
-    const updatedList = [...pdfMaterials, newMaterial]
+    // 2. Insert into Supabase table public.materiais_pdf
+    try {
+      const { data: insertedData, error: insertError } = await supabase
+        .from('materiais_pdf')
+        .insert([{
+          titulo: newPdfTitle,
+          descricao: newPdfDesc,
+          nome_arquivo: fileNameSafe,
+          url_arquivo: publicUrl,
+          curso_id: selectedCourseId
+        }])
+        .select()
+
+      if (insertError) {
+        console.warn('[materials-pdf] Table public.materiais_pdf INSERT failed, using local storage fallback:', insertError)
+      } else if (insertedData && insertedData.length > 0) {
+        // successfully saved to database
+        const row = insertedData[0]
+        const newMaterial: PDFMaterial = {
+          id: row.id,
+          title: row.titulo,
+          courseId: row.curso_id,
+          courseName: targetCourseName,
+          description: row.descricao,
+          fileName: row.nome_arquivo,
+          uploadedAt: row.created_at ? new Date(row.created_at).toLocaleDateString('pt-AO') : new Date().toLocaleDateString('pt-AO'),
+          fileUrl: row.url_arquivo
+        }
+
+        const updatedList = [newMaterial, ...pdfMaterials]
+        setPdfMaterials(updatedList)
+        localStorage.setItem('prime_academy_pdfs', JSON.stringify(updatedList))
+        toast.success('Material PDF publicado e guardado na base de dados!')
+
+        // Trigger notification broadcast for all active students enrolled in this course (KISS & tolerant)
+        try {
+          const { data: enrolledStudents, error: enrollError } = await supabase
+            .from('matriculas')
+            .select('perfil_id')
+            .eq('curso_id_catalogo', selectedCourseId)
+
+          if (!enrollError && enrolledStudents && enrolledStudents.length > 0) {
+            const notifs = enrolledStudents.map(student => ({
+              perfil_id: student.perfil_id,
+              tipo: 'material',
+              titulo: 'Novo Material Disponível',
+              descricao: `O material "${newPdfTitle}" está disponível para download na sua Biblioteca PDF.`,
+              lida: false
+            }))
+
+            await supabase
+              .from('notificacoes')
+              .insert(notifs)
+          }
+        } catch (notifErr) {
+          console.warn('[materials-pdf] Notification broadcast failed:', notifErr)
+        }
+        
+        // Reset states
+        setNewPdfTitle('')
+        setNewPdfDesc('')
+        setNewPdfFileName('')
+        setSelectedFile(null)
+        setIsUploadingPdf(false)
+        return
+      }
+    } catch (insertException) {
+      console.warn('[materials-pdf] Exception during INSERT, keeping local fallback:', insertException)
+    }
+
+    // Fallback block if table INSERT was not completed
+    const newMaterial: PDFMaterial = {
+      id: localId,
+      title: newPdfTitle,
+      courseId: selectedCourseId,
+      courseName: targetCourseName,
+      description: newPdfDesc,
+      fileName: fileNameSafe,
+      uploadedAt: new Date().toLocaleDateString('pt-AO'),
+      fileUrl: publicUrl || undefined
+    }
+
+    const updatedList = [newMaterial, ...pdfMaterials]
     setPdfMaterials(updatedList)
     localStorage.setItem('prime_academy_pdfs', JSON.stringify(updatedList))
+    toast.success('Material PDF publicado com sucesso (salvo localmente)!')
     
+    // Reset states
     setNewPdfTitle('')
     setNewPdfDesc('')
     setNewPdfFileName('')
-    
-    toast.success('Material PDF publicado com sucesso!')
+    setSelectedFile(null)
+    setIsUploadingPdf(false)
+  }
+
+  // Handle PDF deletion from storage and database
+  const handleDeletePdf = async (id: string, fileUrl?: string, title?: string) => {
+    const confirmDelete = window.confirm(`Tem a certeza que deseja eliminar o material "${title || 'este PDF'}"?`)
+    if (!confirmDelete) return
+
+    // Guard: only hit Supabase when the id is a real UUID (prevents type-mismatch crashes on mock data)
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)
+
+    if (isUUID) {
+      // 1. Delete file from Supabase Storage (best-effort, non-blocking)
+      if (fileUrl) {
+        try {
+          const urlParts = fileUrl.split('/')
+          const storageFileName = urlParts[urlParts.length - 1]
+          const { error: storageError } = await supabase.storage
+            .from('materiais')
+            .remove([storageFileName])
+          if (storageError) {
+            console.warn('[delete-pdf] Storage deletion warning:', storageError)
+          }
+        } catch (storageException) {
+          console.warn('[delete-pdf] Storage deletion exception:', storageException)
+        }
+      }
+
+      // 2. Delete row from the database
+      try {
+        const { error: dbError } = await supabase
+          .from('materiais_pdf')
+          .delete()
+          .eq('id', id)
+        if (dbError) {
+          console.warn('[delete-pdf] Database DELETE warning (continuing with local delete):', dbError)
+        }
+      } catch (dbException) {
+        console.warn('[delete-pdf] Database DELETE exception (continuing with local delete):', dbException)
+      }
+    } else {
+      // Mock / non-UUID id — remove only from local state (no DB round-trip needed)
+      console.log('[delete-pdf] Non-UUID id detected — removing from local state only.')
+    }
+
+    // Always remove from local state and localStorage regardless of DB result
+    setPdfMaterials(prev => prev.filter(pdf => pdf.id !== id))
+    try {
+      const saved = localStorage.getItem('prime_academy_pdfs')
+      if (saved) {
+        localStorage.setItem(
+          'prime_academy_pdfs',
+          JSON.stringify(JSON.parse(saved).filter((pdf: { id: string }) => pdf.id !== id))
+        )
+      }
+    } catch (e) {
+      console.warn('[delete-pdf] Failed to update localStorage:', e)
+    }
+
+    toast.success('Material pedagógico eliminado com sucesso!')
   }
 
   // Handle save settings — always works (localStorage-first), Supabase in background
@@ -583,7 +941,7 @@ function DashboardPageContent() {
     },
     {
       id: 'online-classes' as const,
-      label: 'Aulas Online',
+      label: 'Aulas',
       icon: Video,
     },
     {
@@ -946,7 +1304,7 @@ function DashboardPageContent() {
                           notifications.map((notif) => (
                             <div 
                               key={notif.id} 
-                              onClick={() => markRead(notif.id)}
+                              onClick={() => handleNotificationClick(notif)}
                               className={`p-4 text-left transition-colors duration-200 cursor-pointer hover:bg-slate-50 flex gap-3 ${
                                 !notif.lida ? 'bg-[#f8fafc]/40' : ''
                               }`}
@@ -1059,7 +1417,7 @@ function DashboardPageContent() {
                       </div>
                     </CardHeader>
                     <CardContent className="pt-2">
-                      <div className="text-3xl font-black text-[#312455]">{mockStudents.length}</div>
+                      <div className="text-3xl font-black text-[#312455]">{students.length}</div>
                       <p className="text-[10px] text-slate-400 mt-1 font-medium">Estudantes sob supervisão</p>
                     </CardContent>
                   </Card>
@@ -1195,13 +1553,17 @@ function DashboardPageContent() {
                   {activeCourses.map((course) => (
                     <Card key={course.id} className="overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 rounded-3xl bg-white flex flex-col group">
                       <div className="relative h-48 w-full overflow-hidden">
-                        <Image
-                          src={course.image}
-                          alt={course.name}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                          className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        />
+                        {course.image ? (
+                          <Image
+                            src={course.image}
+                            alt={course.name}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className="object-cover transition-transform duration-700 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 bg-gradient-to-br from-[#312455] via-[#8a66a8] to-[#c084fc]" />
+                        )}
                         {/* Overlay gradient */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                         
@@ -1291,46 +1653,98 @@ function DashboardPageContent() {
                     </p>
                   </div>
                   <Badge className="bg-[#312455]/10 text-[#312455] border-none font-bold text-xs py-1 px-3.5 rounded-full">
-                    {pdfMaterials.length} Ficheiros
+                    {(isInstructor 
+                      ? pdfMaterials 
+                      : pdfMaterials.filter(pdf => !hiddenPdfIds.includes(pdf.id) && activeCourses.some(ac => ac.catalogId === pdf.courseId || ac.id === pdf.courseId))
+                    ).length} Ficheiros
                   </Badge>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4">
-                  {pdfMaterials.map((pdf) => (
-                    <Card key={pdf.id} className="border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 rounded-2xl bg-white overflow-hidden group">
-                      <CardContent className="p-5">
-                        <div className="flex items-start gap-4">
-                          <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0 group-hover:bg-red-100 transition-colors duration-300">
-                            <FileText className="h-6 w-6 text-red-500" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between gap-2">
-                              <h3 className="font-black text-[#312455] text-sm truncate">{pdf.title}</h3>
-                              <Badge className="bg-[#8a66a8]/10 text-[#8a66a8] border-none text-[9px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full flex-shrink-0">
-                                {pdf.courseName}
-                              </Badge>
+                  {(isInstructor 
+                    ? pdfMaterials 
+                    : pdfMaterials.filter(pdf => !hiddenPdfIds.includes(pdf.id) && activeCourses.some(ac => ac.catalogId === pdf.courseId || ac.id === pdf.courseId))
+                  ).length === 0 ? (
+                    <div className="text-center py-12">
+                      <p className="text-xs font-semibold text-slate-400 tracking-wide animate-pulse">
+                        Nenhum material PDF disponível de momento.
+                      </p>
+                    </div>
+                  ) : (
+                    (isInstructor 
+                      ? pdfMaterials 
+                      : pdfMaterials.filter(pdf => !hiddenPdfIds.includes(pdf.id) && activeCourses.some(ac => ac.catalogId === pdf.courseId || ac.id === pdf.courseId))
+                    ).map((pdf) => (
+                      <Card key={pdf.id} className="border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 rounded-2xl bg-white overflow-hidden group">
+                        <CardContent className="p-5">
+                          <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0 group-hover:bg-red-100 transition-colors duration-300">
+                              <FileText className="h-6 w-6 text-red-500" />
                             </div>
-                            <p className="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">{pdf.description}</p>
-                            <div className="flex items-center gap-4 mt-3">
-                              <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
-                                <Calendar className="h-3 w-3 text-slate-400" />
-                                {pdf.uploadedAt}
-                              </span>
-                              <span className="text-[10px] text-slate-400 font-mono">{pdf.fileName}</span>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-2">
+                                <h3 className="font-black text-[#312455] text-sm truncate">{pdf.title}</h3>
+                                <Badge className="bg-[#8a66a8]/10 text-[#8a66a8] border-none text-[9px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full flex-shrink-0">
+                                  {pdf.courseName}
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">{pdf.description}</p>
+                              <div className="flex items-center gap-4 mt-3">
+                                <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
+                                  <Calendar className="h-3 w-3 text-slate-400" />
+                                  {pdf.uploadedAt}
+                                </span>
+                                <span className="text-[10px] text-slate-400 font-mono">{pdf.fileName}</span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-1.5 flex-shrink-0">
+                              <Button 
+                                variant="ghost"
+                                size="icon"
+                                className="flex-shrink-0 text-[#8a66a8] hover:bg-[#8a66a8]/10 rounded-xl transition-all"
+                                asChild={!!pdf.fileUrl}
+                                onClick={() => {
+                                  if (!pdf.fileUrl) {
+                                    toast.success(`A iniciar download de "${pdf.fileName}"...`)
+                                  }
+                                }}
+                              >
+                                {pdf.fileUrl ? (
+                                  <a href={pdf.fileUrl} target="_blank" rel="noopener noreferrer" download={pdf.fileName}>
+                                    <Download className="h-4.5 w-4.5" />
+                                  </a>
+                                ) : (
+                                  <Download className="h-4.5 w-4.5" />
+                                )}
+                              </Button>
+
+                              {isInstructor ? (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all cursor-pointer"
+                                  onClick={() => handleDeletePdf(pdf.id, pdf.fileUrl, pdf.title)}
+                                  title="Eliminar Material"
+                                >
+                                  <Trash2 className="h-4.5 w-4.5" />
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-slate-300 hover:text-[#8a66a8] hover:bg-[#8a66a8]/10 rounded-xl transition-all cursor-pointer"
+                                  onClick={() => handleHidePdf(pdf.id)}
+                                  title="Remover da Vista"
+                                >
+                                  <Trash2 className="h-4.5 w-4.5" />
+                                </Button>
+                              )}
                             </div>
                           </div>
-                          <Button 
-                            variant="ghost"
-                            size="icon"
-                            className="flex-shrink-0 text-[#8a66a8] hover:bg-[#8a66a8]/10 rounded-xl transition-all"
-                            onClick={() => toast.success(`A iniciar download de "${pdf.fileName}"...`)}
-                          >
-                            <Download className="h-4.5 w-4.5" />
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
                 </div>
 
                 {/* Instructor Upload Form */}
@@ -1369,7 +1783,7 @@ function DashboardPageContent() {
                               onChange={(e) => setSelectedCourseId(e.target.value)}
                               className="w-full h-10 rounded-xl border border-slate-200 bg-white text-xs text-[#312455] px-3 focus:outline-none focus:ring-2 focus:ring-[#8a66a8] transition-all"
                             >
-                              {activeCourses.map(c => (
+                              {exploreCourses.map(c => (
                                 <option key={c.id} value={c.id}>{c.name}</option>
                               ))}
                             </select>
@@ -1389,20 +1803,30 @@ function DashboardPageContent() {
                         </div>
 
                         <div className="space-y-1.5">
-                          <Label htmlFor="pdfName" className="text-xs font-bold text-slate-600">Nome do Arquivo (.pdf)</Label>
+                          <Label htmlFor="pdfFile" className="text-xs font-bold text-slate-600">Arquivo PDF *</Label>
                           <Input
-                            id="pdfName"
-                            placeholder="Ex: manual_pmbok_prime.pdf"
-                            value={newPdfFileName}
-                            onChange={(e) => setNewPdfFileName(e.target.value)}
-                            className="rounded-xl h-10 text-xs font-mono text-[#312455] border-slate-200"
+                            id="pdfFile"
+                            type="file"
+                            accept=".pdf"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0] || null
+                              setSelectedFile(file)
+                              if (file) {
+                                setNewPdfFileName(file.name)
+                              }
+                            }}
+                            className="rounded-xl h-10 text-xs text-[#312455] border-slate-200 cursor-pointer pt-2 bg-white"
                             required
                           />
                         </div>
 
-                        <Button type="submit" className="w-full bg-[#8a66a8] text-white hover:bg-[#312455] rounded-2xl h-11 text-xs font-bold shadow-md mt-4 cursor-pointer transition-transform duration-300 hover:scale-101">
-                          <Plus className="mr-1.5 h-4 w-4" />
-                          Publicar PDF
+                        <Button type="submit" disabled={isUploadingPdf} className="w-full bg-[#8a66a8] text-white hover:bg-[#312455] rounded-2xl h-11 text-xs font-bold shadow-md mt-4 cursor-pointer transition-transform duration-300 hover:scale-101">
+                          {isUploadingPdf ? (
+                            <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                          ) : (
+                            <Plus className="mr-1.5 h-4 w-4" />
+                          )}
+                          {isUploadingPdf ? 'A publicar...' : 'Publicar PDF'}
                         </Button>
                       </form>
                     </CardContent>
@@ -1427,7 +1851,7 @@ function DashboardPageContent() {
                     <p className="text-xs text-slate-500">Gestão de desempenho e progresso dos estudantes ativos.</p>
                   </div>
                   <Badge className="bg-[#312455]/10 text-[#312455] border-none font-bold text-xs py-1 px-3.5 rounded-full">
-                    {mockStudents.length} Alunos Inscritos
+                    {students.length} Alunos Inscritos
                   </Badge>
                 </div>
 
@@ -1444,7 +1868,7 @@ function DashboardPageContent() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-50 font-medium text-slate-600">
-                        {mockStudents.map((student) => (
+                        {students.map((student) => (
                           <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
                             <td className="p-4 flex items-center gap-3">
                               <div className="w-8 h-8 rounded-full bg-[#8a66a8]/10 text-[#8a66a8] font-bold flex items-center justify-center text-[10px] shadow-sm">

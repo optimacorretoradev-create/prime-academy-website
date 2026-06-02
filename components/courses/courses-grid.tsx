@@ -15,8 +15,23 @@ interface CoursesGridProps {
   categories: string[]
 }
 
+/**
+ * Normaliza uma string para comparação robusta:
+ * remove acentos (NFD), colapsa espaços e converte para minúsculas.
+ * Garante que "GESTÃO ADMINISTRATIVA DIGITAL" == "gestao administrativa digital"
+ * mesmo que o CMS grave sem acento ou com espaços extra.
+ */
+const normalizeStr = (str: string): string =>
+  str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove marcas diacríticas (acentos)
+    .trim()
+    .replace(/\s+/g, '')             // Colapsa todos os espaços em branco
+
 export function CoursesGrid({ courses, categories }: CoursesGridProps) {
-  const [activeCategory, setActiveCategory] = useState('Todos')
+  // activeFilter default 'TODOS' — matches the first entry in OFFICIAL_CATEGORIES
+  const [activeFilter, setActiveFilter] = useState('TODOS')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedType, setSelectedType] = useState('Todos')
 
@@ -30,7 +45,10 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
   }
 
   const filteredCourses = courses.filter((course) => {
-    const matchesCategory = activeCategory === 'Todos' || course.category === activeCategory
+    // Normalização avançada: ignora acentos, espaços e capitalização em ambos os lados
+    const matchesCategory =
+      activeFilter === 'TODOS' ||
+      normalizeStr(course.category) === normalizeStr(activeFilter)
     const matchesType =
       selectedType === 'Todos' ||
       (selectedType === 'online' && course.online) ||
@@ -97,12 +115,12 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
             <div className="hidden md:block h-6 w-px bg-white/10" />
             <div className="w-full md:w-auto px-4 py-1.5">
               <select
-                value={activeCategory}
-                onChange={(e) => setActiveCategory(e.target.value)}
+                value={activeFilter}
+                onChange={(e) => setActiveFilter(e.target.value)}
                 className="bg-transparent border-none outline-none text-white/95 font-semibold text-sm w-full md:w-48 cursor-pointer focus:ring-0 py-1"
               >
-                <option value="Todos" className="bg-[#312455] text-white">Todas as Categorias</option>
-                {categories.filter((c) => c !== 'Todos').map((cat) => (
+                <option value="TODOS" className="bg-[#312455] text-white">Todas as Categorias</option>
+                {categories.filter((c) => c !== 'TODOS').map((cat) => (
                   <option key={cat} value={cat} className="bg-[#312455] text-white">{cat}</option>
                 ))}
               </select>
@@ -144,9 +162,9 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
           {categories.map((category) => (
             <button
               key={category}
-              onClick={() => setActiveCategory(category)}
+              onClick={() => setActiveFilter(category)}
               className={`px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer shadow-sm ${
-                activeCategory === category
+                activeFilter.trim().toUpperCase() === category.trim().toUpperCase()
                   ? 'bg-[#8a66a8] text-white shadow-md'
                   : 'bg-white text-slate-600 border border-slate-100 hover:bg-slate-50 hover:text-slate-900'
               }`}
@@ -161,6 +179,8 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredCourses.map((course, index) => {
               const trainer = getTrainerInfo(course.id, course.price)
+              // 🔍 DIAGNÓSTICO TEMPORÁRIO — remover após confirmar URLs no CMS
+              console.log(`🖼️ [Image Check] Curso: "${course.name}" | URL: ${course.image ?? 'undefined'} | Categoria: ${course.category}`)
               return (
                 <motion.div
                   key={course.id}
@@ -175,13 +195,22 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
 
                     {/* Imagem de capa */}
                     <div className="relative h-44 overflow-hidden bg-slate-200">
-                      <Image
-                        src={course.image}
-                        alt={course.name}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                      />
+                      {/* Sanitização da URL — garante que o Turbopack não recebe strings inválidas */}
+                      {(() => {
+                        const validSrc = course.image?.startsWith('http')
+                          ? course.image
+                          : '/placeholder.jpg'
+                        return (
+                          <Image
+                            src={validSrc}
+                            alt={course.name}
+                            fill
+                            unoptimized
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                          />
+                        )
+                      })()}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                       <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
                         <span className="bg-white/95 text-slate-800 font-bold text-[10px] tracking-wide uppercase py-1 px-2.5 rounded-full shadow-sm">

@@ -46,6 +46,16 @@ export function DashboardShell({
   const [showNotifications, setShowNotifications] = useState(false)
   const { notifications, unreadCount, markRead, markAllRead } = useNotifications()
 
+  const handleNotificationClick = async (notif: any) => {
+    await markRead(notif.id)
+    setShowNotifications(false)
+    if (notif.tipo === 'material') {
+      router.push('/dashboard?tab=pdfs')
+    } else if (notif.tipo === 'aula' || notif.tipo === 'transmissao') {
+      router.push('/dashboard?tab=online-classes')
+    }
+  }
+
   useEffect(() => {
     const options: Intl.DateTimeFormatOptions = {
       weekday: 'long',
@@ -174,7 +184,7 @@ export function DashboardShell({
           </h2>
           <p className="text-[10px] text-white/50 font-semibold truncate max-w-full mt-0.5">{user.email}</p>
           <Badge className="mt-2 bg-[#8a66a8]/20 text-[#c1a7d6] border border-[#8a66a8]/30 uppercase text-[8px] font-extrabold tracking-widest px-2.5 py-0.5 rounded-full">
-            {isInstructor ? 'Administrador' : 'Estudante'}
+            {isInstructor ? 'Administrador' : 'Formando'}
           </Badge>
         </div>
 
@@ -312,7 +322,7 @@ export function DashboardShell({
                           <button
                             key={notif.id}
                             type="button"
-                            onClick={() => markRead(notif.id)}
+                            onClick={() => handleNotificationClick(notif)}
                             className={`w-full p-4 text-left hover:bg-slate-50 ${!notif.lida ? 'bg-[#f8fafc]/40' : ''}`}
                           >
                             <p className="font-black text-xs text-[#312455]">{notif.titulo}</p>
