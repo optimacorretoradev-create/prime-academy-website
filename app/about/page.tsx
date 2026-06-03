@@ -30,14 +30,14 @@ export default function AboutPage() {
   ]
 
   const trainers = [
-    { name: 'Lourença Ricardo', role: 'Protocolo & Secretariado', bio: 'Especialista em protocolo com vasta experiência.', avatar: '/images/trainers/trainer1.jpeg' },
-    { name: 'Hosana Inglês', role: 'Gestão de Processos', bio: 'Consultora de gestão focada em eficiência.', avatar: '/images/trainers/trainer2.png' },
-    { name: 'Claúdia Roceth', role: 'Liderança Executiva', bio: 'Mentora de líderes de alto desempenho.', avatar: '/images/trainers/trainer3.png' },
-    { name: 'Isabel Gaspar', role: 'Tecnologias de Gestão', bio: 'Expert em transformação digital.', avatar: '/images/trainers/trainer4.jpeg' },
-    { name: 'Valéria Serra', role: 'Gestão de Pessoas', bio: 'Especialista em desenvolvimento de RH.', avatar: '/images/trainers/trainer6.png' },
-    { name: 'Santos Egas Moniz', role: 'Finanças Corporativas', bio: 'Analista sênior com foco estratégico.', avatar: '/images/trainers/trainer7.png' },
-    { name: 'Eduardo Chilowa', role: 'Logística & Supply Chain', bio: 'Líder em operações e cadeia de suprimentos.', avatar: '/images/trainers/trainer8.png' },
-    { name: 'Jacira Pimentel', role: 'Formadora', bio: 'Especialista com vasta experiência na sua área.', avatar: '/images/trainers/trainer9.jpeg' },
+    { name: 'Cláudia Chaffer', role: 'Tecnologias de Secretariado', bio: 'Especialista em Novas Tecnologias de Secretariado e Organização de Eventos Corporativos', avatar: '/placeholder-user.jpg' },
+    { name: 'Lourença Ricardo', role: 'Gestão Pública', bio: 'Especialista em Gestão e Administração Pública', avatar: '/placeholder-user.jpg' },
+    { name: 'Isabel Gaspar', role: 'Jurista / Compliance', bio: 'Jurista (Advogada), Especialista em Compliance', avatar: '/placeholder-user.jpg' },
+    { name: 'Francisco Domingos', role: 'Língua Portuguesa', bio: 'Especialista em Técnicas de Expressão Oral e Escrita em Língua Portuguesa', avatar: '/placeholder-user.jpg' },
+    { name: 'Hossana Inglês', role: 'Comunicação', bio: 'Especialista em Comunicação e Persuasão', avatar: '/placeholder-user.jpg' },
+    { name: 'Santos Egas Moniz', role: 'Gestão & Inovação', bio: 'Especialista em Gestão, Empreendedorismo e Inovação, Comunicação Institucional.', avatar: '/placeholder-user.jpg' },
+    { name: 'Valéria Serra', role: 'Secretariado Alta Gestão', bio: 'Especialista em Secretariado para Alta Gestão', avatar: '/placeholder-user.jpg' },
+    { name: 'Jacira Pimental', role: 'Gestão de Projetos', bio: 'Especialista em Gestão de Projectos de Desenvolvimento Institucional.', avatar: '/placeholder-user.jpg' },
   ]
 
   const targetAudience = [
@@ -60,7 +60,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
       {/* ── HERO BANNER (Top) ── */}
-      <section className="relative py-24 md:py-32 overflow-hidden bg-[#312455]">
+      <section className="relative pt-32 pb-24 md:pt-40 md:pb-32 overflow-hidden bg-[#312455]">
         {/* Background Image with elegant overlay */}
         <div 
           className="absolute inset-0 bg-cover bg-center"

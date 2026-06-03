@@ -12,25 +12,25 @@ const slides = [
     title: "Prime Academy",
     subtitle: "Centro de Excelência em Formação Profissional",
     description: "Formação corporativa de referência para executivos e profissionais de elevado desempenho. Desenvolva competências críticas com prestígio, inovação e rigor.",
-    image: "/images/hero/slide1.jpg"
+    image: "/images/hero/hero1.jpeg"
   },
   {
     title: "Excelência e Prestígio",
     subtitle: "Capacitação de Alto Nível para o Mercado",
     description: "Elevamos o padrão do desenvolvimento profissional. Soluções de formação estratégica para organizações públicas e privadas comprometidas com o sucesso.",
-    image: "/images/hero/slide2.jpg"
+    image: "/images/hero/hero2.jpeg"
   },
   {
     title: "Liderança Inovadora",
     subtitle: "Gestão e Estratégia Corporativa",
     description: "Prepare-se para os desafios atuais. Potenciamos líderes e equipas com metodologias de ponta focadas na eficácia, na inovação e na excelência operacional.",
-    image: "/images/hero/slide3.jpg"
+    image: "/images/hero/hero3.jpeg"
   },
   {
     title: "Parceiro de Sucesso",
     subtitle: "Formação Executiva de Elite",
     description: "O parceiro ideal para empresas que procuram excelência. Certificação reconhecida, metodologia prática e mentoria especializada para um desenvolvimento de topo.",
-    image: "/images/hero/slide4.jpg"
+    image: "/images/hero/hero4.jpeg"
   }
 ]
 

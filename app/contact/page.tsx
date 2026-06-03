@@ -15,7 +15,7 @@ export default async function ContactPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <section className="relative py-20 md:py-28 overflow-hidden">
+      <section className="relative pt-32 pb-24 md:pt-40 md:pb-32 overflow-hidden">
         {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center"
