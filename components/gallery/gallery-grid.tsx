@@ -21,15 +21,52 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 8 // Shows 8 compact items at a time to prevent long scroll
 
-  // Filtered images for the catalog section
+  // ── Ordenação robusta no cliente: destaque:true sempre no índice 0 ──────────
+  // Garante posicionamento correto independentemente da ordem retornada pela API.
+  const sortedImages = [...images].sort((a, b) => {
+    if (a.destaque && !b.destaque) return -1
+    if (!a.destaque && b.destaque) return 1
+    
+    // Critério de desempate: mais recente primeiro (createdAt decrescente)
+    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0
+    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0
+    return dateB - dateA
+  })
+
+  // Filtered images for the catalog section (opera sobre o array já ordenado)
   const filteredImages = activeCategory === 'Todos'
-    ? images
-    : images.filter((img) => img.category === activeCategory)
+    ? sortedImages
+    : sortedImages.filter((img) => img.categoria === activeCategory)
 
   // Calculate paginated subset
   const totalPages = Math.ceil(filteredImages.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const paginatedImages = filteredImages.slice(startIndex, startIndex + itemsPerPage)
+
+  // Generate pages range with ellipses for large page counts
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = []
+    const range = 1 // numbers around currentPage
+
+    for (let i = 1; i <= totalPages; i++) {
+      if (
+        i === 1 ||
+        i === totalPages ||
+        (i >= currentPage - range && i <= currentPage + range)
+      ) {
+        pages.push(i)
+      } else if (
+        i === 2 && currentPage - range > 2
+      ) {
+        pages.push('ellipsis-start')
+      } else if (
+        i === totalPages - 1 && currentPage + range < totalPages - 1
+      ) {
+        pages.push('ellipsis-end')
+      }
+    }
+    return pages.filter((value, index, self) => self.indexOf(value) === index)
+  }
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
@@ -44,11 +81,11 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
     setCurrentPage(1)
   }
 
-  // For the highlights section:
-  // Main featured card (1st image)
-  const mainHighlight = images[0]
-  // Secondary stacked highlights (2nd, 3rd, 4th images)
-  const secondaryHighlights = images.slice(1, 4)
+  // Para a secção de destaques — usa o array ordenado:
+  // Card principal (1.º após ordenação = sempre o item com destaque:true)
+  const mainHighlight = sortedImages[0]
+  // Cards secundários (2.º ao 4.º)
+  const secondaryHighlights = sortedImages.slice(1, 4)
 
   return (
     <div className="space-y-24">
@@ -58,10 +95,10 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
           <div>
             <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">REGISTOS RECENTES</span>
             <h2 className="text-2xl md:text-3xl font-black text-[#312455] mt-2 leading-tight">
-              Últimos Destaques da Academia
+              Últimos Destaques da Prime Academy
             </h2>
             <p className="text-slate-500 text-sm mt-1 max-w-lg">
-              Descubra os momentos marcantes de nossa comunidade — formações intensivas, workshops práticos e celebrações de excelência profissional.
+              Explore os momentos marcantes que moldam o nosso ecossistema — formações intensivas, workshops práticos e celebrações de excelência profissional.
             </p>
           </div>
 
@@ -74,14 +111,15 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
               >
                 <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full overflow-hidden rounded-t-[2rem]">
                   <Image
-                    src={mainHighlight.imageUrl}
-                    alt={mainHighlight.caption}
+                    src={mainHighlight.image || '/placeholder.jpg'}
+                    alt={mainHighlight.title}
                     fill
+                    unoptimized
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     sizes="(max-width: 1024px) 100vw, 60vw"
                   />
                   <div className="absolute top-4 left-4 bg-[#8a66a8] text-white text-xs font-semibold px-3.5 py-1.5 rounded-full shadow-md">
-                    {mainHighlight.category}
+                    {mainHighlight.categoria}
                   </div>
                   <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors duration-300" />
                 </div>
@@ -92,10 +130,10 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
                     <span>Destaque Principal</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-black text-[#312455] leading-tight group-hover:text-[#8a66a8] transition-colors duration-300">
-                    {mainHighlight.caption}
+                    {mainHighlight.title}
                   </h3>
                   <p className="text-slate-500 text-sm font-light leading-relaxed">
-                    Capture um momento de conquista e transformação. Estes profissionais completaram sua jornada de desenvolvimento e abraçam novos desafios com confiança e competência.
+                    Registo dos momentos marcantes, workshops, celebrações e eventos de excelência que traduzem a evolução prática e a trajetória de sucesso no nosso ecossistema.
                   </p>
                   <div className="flex items-center gap-1.5 text-xs font-bold text-[#8a66a8] uppercase pt-2">
                     <span>Ver em Tamanho Cheio</span>
@@ -115,9 +153,10 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
                 >
                   <div className="relative w-full sm:w-40 aspect-video sm:aspect-square overflow-hidden rounded-2xl shrink-0">
                     <Image
-                      src={img.imageUrl}
-                      alt={img.caption}
+                      src={img.image || '/placeholder.jpg'}
+                      alt={img.title}
                       fill
+                      unoptimized
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                       sizes="(max-width: 640px) 100vw, 160px"
                     />
@@ -126,10 +165,10 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
 
                   <div className="flex-1 space-y-2 py-1">
                     <div className="inline-block bg-[#312455]/5 text-[#312455] text-[10px] font-bold px-2 py-0.5 rounded-md">
-                      {img.category}
+                      {img.categoria}
                     </div>
                     <h4 className="font-bold text-slate-800 text-sm leading-snug group-hover:text-[#8a66a8] transition-colors duration-300 line-clamp-2">
-                      {img.caption}
+                      {img.title}
                     </h4>
                     <span className="inline-flex items-center gap-1 text-[11px] text-[#8a66a8] font-semibold">
                       <span>Visualizar registo</span>
@@ -189,15 +228,16 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
                 {/* Shorter landscape image frame */}
                 <div className="relative aspect-[4/3] w-full overflow-hidden">
                   <Image
-                    src={image.imageUrl}
-                    alt={image.caption}
+                    src={image.image || '/placeholder.jpg'}
+                    alt={image.title}
                     fill
+                    unoptimized
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
                   />
                   {/* Category overlay */}
                   <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-sm text-[#312455] text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm z-10">
-                    {image.category}
+                    {image.categoria}
                   </div>
                   {/* Hover icon and dark overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#312455]/85 via-[#312455]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -210,7 +250,7 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
                 {/* Footer with metadata */}
                 <div className="p-3.5 space-y-0.5 bg-white">
                   <h4 className="font-bold text-slate-800 text-xs leading-snug group-hover:text-[#8a66a8] transition-colors duration-200 line-clamp-1">
-                    {image.caption}
+                    {image.title}
                   </h4>
                   <p className="text-[10px] text-slate-400 font-medium">Prime Academy Angola</p>
                 </div>
@@ -245,20 +285,33 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
               <ChevronLeft className="w-4 h-4" />
             </Button>
 
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <Button
-                key={page}
-                onClick={() => handlePageChange(page)}
-                variant={currentPage === page ? 'default' : 'outline'}
-                className={`w-9 h-9 rounded-xl font-bold text-xs ${
-                  currentPage === page
-                    ? 'bg-[#312455] text-white hover:bg-[#8a66a8]'
-                    : 'border-slate-200 text-slate-600 hover:border-[#8a66a8] hover:text-[#8a66a8]'
-                }`}
-              >
-                {page}
-              </Button>
-            ))}
+            {getPageNumbers().map((page, index) => {
+              if (typeof page === 'string') {
+                return (
+                  <span
+                    key={`ellipsis-${index}`}
+                    className="w-9 h-9 flex items-center justify-center text-slate-400 text-xs font-bold"
+                  >
+                    ...
+                  </span>
+                )
+              }
+
+              return (
+                <Button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  variant={currentPage === page ? 'default' : 'outline'}
+                  className={`w-9 h-9 rounded-xl font-bold text-xs ${
+                    currentPage === page
+                      ? 'bg-[#312455] text-white hover:bg-[#8a66a8]'
+                      : 'border-slate-200 text-slate-600 hover:border-[#8a66a8] hover:text-[#8a66a8]'
+                  }`}
+                >
+                  {page}
+                </Button>
+              )
+            })}
 
             <Button
               variant="outline"
@@ -277,7 +330,7 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
       <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
         <DialogContent className="max-w-4xl p-0 overflow-hidden bg-transparent border-none shadow-2xl">
           <DialogTitle className="sr-only">
-            {selectedImage?.caption || 'Imagem da galeria'}
+            {selectedImage?.title || 'Imagem da galeria'}
           </DialogTitle>
           {selectedImage && (
             <div className="relative">
@@ -290,9 +343,10 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
               </button>
               <div className="relative aspect-[4/3] md:aspect-[16/10]">
                 <Image
-                  src={selectedImage.imageUrl}
-                  alt={selectedImage.caption}
+                  src={selectedImage.image || '/placeholder.jpg'}
+                  alt={selectedImage.title}
                   fill
+                  unoptimized
                   className="object-contain bg-black"
                   sizes="(max-width: 1024px) 100vw, 80vw"
                   priority
@@ -300,9 +354,9 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
               </div>
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6">
                 <div className="inline-block bg-[#8a66a8] text-white text-xs font-semibold px-2.5 py-1 rounded-md mb-2">
-                  {selectedImage.category}
+                  {selectedImage.categoria}
                 </div>
-                <p className="text-white font-bold text-lg sm:text-xl">{selectedImage.caption}</p>
+                <p className="text-white font-bold text-lg sm:text-xl">{selectedImage.title}</p>
                 <p className="text-white/60 text-xs mt-1">Registo Oficial - Prime Academy</p>
               </div>
             </div>

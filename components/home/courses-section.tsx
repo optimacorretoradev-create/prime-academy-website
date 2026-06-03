@@ -127,17 +127,6 @@ export async function CoursesSection() {
                 </div>
 
                 <CardFooter className="flex flex-col gap-3 pt-2 pb-6 px-6 border-t border-border/50 mt-4 bg-muted/10">
-                  {course.pdfUrl && (
-                    <a
-                      href={course.pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground hover:text-accent transition-colors w-full mt-2"
-                    >
-                      <FileText className="h-4 w-4 animate-pulse group-hover:animate-none" />
-                      <span>Descarregar Programa PDF</span>
-                    </a>
-                  )}
                   <Button asChild className="w-full bg-accent text-accent-foreground hover:bg-accent/90 rounded-2xl font-bold h-11 shadow-sm group-hover:shadow-md transition-all active:scale-[0.98]">
                     <Link href={`/enroll?course=${encodeURIComponent(course.name)}`}>
                       Inscrever-me
