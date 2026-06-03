@@ -245,17 +245,14 @@ export function FeaturesSection() {
             className="lg:col-span-6 bg-slate-50/70 border border-slate-100/80 rounded-3xl p-6 md:p-8 flex flex-col justify-between min-h-[420px] shadow-sm relative"
           >
             <div className="space-y-5">
-              <div className="space-y-2 text-left">
-                <Badge className="bg-secondary/15 text-secondary border border-secondary/20 px-4 py-1 uppercase tracking-widest text-[9px] font-bold rounded-full">
-                  PORQUE NÓS?
-                </Badge>
-                <h2 className="text-2xl md:text-3xl font-extrabold text-primary leading-tight uppercase tracking-tight">
-                  A Excelência em Formação Executiva
-                </h2>
-                <p className="text-muted-foreground text-xs font-light leading-relaxed">
-                  Clique nas vantagens abaixo para inspecionar em tempo real o funcionamento do nosso ecossistema de elite no painel oposto:
-                </p>
-              </div>
+                <div className="space-y-2 text-left">
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-primary leading-tight uppercase tracking-tight">
+                    Excelência Operacional e Metodológica
+                  </h2>
+                  <p className="text-muted-foreground text-xs font-light leading-relaxed">
+                    Clique nas vantagens abaixo para inspecionar em tempo real o funcionamento do nosso ecossistema de elite no painel oposto:
+                  </p>
+                </div>
 
               {/* Clickable Morphing Tab Selectors */}
               <div className="space-y-2.5">

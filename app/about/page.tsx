@@ -23,8 +23,8 @@ export default function AboutPage() {
   ]
 
   const stripFeatures = [
-    { icon: MonitorPlay, label: 'Formação Online', sub: 'Plataforma 24/7' },
-    { icon: GraduationCap, label: 'Formadores de Topo', sub: 'Nacionais e Internacionais' },
+    { icon: MonitorPlay, label: 'A formação online e presencial', sub: 'Plataforma 24/7' },
+    { icon: GraduationCap, label: 'Formadores', sub: 'Nacionais e Internacionais' },
     { icon: BookOpen, label: 'Cursos Ilimitados', sub: 'Portfólio em expansão' },
     { icon: BadgeCheck, label: 'Membros Certificados', sub: '+10.353 Profissionais' },
   ]
@@ -139,8 +139,8 @@ export default function AboutPage() {
               {/* Feature checkpoints (colored exactly matching brand visual ID) */}
               <div className="grid grid-cols-2 gap-4 py-2">
                 {[
-                  { color: 'bg-rose-500', label: 'Formadores de Elite' },
-                  { color: 'bg-[#8a66a8]', label: 'Formação Online' },
+                  { color: 'bg-rose-500', label: 'Formadores' },
+                  { color: 'bg-[#8a66a8]', label: 'A formação online e presencial' },
                   { color: 'bg-amber-500', label: 'Acesso Vitalício' },
                   { color: 'bg-teal-500', label: 'Resultados Reais' },
                 ].map((feat, i) => (
