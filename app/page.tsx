@@ -1,4 +1,5 @@
 import { HeroSection } from '@/components/home/hero-section'
+import { HowItWorksSection } from '@/components/home/how-it-works-section'
 import { WhyPrimeSection } from '@/components/home/why-prime-section'
 import { StatsStrip } from '@/components/home/stats-strip'
 import { FeaturesSection } from '@/components/home/features-section'
