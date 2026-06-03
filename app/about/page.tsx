@@ -35,8 +35,9 @@ export default function AboutPage() {
     { name: 'Claúdia Roceth', role: 'Liderança Executiva', bio: 'Mentora de líderes de alto desempenho.', avatar: '/images/trainers/trainer3.png' },
     { name: 'Isabel Gaspar', role: 'Tecnologias de Gestão', bio: 'Expert em transformação digital.', avatar: '/images/trainers/trainer4.jpeg' },
     { name: 'Valéria Serra', role: 'Gestão de Pessoas', bio: 'Especialista em desenvolvimento de RH.', avatar: '/images/trainers/trainer6.png' },
-    { name: 'Santos Egas Moniz', role: 'Finanças Corporativas', bio: 'Analista sénior com foco estratégico.', avatar: '/images/trainers/trainer7.png' },
+    { name: 'Santos Egas Moniz', role: 'Finanças Corporativas', bio: 'Analista sênior com foco estratégico.', avatar: '/images/trainers/trainer7.png' },
     { name: 'Eduardo Chilowa', role: 'Logística & Supply Chain', bio: 'Líder em operações e cadeia de suprimentos.', avatar: '/images/trainers/trainer8.png' },
+    { name: 'Jacira Pimentel', role: 'Formadora', bio: 'Especialista com vasta experiência na sua área.', avatar: '/images/trainers/trainer9.jpeg' },
   ]
 
   const targetAudience = [
