@@ -30,10 +30,30 @@ const partners = [
   { icon: GraduationCap, name: 'Universidades' }
 ]
 
-export async function TestimonialsSection() {
-  const testimonials = await getTestimonials()
+const mockTestimonials = [
+  {
+    id: 't1',
+    name: 'Maria Silva',
+    text: 'A formação superou as minhas expectativas. Ferramentas práticas e imediatas.',
+    avatarUrl: null
+  },
+  {
+    id: 't2',
+    name: 'João Pedro',
+    text: 'Excelente abordagem metodológica. Sinto-me muito mais preparado para os desafios da minha liderança.',
+    avatarUrl: null
+  },
+  {
+    id: 't3',
+    name: 'Ana Costa',
+    text: 'Formadores de alto nível e conteúdos extremamente pertinentes para a nossa realidade.',
+    avatarUrl: null
+  }
+]
 
-  if (testimonials.length === 0) return null
+export async function TestimonialsSection() {
+  const testimonialsFromHygraph = await getTestimonials()
+  const testimonials = testimonialsFromHygraph.length > 0 ? testimonialsFromHygraph : mockTestimonials
 
   return (
     <section className="py-20 md:py-28 bg-secondary/10 relative overflow-hidden border-t border-border">
@@ -73,7 +93,7 @@ export async function TestimonialsSection() {
         <div className="space-y-8">
           <div className="text-center">
             <span className="text-xs font-extrabold text-muted-foreground uppercase tracking-widest block mb-1">
-              ORGANIZAÇÕES QUE CONFIAAM NO NOSSO VALOR
+              ORGANIZAÇÕES QUE CONFIAM NO NOSSO VALOR
             </span>
             <p className="text-xs text-muted-foreground">Parceiros e clientes dos principais segmentos do mercado angolano</p>
           </div>
@@ -98,10 +118,10 @@ export async function TestimonialsSection() {
         <div className="space-y-12">
           <div className="text-center space-y-4">
             <Badge className="bg-accent text-accent-foreground border-none px-4 py-1 uppercase tracking-widest text-[10px] font-bold">
-              OPINIÃO DO ALUNO
+              OPINIÃO DO FORMANDO
             </Badge>
             <h3 className="text-2xl md:text-3xl font-extrabold text-primary">
-              O que dizem os nossos alunos?
+              O que dizem os nossos formandos?
             </h3>
           </div>
 
