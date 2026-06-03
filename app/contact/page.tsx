@@ -42,13 +42,12 @@ export default async function ContactPage() {
 
       {/* Contact Section */}
       <section className="py-16 md:py-24 bg-white">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-stretch">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             
             {/* LEFT COLUMN: CONTACT DETAILS */}
-            <div className="lg:col-span-7 space-y-10">
+            <div className="space-y-10">
               <div>
-                <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">Get In Touch</span>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-[#312455] mt-2 leading-tight">
                   Não Hesite em<br />Contactar-nos
                 </h2>
@@ -88,7 +87,7 @@ export default async function ContactPage() {
                   </div>
                   <div className="space-y-1">
                     <h4 className="font-bold text-[#312455] text-base">Email</h4>
-                    <a href={`mailto:${contactInfo.email}`} className="block text-slate-500 text-xs hover:text-[#8a66a8] transition-colors break-all">{contactInfo.email}</a>
+                    <a href="mailto:geral@primeacademy.ao" className="block text-slate-500 text-xs hover:text-[#8a66a8] transition-colors break-all">geral@primeacademy.ao</a>
                   </div>
                 </div>
 
@@ -126,27 +125,17 @@ export default async function ContactPage() {
                   </div>
                 </div>
               </div>
-
-              {/* Nice Wide Image at the bottom left */}
-              <div className="relative aspect-[21/9] sm:aspect-[21/10] w-full overflow-hidden rounded-3xl shadow-sm border border-slate-100 mt-6">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: 'url(/images/contact.jpg)' }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#312455]/40 via-transparent to-transparent" />
-              </div>
             </div>
 
             {/* RIGHT COLUMN: CARD & FORM */}
-            <div className="lg:col-span-5 h-full">
-              <div className="bg-[#fafaf8] border border-slate-100 rounded-[2.5rem] p-8 sm:p-10 shadow-sm h-full flex flex-col">
-                <h3 className="text-xl sm:text-2xl font-black text-[#312455] mb-2 leading-tight">
+            <div className="h-full">
+              <div className="bg-white border border-slate-200 rounded-3xl p-10 shadow-lg h-full flex flex-col">
+                <h3 className="text-2xl font-bold text-[#312455] mb-8">
                   Envie-nos uma Mensagem
                 </h3>
-                <p className="text-slate-400 text-xs font-light mb-6">
-                  Preencha o formulário abaixo e a nossa equipa entrará em contacto direto.
-                </p>
-                <ContactForm />
+                <div className="flex-1">
+                  <ContactForm />
+                </div>
               </div>
             </div>
 
