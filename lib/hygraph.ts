@@ -208,7 +208,7 @@ function mapGalleryImage(img: any): GalleryImage {
 const contactInfoData: ContactInfo = {
   phone: '(+244) 921 394 946',
   whatsappNumber: '+244921394946',
-  email: 'geralprimeacademy@gmail.com',
+  email: 'geral@primeacademy.ao',
   address: 'Rua 28 de Maio, Edifício 30, 6º Andar Lado Esquerdo, Maianga, Luanda, Angola',
   socialLinks: {
     facebook: 'https://facebook.com/primeacademy',
