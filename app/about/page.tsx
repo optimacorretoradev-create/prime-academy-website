@@ -30,13 +30,13 @@ export default function AboutPage() {
   ]
 
   const trainers = [
-    { name: 'Lourença Ricardo', role: 'Protocolo & Secretariado', avatar: '/images/trainers/trainer1.jpeg' },
-    { name: 'Hosana Inglês', role: 'Gestão de Processos', avatar: '/images/trainers/trainer2.png' },
-    { name: 'Claúdia Roceth', role: 'Liderança Executiva', avatar: '/images/trainers/trainer3.png' },
-    { name: 'Isabel Gaspar', role: 'Tecnologias de Gestão', avatar: '/images/trainers/trainer4.jpeg' },
-    { name: 'Valéria Serra', role: 'Gestão de Pessoas', avatar: '/images/trainers/trainer6.png' },
-    { name: 'Santos Egas Moniz', role: 'Finanças Corporativas', avatar: '/images/trainers/trainer7.png' },
-    { name: 'Eduardo Chilowa', role: 'Logística & Supply Chain', avatar: '/images/trainers/trainer8.png' },
+    { name: 'Lourença Ricardo', role: 'Protocolo & Secretariado', bio: 'Especialista em protocolo com vasta experiência.', avatar: '/images/trainers/trainer1.jpeg' },
+    { name: 'Hosana Inglês', role: 'Gestão de Processos', bio: 'Consultora de gestão focada em eficiência.', avatar: '/images/trainers/trainer2.png' },
+    { name: 'Claúdia Roceth', role: 'Liderança Executiva', bio: 'Mentora de líderes de alto desempenho.', avatar: '/images/trainers/trainer3.png' },
+    { name: 'Isabel Gaspar', role: 'Tecnologias de Gestão', bio: 'Expert em transformação digital.', avatar: '/images/trainers/trainer4.jpeg' },
+    { name: 'Valéria Serra', role: 'Gestão de Pessoas', bio: 'Especialista em desenvolvimento de RH.', avatar: '/images/trainers/trainer6.png' },
+    { name: 'Santos Egas Moniz', role: 'Finanças Corporativas', bio: 'Analista sénior com foco estratégico.', avatar: '/images/trainers/trainer7.png' },
+    { name: 'Eduardo Chilowa', role: 'Logística & Supply Chain', bio: 'Líder em operações e cadeia de suprimentos.', avatar: '/images/trainers/trainer8.png' },
   ]
 
   const targetAudience = [
@@ -44,12 +44,15 @@ export default function AboutPage() {
     'Secretários executivos e assessores de direção',
     'Chefias intermédias',
     'Diretores de Gabinetes e Departamentos',
+    'Técnicos superiores da Administração Pública',
+    'Quadros estratégicos de empresas públicas e privadas',
   ]
 
   const segments = [
     'Instituições públicas e governamentais',
     'Empresas privadas nacionais e multinacionais',
     'Bancos e seguradoras',
+    'Universidades e centros de investigação',
     'ONGs e organismos internacionais',
   ]
 
@@ -123,14 +126,13 @@ export default function AboutPage() {
             {/* RIGHT — Text + feature list + CTA */}
             <div className="space-y-6">
               <div>
-                <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">CONHEÇA-NOS</span>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-[#312455] mt-3 leading-tight">
-                  Crescemos com Profissionais de Excelência em Angola
+                  CONHEÇA-NOS
                 </h2>
               </div>
 
               <p className="text-slate-500 text-sm leading-relaxed">
-                A <strong className="text-[#312455]">Prime Academy</strong> é uma academia de formação profissional avançada, iniciada em 2018, que já capacitou mais de <strong className="text-[#312455] font-black">10.353 profissionais em Angola</strong>. Atuamos no desenvolvimento de competências estratégicas, técnicas e tecnológicas, apoiando organizações e líderes na modernização dos seus modelos de gestão.
+                A <strong className="text-[#312455]">Prime Academy</strong> é uma academia de formação profissional avançada, resultado de um projeto iniciado em 2018, que já capacitou mais de <strong className="text-[#312455] font-black">10.353 profissionais em Angola</strong>. Atuamos no desenvolvimento de competências estratégicas, técnicas e tecnológicas, apoiando organizações e líderes na modernização dos seus modelos de gestão e na adaptação às exigências da era digital. Trabalhamos com profissionais que lideram, decidem e influenciam, contribuindo para a construção de organizações mais eficientes, competitivas e sustentáveis.
               </p>
 
               {/* Feature checkpoints (colored exactly matching brand visual ID) */}
@@ -160,6 +162,85 @@ export default function AboutPage() {
               </div>
             </div>
 
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════
+          SECÇÃO 5 — Nossa Identidade (Missão & Visão + Público)
+      ══════════════════════════════════════════════ */}
+      <section className="py-20 bg-slate-50 border-t border-slate-100">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="mb-10 text-center">
+            <h2 className="text-3xl md:text-4xl font-black text-[#312455]">Nossa Identidade</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm flex flex-col gap-5">
+              <div className="w-14 h-14 rounded-2xl bg-[#8a66a8]/10 flex items-center justify-center">
+                <Target className="h-7 w-7 text-[#8a66a8]" />
+              </div>
+              <h3 className="text-xl font-black text-[#312455]">A Nossa Missão</h3>
+              <p className="text-slate-500 text-sm leading-relaxed">
+                Capacitar profissionais para liderar, decidir e transformar organizações, por meio da aplicação de tecnologias, metodologias inovadoras e boas práticas internacionais, promovendo resultados sustentáveis e excelência organizacional.
+              </p>
+            </div>
+
+            <div className="bg-[#312455] rounded-3xl p-8 flex flex-col gap-5">
+              <div className="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center">
+                <Shield className="h-7 w-7 text-[#c4a9e0]" />
+              </div>
+              <h3 className="text-xl font-black text-white">A Nossa Visão</h3>
+              <p className="text-white/70 text-sm leading-relaxed">
+                Ser uma academia de referência nacional e regional na formação de quadros estratégicos em gestão administrativa moderna e secretariado executivo de alto nível, reconhecida pela excelência, inovação e impacto no desenvolvimento organizacional.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════
+          SECÇÃO PÚBLICO-ALVO
+      ══════════════════════════════════════════════ */}
+      <section className="py-20 bg-white border-t border-slate-100">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="mb-10 text-center">
+            <h2 className="text-3xl md:text-4xl font-black text-[#312455]">PÚBLICO-ALVO</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white border border-slate-100 rounded-3xl p-8 space-y-5 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#8a66a8]/10 flex items-center justify-center">
+                  <Briefcase className="h-5 w-5 text-[#8a66a8]" />
+                </div>
+                <h3 className="text-xl font-black text-[#312455]">Público-Alvo</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {targetAudience.map((item, i) => (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <CheckCircle2 className="h-4 w-4 text-[#8a66a8] mt-0.5 shrink-0" />
+                    <span className="text-sm text-slate-600 font-medium leading-snug">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-white border border-slate-100 rounded-3xl p-8 space-y-5 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#8a66a8]/10 flex items-center justify-center">
+                  <Landmark className="h-5 w-5 text-[#8a66a8]" />
+                </div>
+                <h3 className="text-xl font-black text-[#312455]">Clientes e Parceiros</h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {segments.map((item, i) => (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <CheckCircle2 className="h-4 w-4 text-[#8a66a8] mt-0.5 shrink-0" />
+                    <span className="text-sm text-slate-600 font-medium leading-snug">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -237,123 +318,38 @@ export default function AboutPage() {
       </section>
 
       {/* ══════════════════════════════════════════════
-          SECÇÃO 4 — Formadores com perfis circulares
-          (exactamente como "Meet the teacher" da referência)
+          SECÇÃO 4 — Corpo Docente
       ══════════════════════════════════════════════ */}
-      <section className="py-20 md:py-28">
+      <section className="py-20 md:py-28 bg-white">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-14">
-            <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">FORMADORES QUALIFICADOS</span>
+            <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">CORPO DOCENTE</span>
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#312455] mt-3 leading-tight">
-              Conheça os Formadores que Ensinam Online
+              Formadores de Excelência Nacional e Internacional
             </h2>
+            <p className="text-slate-500 text-sm leading-relaxed mt-4 max-w-2xl mx-auto">
+              A Prime Academy possui um corpo docente de excelência, composto por especialistas com certificação qualificada e experiência comprovada. Esta combinação de conhecimento técnico, vivência prática e competência pedagógica assegura uma formação de elevada qualidade, orientada para resultados concretos.
+            </p>
           </div>
 
-          {/* Circular trainer profiles (matching reference grid) */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 md:gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
             {trainers.map((trainer, i) => (
-              <div key={i} className="group flex flex-col items-center gap-3 text-center">
-                <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-4 border-[#8a66a8]/20 group-hover:border-[#8a66a8] transition-all duration-300 shadow-md group-hover:shadow-[0_8px_24px_rgba(138,102,168,0.25)]">
+              <div key={i} className="group bg-slate-50 rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center gap-4">
+                <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-[#8a66a8]/20 group-hover:border-[#8a66a8] transition-all duration-300 shadow-md">
                   <img
                     src={trainer.avatar}
                     alt={trainer.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
-                {/* Share icon in top right (matching reference) */}
-                <div className="w-6 h-6 bg-[#8a66a8]/10 group-hover:bg-[#8a66a8] rounded-full flex items-center justify-center -mt-1 transition-colors duration-300">
-                  <Star className="w-3 h-3 text-[#8a66a8] group-hover:text-white transition-colors duration-300" />
-                </div>
                 <div>
-                  <p className="font-black text-sm text-[#312455] leading-tight">{trainer.name}</p>
-                  <p className="text-[11px] text-[#8a66a8] font-medium mt-0.5">{trainer.role}</p>
+                  <p className="font-black text-lg text-[#312455] leading-tight">{trainer.name}</p>
+                  <p className="text-xs text-[#8a66a8] font-bold mt-1 uppercase tracking-wider">{trainer.role}</p>
+                  <p className="text-xs text-slate-500 mt-3 leading-relaxed">{trainer.bio}</p>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════
-          SECÇÃO 5 — Missão & Visão + Público
-      ══════════════════════════════════════════════ */}
-      <section className="py-20 bg-slate-50 border-t border-slate-100">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-            <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm flex flex-col gap-5">
-              <div className="w-14 h-14 rounded-2xl bg-[#8a66a8]/10 flex items-center justify-center">
-                <Target className="h-7 w-7 text-[#8a66a8]" />
-              </div>
-              <h3 className="text-xl font-black text-[#312455]">A Nossa Missão</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">
-                Capacitar profissionais para liderar, decidir e transformar organizações, por meio da aplicação de tecnologias, metodologias inovadoras e boas práticas internacionais, promovendo resultados sustentáveis e excelência organizacional.
-              </p>
-            </div>
-
-            <div className="bg-[#312455] rounded-3xl p-8 flex flex-col gap-5">
-              <div className="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center">
-                <Shield className="h-7 w-7 text-[#c4a9e0]" />
-              </div>
-              <h3 className="text-xl font-black text-white">A Nossa Visão</h3>
-              <p className="text-white/70 text-sm leading-relaxed">
-                Ser uma academia de referência nacional e regional na formação de quadros estratégicos em gestão administrativa moderna e secretariado executivo de alto nível, reconhecida pela excelência, inovação e impacto no desenvolvimento organizacional.
-              </p>
-            </div>
-          </div>
-
-          {/* Público & Segmentos */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-white border border-slate-100 rounded-3xl p-8 space-y-5 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#8a66a8]/10 flex items-center justify-center">
-                  <Briefcase className="h-5 w-5 text-[#8a66a8]" />
-                </div>
-                <h3 className="text-base font-black text-[#312455]">Público-Alvo</h3>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {targetAudience.map((item, i) => (
-                  <div key={i} className="flex items-start gap-2.5">
-                    <CheckCircle2 className="h-4 w-4 text-[#8a66a8] mt-0.5 shrink-0" />
-                    <span className="text-xs text-slate-600 font-medium leading-snug">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-white border border-slate-100 rounded-3xl p-8 space-y-5 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#8a66a8]/10 flex items-center justify-center">
-                  <Landmark className="h-5 w-5 text-[#8a66a8]" />
-                </div>
-                <h3 className="text-base font-black text-[#312455]">Segmentos Corporativos</h3>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {segments.map((item, i) => (
-                  <div key={i} className="flex items-start gap-2.5">
-                    <CheckCircle2 className="h-4 w-4 text-[#8a66a8] mt-0.5 shrink-0" />
-                    <span className="text-xs text-slate-600 font-medium leading-snug">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════
-          SECÇÃO 6 — Corpo Docente (closing statement)
-      ══════════════════════════════════════════════ */}
-      <section className="py-20 border-t border-slate-100">
-        <div className="container mx-auto px-4 max-w-3xl text-center space-y-5">
-          <span className="inline-block bg-[#312455] text-[#c4a9e0] text-xs font-bold uppercase tracking-widest px-5 py-2 rounded-full">
-            CORPO DOCENTE
-          </span>
-          <h2 className="text-2xl md:text-3xl font-black text-[#312455]">
-            Formadores de Excelência Nacional e Internacional
-          </h2>
-          <p className="text-slate-500 text-sm leading-relaxed">
-            "A Prime Academy possui um corpo docente de excelência, composto por formadores nacionais e internacionais, com certificação qualificada e experiência comprovada nas suas áreas de actuação. Esta combinação de conhecimento técnico, vivência prática e competência pedagógica assegura uma formação de elevada qualidade, alinhada com padrões nacionais e internacionais, orientada para resultados concretos e impacto profissional."
-          </p>
         </div>
       </section>
 

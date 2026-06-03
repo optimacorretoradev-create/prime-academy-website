@@ -1,4 +1,5 @@
 import { HeroSection } from '@/components/home/hero-section'
+import { WhyPrimeSection } from '@/components/home/why-prime-section'
 import { StatsStrip } from '@/components/home/stats-strip'
 import { FeaturesSection } from '@/components/home/features-section'
 import { CoursesSection } from '@/components/home/courses-section'
@@ -13,6 +14,7 @@ export default function HomePage() {
       <HeroSection />
       <StatsStrip />
       <FeaturesSection />
+      <WhyPrimeSection />
       <CoursesSection />
       <TrainersSection />
       <TestimonialsSection />

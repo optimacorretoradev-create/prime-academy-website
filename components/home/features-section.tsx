@@ -307,69 +307,6 @@ export function FeaturesSection() {
 
         </div>
 
-        {/* Separador Divisor */}
-        <hr className="border-t border-slate-100 max-w-4xl mx-auto" />
-
-        {/* PARTE 2: COMO FUNCIONA (ULTRA-PREMIUM ROADMAP TIMELINE TRACK) */}
-        <div className="space-y-12">
-
-          {/* Header Title */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center space-y-3"
-          >
-            <Badge className="bg-primary/10 text-primary border border-primary/20 px-4 py-1.5 uppercase tracking-widest text-[9px] font-bold rounded-full">
-              JORNADA DO ALUNO
-            </Badge>
-            <h3 className="text-2xl md:text-3xl font-extrabold text-primary uppercase tracking-tight leading-tight">
-              Como funciona a sua jornada?
-            </h3>
-            <p className="text-muted-foreground max-w-xl mx-auto text-xs md:text-sm font-light">
-              Uma trajetória linear, transparente e focada em resultados, desenhada para líderes corporativos.
-            </p>
-          </motion.div>
-
-          {/* Symmetrical, Minimalist Connected Timeline Road Track */}
-          <div className="max-w-5xl mx-auto relative pt-6">
-
-            {/* Desktop timeline track connector lines */}
-            <div className="hidden md:block absolute top-12 left-10 right-10 h-[1.5px] bg-slate-100 -z-10" />
-            <div className="hidden md:block absolute top-12 left-10 w-[70%] h-[1.5px] bg-gradient-to-r from-secondary to-primary/30 -z-10 shadow-[0_0_8px_rgba(138,102,168,0.2)]" />
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 relative z-10">
-              {steps.map((step, index) => (
-                <motion.div
-                  key={step.number}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                  className="flex flex-col items-center md:items-start text-center md:text-left group relative"
-                >
-                  {/* Symmetrical Node Milestone Circle indicator */}
-                  <div className="w-12 h-12 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-primary font-bold text-sm relative group-hover:border-secondary group-hover:text-secondary group-hover:shadow-[0_0_12px_rgba(138,102,168,0.15)] transition-all duration-300 z-10">
-                    <span className="relative z-10 tracking-wider font-extrabold">{step.number}</span>
-                    <span className="absolute inset-0.5 rounded-full border border-dashed border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
-
-                  {/* Text Content Block */}
-                  <div className="mt-4 space-y-1 max-w-[280px]">
-                    <h4 className="font-extrabold text-base text-primary uppercase tracking-tight group-hover:text-secondary transition-colors">
-                      {step.title}
-                    </h4>
-                    <p className="text-muted-foreground text-xs leading-relaxed font-light">
-                      {step.description}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-        </div>
 
       </div>
     </section>
