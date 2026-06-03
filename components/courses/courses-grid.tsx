@@ -150,7 +150,7 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
       <div className="container mx-auto px-4 max-w-screen-xl pb-20">
 
         {/* Título da secção + underline */}
-        <div className="text-center mb-8 flex flex-col items-center">
+        <div className="text-center pt-15 mb-16 flex flex-col items-center">
           <h2 className="text-2xl md:text-3xl font-extrabold text-[#312455] uppercase tracking-wider mb-2">
             Os Nossos Cursos
           </h2>
@@ -212,14 +212,6 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
                         )
                       })()}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                      <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
-                        <span className="bg-white/95 text-slate-800 font-bold text-[10px] tracking-wide uppercase py-1 px-2.5 rounded-full shadow-sm">
-                          {course.category}
-                        </span>
-                        <span className="bg-emerald-500/90 text-white font-bold text-[10px] tracking-wide uppercase py-1 px-2.5 rounded-full shadow-sm">
-                          Presencial / Online
-                        </span>
-                      </div>
                     </div>
 
                     {/* Preço */}
@@ -257,11 +249,15 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
                     </div>
 
                     {/* CTA */}
-                    <div className="px-4 pb-4">
-                      <Button asChild className="w-full bg-[#312455] hover:bg-[#8a66a8] text-white rounded-xl h-10 text-xs font-bold shadow-md cursor-pointer transition-all duration-300">
+                    <div className="px-4 pb-4 flex gap-2">
+                      <Button asChild variant="outline" className="w-1/2 rounded-xl h-10 text-xs font-bold border-slate-200 text-slate-600 hover:border-[#312455] hover:text-[#312455] hover:bg-transparent cursor-pointer transition-colors duration-300">
                         <Link href={`/courses/${course.id}`}>
-                          <Play className="mr-1.5 h-3 w-3 fill-white" />
                           Saber Mais
+                        </Link>
+                      </Button>
+                      <Button asChild className="w-1/2 bg-[#312455] hover:bg-[#8a66a8] text-white rounded-xl h-10 text-xs font-bold shadow-md cursor-pointer transition-all duration-300">
+                        <Link href={`/enroll?course=${course.id}`}>
+                          Pré-inscrição
                         </Link>
                       </Button>
                     </div>

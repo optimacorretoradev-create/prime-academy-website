@@ -69,7 +69,9 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
   })
 
   if (!response.ok) {
-    throw new Error(`Hygraph API returned status ${response.status}`)
+    const errorText = await response.text()
+    console.error(`[Hygraph] API returned status ${response.status}. Body:`, errorText)
+    throw new Error(`Hygraph API returned status ${response.status}: ${errorText}`)
   }
 
   const json = await response.json()
@@ -91,6 +93,9 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
 /**
  * Helper mapper to convert Hygraph Course schema to frontend Course interface
  */
+/**
+ * Helper mapper to convert Hygraph Course schema to frontend Course interface
+ */
 function mapCourse(c: any): Course {
   // Normalise category: prefer `categoria` (Hygraph field), trim whitespace and uppercase for safe comparison
   const rawCategory = c.categoria ?? c.category ?? ''
@@ -98,21 +103,91 @@ function mapCourse(c: any): Course {
 
   return {
     id: c.id,
-    slug: c.slug || c.id,
+    slug: c.id, // Fallback para o ID
     name: c.name,
     description: c.description || '',
     category,
     duration: c.duration || '',
-    lessons: Number(c.lessons) || 0,
+    lessons: 0, // Campo não existe no schema atual
     price: c.price || 'Sob consulta',
     // c.image é um Asset Picker do Hygraph — extrai .url de forma resiliente
     image: c.image?.url || '/placeholder.jpg',
     rating: 4.8, // Fallback rating
     level: c.level || 'Todos',
-    online: c.online || false,
+    online: false, // Campo não existe
     // Lê HTML do Rich Text do campo syllabus
     syllabus: c.syllabus?.html || '',
     highlights: Array.isArray(c.highlights) ? c.highlights : []
+  }
+}
+
+/**
+ * Fetch all courses (GraphQL)
+ */
+export async function getCourses(featured?: boolean): Promise<Course[]> {
+  if (!endpoint) {
+    console.warn('[Hygraph] NEXT_PUBLIC_HYGRAPH_ENDPOINT não configurado.')
+    return []
+  }
+
+  try {
+    const query = `
+      query GetCursos {
+        cursos {
+          id
+          name
+          description
+          duration
+          price
+          level
+          syllabus { html }
+          highlights
+          categoria
+          image { url }
+        }
+      }
+    `
+
+    const data = await hygraphFetch<{ cursos: any[] }>(query)
+    return data?.cursos?.map(mapCourse) ?? []
+  } catch (error) {
+    console.error('[Hygraph] Erro ao obter cursos:', error)
+    return []
+  }
+}
+
+/**
+ * Fetch a single course by ID (GraphQL)
+ */
+export async function getCourseBySlug(id: string): Promise<Course | null> {
+  if (!endpoint) {
+    console.warn('[Hygraph] NEXT_PUBLIC_HYGRAPH_ENDPOINT não configurado.')
+    return null
+  }
+
+  try {
+    const query = `
+      query GetCourseById($id: ID!) {
+        curso(where: { id: $id }) {
+          id
+          name
+          description
+          duration
+          price
+          level
+          syllabus { html }
+          highlights
+          categoria
+          image { url }
+        }
+      }
+    `
+
+    const data = await hygraphFetch<{ curso: any }>(query, { id })
+    return data?.curso ? mapCourse(data.curso) : null
+  } catch (error) {
+    console.error(`[Hygraph] Erro ao obter curso "${id}":`, error)
+    return null
   }
 }
 
@@ -138,83 +213,6 @@ const contactInfoData: ContactInfo = {
   socialLinks: {
     facebook: 'https://facebook.com/primeacademy',
     instagram: 'https://instagram.com/primeacademy'
-  }
-}
-
-/**
- * Fetch all courses (GraphQL)
- */
-export async function getCourses(featured?: boolean): Promise<Course[]> {
-  if (!endpoint) {
-    console.warn('[Hygraph] NEXT_PUBLIC_HYGRAPH_ENDPOINT não configurado — a retornar array vazio.')
-    return []
-  }
-
-  try {
-    const query = `
-      query GetCursos {
-        cursos {
-          id
-          name
-          slug
-          description
-          duration
-          lessons
-          price
-          image { url }
-          level
-          syllabus { html }
-          highlights
-          categoria
-        }
-      }
-    `
-
-    const data = await hygraphFetch<{ cursos: any[] }>(query)
-    // Retorna cursos reais mapeados, ou array vazio se o Hygraph não devolver dados
-    return data?.cursos?.map(mapCourse) ?? []
-  } catch (error) {
-    console.error('[Hygraph] Erro ao obter cursos:', error)
-    // Array vazio — sem dados mockados em fallback
-    return []
-  }
-}
-
-/**
- * Fetch a single course by slug (GraphQL)
- */
-export async function getCourseBySlug(slug: string): Promise<Course | null> {
-  if (!endpoint) {
-    console.warn('[Hygraph] NEXT_PUBLIC_HYGRAPH_ENDPOINT não configurado — a retornar null.')
-    return null
-  }
-
-  try {
-    const query = `
-      query GetCourseBySlug($slug: String!) {
-        curso(where: { slug: $slug }) {
-          id
-          name
-          slug
-          description
-          duration
-          lessons
-          price
-          image { url }
-          level
-          syllabus { html }
-          highlights
-          categoria
-        }
-      }
-    `
-
-    const data = await hygraphFetch<{ curso: any }>(query, { slug })
-    // Retorna o curso real mapeado, ou null se não existir no CMS
-    return data?.curso ? mapCourse(data.curso) : null
-  } catch (error) {
-    console.error(`[Hygraph] Erro ao obter curso "${slug}":`, error)
-    return null
   }
 }
 
