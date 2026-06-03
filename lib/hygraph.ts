@@ -1,11 +1,9 @@
 export interface Course {
   id: string
-  slug?: string
   name: string
   description: string
   category: string
   duration: string
-  lessons: number
   price: string
   image: string
   rating: number
@@ -18,9 +16,11 @@ export interface Course {
 
 export interface GalleryImage {
   id: string
-  imageUrl: string
-  caption: string
-  category: string
+  title: string
+  categoria: string
+  destaque: boolean
+  image: string
+  createdAt: string
 }
 
 export interface Testimonial {
@@ -54,6 +54,8 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
   }
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    // Força o Hygraph a devolver apenas assets no stage Published (evita URLs vazias)
+    'gcms-stage': 'PUBLISHED',
   }
   if (token) {
     // If the token already has the 'Bearer ' prefix, use it directly; otherwise, prepend it.
@@ -98,12 +100,10 @@ function mapCourse(c: any): Course {
 
   return {
     id: c.id,
-    slug: c.slug || c.id,
     name: c.name,
     description: c.description || '',
     category,
     duration: c.duration || '',
-    lessons: Number(c.lessons) || 0,
     price: c.price || 'Sob consulta',
     // c.image é um Asset Picker do Hygraph — extrai .url de forma resiliente
     image: c.image?.url || '/placeholder.jpg',
@@ -119,12 +119,20 @@ function mapCourse(c: any): Course {
 /**
  * Helper mapper to convert Hygraph Gallery Image schema to frontend GalleryImage interface
  */
-function mapGalleryImage(img: any): GalleryImage {
+function mapGalleryImage(item: any): GalleryImage {
+  // Se a URL do asset estiver vazia mas o handle existir, reconstrói o link estático da CDN do Hygraph.
+  // O handle é o identificador único do asset no Hygraph CDN: https://media.graphassets.com/{handle}
+  const fallbackAssetUrl = item.imageUrl?.handle
+    ? `https://media.graphassets.com/${item.imageUrl.handle}`
+    : '/placeholder.jpg'
+
   return {
-    id: img.id,
-    imageUrl: img.imageUrl?.url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80',
-    caption: img.caption || '',
-    category: img.category || 'Geral'
+    id: item.id,
+    title: item.caption || item.title || '',
+    categoria: item.category || item.categoria || 'Geral',
+    destaque: Boolean(item.destaque),
+    image: item.imageUrl?.url || item.imageUrl?.handle && `https://media.graphassets.com/${item.imageUrl.handle}` || '/placeholder.jpg',
+    createdAt: item.createdAt || ''
   }
 }
 
@@ -141,6 +149,53 @@ const contactInfoData: ContactInfo = {
   }
 }
 
+// ─── Queries GraphQL — extraídas como constantes para reutilização e clareza ──
+
+const GET_CURSOS = `
+  query GetCursos {
+    cursos {
+      id
+      name
+      description
+      duration
+      price
+      level
+      highlights
+      categoria
+      syllabus {
+        html
+      }
+      image {
+        url
+      }
+    }
+  }
+`
+
+const GET_COURSE_BY_SLUG = `
+  query GetCourseById($id: ID!) {
+    curso(where: { id: $id }) {
+      id
+      name
+      description
+      duration
+      price
+      level
+      highlights
+      categoria
+      syllabus {
+        html
+      }
+      # Requisita id, url e stage para diagnóstico — confirma que o asset está Published
+      image(locales: [pt, en, pt_BR]) {
+        id
+        url
+        stage
+      }
+    }
+  }
+`
+
 /**
  * Fetch all courses (GraphQL)
  */
@@ -151,31 +206,23 @@ export async function getCourses(featured?: boolean): Promise<Course[]> {
   }
 
   try {
-    const query = `
-      query GetCursos {
-        cursos {
-          id
-          name
-          slug
-          description
-          duration
-          lessons
-          price
-          image { url }
-          level
-          syllabus { html }
-          highlights
-          categoria
-        }
-      }
-    `
+    const data = await hygraphFetch<{ cursos: any[] }>(GET_CURSOS)
 
-    const data = await hygraphFetch<{ cursos: any[] }>(query)
+    // 🔍 DIAGNÓSTICO SERVIDOR — imprime o raw image do 1º curso antes do mapper
+    if (data?.cursos?.length) {
+      console.log('[Hygraph RAW] Primeiro curso recebido:', {
+        name: data.cursos[0].name,
+        imageRaw: data.cursos[0].image,
+        categoria: data.cursos[0].categoria,
+      })
+    } else {
+      console.warn('[Hygraph RAW] Array cursos vazio ou null — verifique se os cursos estão Published no CMS.')
+    }
+
     // Retorna cursos reais mapeados, ou array vazio se o Hygraph não devolver dados
     return data?.cursos?.map(mapCourse) ?? []
   } catch (error) {
     console.error('[Hygraph] Erro ao obter cursos:', error)
-    // Array vazio — sem dados mockados em fallback
     return []
   }
 }
@@ -183,37 +230,18 @@ export async function getCourses(featured?: boolean): Promise<Course[]> {
 /**
  * Fetch a single course by slug (GraphQL)
  */
-export async function getCourseBySlug(slug: string): Promise<Course | null> {
+export async function getCourseBySlug(id: string): Promise<Course | null> {
   if (!endpoint) {
     console.warn('[Hygraph] NEXT_PUBLIC_HYGRAPH_ENDPOINT não configurado — a retornar null.')
     return null
   }
 
   try {
-    const query = `
-      query GetCourseBySlug($slug: String!) {
-        curso(where: { slug: $slug }) {
-          id
-          name
-          slug
-          description
-          duration
-          lessons
-          price
-          image { url }
-          level
-          syllabus { html }
-          highlights
-          categoria
-        }
-      }
-    `
-
-    const data = await hygraphFetch<{ curso: any }>(query, { slug })
+    const data = await hygraphFetch<{ curso: any }>(GET_COURSE_BY_SLUG, { id })
     // Retorna o curso real mapeado, ou null se não existir no CMS
     return data?.curso ? mapCourse(data.curso) : null
   } catch (error) {
-    console.error(`[Hygraph] Erro ao obter curso "${slug}":`, error)
+    console.error(`[Hygraph] Erro ao obter curso "${id}":`, error)
     return null
   }
 }
@@ -221,31 +249,93 @@ export async function getCourseBySlug(slug: string): Promise<Course | null> {
 /**
  * Fetch all gallery images (GraphQL)
  */
+// Query completa com campo destaque — sem orderBy para evitar erros de enum no schema
+// A ordenação é feita em JS após o fetch (destaque: true vem primeiro)
+const GET_GALLERY_IMAGES_WITH_DESTAQUE = `
+  query GetGalleryImages {
+    galleryImages {
+      id
+      imageUrl {
+        url
+        handle
+      }
+      caption
+      category
+      destaque
+      createdAt
+    }
+  }
+`
+
+// Query de fallback sem campo destaque — compatível com schemas onde o campo ainda não existe
+const GET_GALLERY_IMAGES_FALLBACK = `
+  query GetGalleryImages {
+    galleryImages {
+      id
+      imageUrl {
+        url
+        handle
+      }
+      caption
+      category
+      createdAt
+    }
+  }
+`
+
+/** Ordena o array colocando os itens com destaque=true no topo, e desempatando pelo mais recente */
+function sortByDestaque(images: GalleryImage[]): GalleryImage[] {
+  return [...images].sort((a, b) => {
+    if (a.destaque && !b.destaque) return -1
+    if (!a.destaque && b.destaque) return 1
+    
+    // Critério de desempate: mais recente primeiro (createdAt decrescente)
+    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0
+    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0
+    return dateB - dateA
+  })
+}
+
 export async function getGalleryImages(): Promise<GalleryImage[]> {
+  if (!endpoint) {
+    console.warn('[Gallery] NEXT_PUBLIC_HYGRAPH_ENDPOINT não configurado.')
+    return []
+  }
+
   try {
-    if (!endpoint) {
+    // Tenta a query completa com o campo destaque
+    const data = await hygraphFetch<{ galleryImages: any[] }>(GET_GALLERY_IMAGES_WITH_DESTAQUE)
+
+    // ── DIAGNÓSTICO RAW ──────────────────────────────────────────────────────
+    console.log('[Gallery RAW] data recebida:', JSON.stringify(data)?.slice(0, 500))
+    // ────────────────────────────────────────────────────────────────────────
+
+    if (data?.galleryImages?.length) {
+      console.log(`[Gallery] ✅ ${data.galleryImages.length} imagens recebidas. Primeiro item:`, data.galleryImages[0])
+      // Ordena em memória: itens com destaque=true primeiro
+      return sortByDestaque(data.galleryImages.map(mapGalleryImage))
+    }
+
+    console.warn('[Gallery] galleryImages vazio ou ausente — verifique se os itens estão Published no Hygraph.')
+    return []
+  } catch (primaryError) {
+    // Campo destaque pode ainda não existir no schema — tenta query de fallback sem ele
+    console.warn('[Gallery] Query com campo destaque falhou. A tentar fallback sem destaque...', primaryError)
+
+    try {
+      const fallbackData = await hygraphFetch<{ galleryImages: any[] }>(GET_GALLERY_IMAGES_FALLBACK)
+
+      if (fallbackData?.galleryImages?.length) {
+        console.log(`[Gallery] ⚠️ Fallback OK — ${fallbackData.galleryImages.length} imagens (sem campo destaque).`)
+        return fallbackData.galleryImages.map(mapGalleryImage)
+      }
+
+      console.warn('[Gallery] Fallback também devolveu vazio — verifique se os itens estão Published no Hygraph.')
+      return []
+    } catch (fallbackError) {
+      console.error('[Gallery] Erro crítico em ambas as queries:', fallbackError)
       return []
     }
-
-    const query = `
-      query GetGalleryImages {
-        galleryImages {
-          id
-          imageUrl { url }
-          caption
-          category
-        }
-      }
-    `
-
-    const data = await hygraphFetch<{ galleryImages: any[] }>(query)
-    if (data && data.galleryImages) {
-      return data.galleryImages.map(mapGalleryImage)
-    }
-    return []
-  } catch (error) {
-    console.warn('Error fetching gallery images from Hygraph (returning empty array):', error)
-    return []
   }
 }
 
