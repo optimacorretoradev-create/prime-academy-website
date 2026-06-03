@@ -354,41 +354,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════
-          SECÇÃO 5 — Credibilidade e Trajetória
-      ══════════════════════════════════════════════ */}
-      <section className="py-20 bg-slate-50 border-t border-slate-100">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-16">
-            <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">IMPACTO E TRAJECTÓRIA</span>
-            <h2 className="text-3xl md:text-4xl font-black text-[#312455] mt-3">A nossa credibilidade e trajetória educacional</h2>
-            <p className="text-slate-500 text-sm max-w-2xl mx-auto mt-4">
-              Nascemos da necessidade de modernizar competências organizacionais através da formação profissional avançada.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-3xl text-center border border-slate-100 shadow-sm">
-              <p className="text-4xl font-black text-[#312455] mb-4">+10.351</p>
-              <h5 className="font-bold text-[#312455] mb-2">Profissionais Capacitados</h5>
-              <p className="text-xs text-slate-500">Profissionais formados em Angola desde o início do projeto em 2018.</p>
-            </div>
-            
-            <div className="bg-white p-8 rounded-3xl text-center border border-slate-100 shadow-sm">
-              <p className="text-4xl font-black text-[#312455] mb-4">2018</p>
-              <h5 className="font-bold text-[#312455] mb-2">Início do Projeto</h5>
-              <p className="text-xs text-slate-500">Evolução estratégica focada em profissionais que já decidem e lideram.</p>
-            </div>
-            
-            <div className="bg-white p-8 rounded-3xl text-center border border-slate-100 shadow-sm">
-              <p className="text-4xl font-black text-[#312455] mb-4">80%</p>
-              <h5 className="font-bold text-[#312455] mb-2">Prática Aplicada</h5>
-              <p className="text-xs text-slate-500">Foco em metodologia prática para resolver desafios reais das organizações.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
     </div>
   )
 }
