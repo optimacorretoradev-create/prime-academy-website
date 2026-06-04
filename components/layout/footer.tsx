@@ -98,7 +98,7 @@ export function Footer() {
               <li className="flex items-start gap-2.5">
                 <Mail className="h-4.5 w-4.5 text-[#8a66a8] mt-0.5 flex-shrink-0" />
                 <div className="flex flex-col gap-0.5">
-                  <a href="mailto:geralprimeacademy@gmail.com" className="hover:text-white transition-colors duration-200 break-all">geralprimeacademy@gmail.com</a>
+                  <a href="mailto:geral@primeacademy.ao" className="hover:text-white transition-colors duration-200 break-all">geral@primeacademy.ao</a>
                   <a href="mailto:comercialprimeacademy@gmail.com" className="hover:text-white transition-colors duration-200 break-all">comercialprimeacademy@gmail.com</a>
                 </div>
               </li>

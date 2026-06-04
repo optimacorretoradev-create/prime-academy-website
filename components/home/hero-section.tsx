@@ -10,26 +10,26 @@ import Image from 'next/image'
 const slides = [
   {
     title: "Prime Academy",
-    subtitle: "A Sua Academia Online de Gestão",
-    description: "Formação Executiva Avançada 100% Online em Novas Tecnologias de Gestão Administrativa e Secretarial. Estude ao seu próprio ritmo com certificação de excelência.",
+    subtitle: "Centro de Excelência em Formação Profissional",
+    description: "Formação corporativa de referência para executivos e profissionais de elevado desempenho. Desenvolva competências críticas com prestígio, inovação e rigor.",
     image: "/images/hero/slide1.jpg"
   },
   {
-    title: "Gestão Inteligente",
-    subtitle: "Inovação e Processos Corporativos",
-    description: "Domine as ferramentas tecnológicas mais modernas do mercado de trabalho, otimize fluxos de gestão e lidere a transformação digital de qualquer organização.",
+    title: "Excelência e Prestígio",
+    subtitle: "Capacitação de Alto Nível para o Mercado",
+    description: "Elevamos o padrão do desenvolvimento profissional. Soluções de formação estratégica para organizações públicas e privadas comprometidas com o sucesso.",
     image: "/images/hero/slide2.jpg"
   },
   {
-    title: "Secretariado de Elite",
-    subtitle: "Assessoria e Comunicação de Alto Nível",
-    description: "Qualifique-se com as melhores práticas internacionais em assessoria de liderança, protocolo institucional, planeamento executivo e gestão de topo.",
+    title: "Liderança Inovadora",
+    subtitle: "Gestão e Estratégia Corporativa",
+    description: "Prepare-se para os desafios atuais. Potenciamos líderes e equipas com metodologias de ponta focadas na eficácia, na inovação e na excelência operacional.",
     image: "/images/hero/slide3.jpg"
   },
   {
-    title: "Futuro Executivo",
-    subtitle: "Certificação e Sucesso Global",
-    description: "Impulsione a sua carreira com certificações valorizadas pelo mercado de trabalho, apoio contínuo de mentores especialistas e uma plataforma e-learning moderna disponível 24h.",
+    title: "Parceiro de Sucesso",
+    subtitle: "Formação Executiva de Elite",
+    description: "O parceiro ideal para empresas que procuram excelência. Certificação reconhecida, metodologia prática e mentoria especializada para um desenvolvimento de topo.",
     image: "/images/hero/slide4.jpg"
   }
 ]

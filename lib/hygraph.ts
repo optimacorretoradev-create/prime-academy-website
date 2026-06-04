@@ -71,7 +71,9 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
   })
 
   if (!response.ok) {
-    throw new Error(`Hygraph API returned status ${response.status}`)
+    const errorText = await response.text()
+    console.error(`[Hygraph] API returned status ${response.status}. Body:`, errorText)
+    throw new Error(`Hygraph API returned status ${response.status}: ${errorText}`)
   }
 
   const json = await response.json()
@@ -93,6 +95,9 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
 /**
  * Helper mapper to convert Hygraph Course schema to frontend Course interface
  */
+/**
+ * Helper mapper to convert Hygraph Course schema to frontend Course interface
+ */
 function mapCourse(c: any): Course {
   // Normalise category: prefer `categoria` (Hygraph field), trim whitespace and uppercase for safe comparison
   const rawCategory = c.categoria ?? c.category ?? ''
@@ -109,7 +114,7 @@ function mapCourse(c: any): Course {
     image: c.image?.url || '/placeholder.jpg',
     rating: 4.8, // Fallback rating
     level: c.level || 'Todos',
-    online: c.online || false,
+    online: false, // Campo não existe
     // Lê HTML do Rich Text do campo syllabus
     syllabus: c.syllabus?.html || '',
     highlights: Array.isArray(c.highlights) ? c.highlights : []
@@ -201,7 +206,7 @@ const GET_COURSE_BY_SLUG = `
  */
 export async function getCourses(featured?: boolean): Promise<Course[]> {
   if (!endpoint) {
-    console.warn('[Hygraph] NEXT_PUBLIC_HYGRAPH_ENDPOINT não configurado — a retornar array vazio.')
+    console.warn('[Hygraph] NEXT_PUBLIC_HYGRAPH_ENDPOINT não configurado.')
     return []
   }
 
@@ -228,11 +233,11 @@ export async function getCourses(featured?: boolean): Promise<Course[]> {
 }
 
 /**
- * Fetch a single course by slug (GraphQL)
+ * Fetch a single course by ID (GraphQL)
  */
 export async function getCourseBySlug(id: string): Promise<Course | null> {
   if (!endpoint) {
-    console.warn('[Hygraph] NEXT_PUBLIC_HYGRAPH_ENDPOINT não configurado — a retornar null.')
+    console.warn('[Hygraph] NEXT_PUBLIC_HYGRAPH_ENDPOINT não configurado.')
     return null
   }
 
@@ -243,6 +248,31 @@ export async function getCourseBySlug(id: string): Promise<Course | null> {
   } catch (error) {
     console.error(`[Hygraph] Erro ao obter curso "${id}":`, error)
     return null
+  }
+}
+
+/**
+ * Helper mapper to convert Hygraph Gallery Image schema to frontend GalleryImage interface
+ */
+function mapGalleryImage(img: any): GalleryImage {
+  return {
+    id: img.id,
+    imageUrl: img.imageUrl?.url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80',
+    caption: img.caption || '',
+    category: img.category || 'Geral'
+  }
+}
+
+// ⛔ fallbackCourses ELIMINADO — a aplicação exibe APENAS dados reais do Hygraph CMS.
+
+const contactInfoData: ContactInfo = {
+  phone: '(+244) 921 394 946',
+  whatsappNumber: '+244921394946',
+  email: 'geral@primeacademy.ao',
+  address: 'Rua 28 de Maio, Edifício 30, 6º Andar Lado Esquerdo, Maianga, Luanda, Angola',
+  socialLinks: {
+    facebook: 'https://facebook.com/primeacademy',
+    instagram: 'https://instagram.com/primeacademy'
   }
 }
 

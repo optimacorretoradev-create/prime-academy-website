@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { CheckCircle, Loader2, Send } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { CheckCircle, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export function ContactForm() {
@@ -13,11 +14,20 @@ export function ContactForm() {
     name: '',
     email: '',
     phone: '',
+    course: '',
     message: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const courses = [
+    "Gestão Administrativa",
+    "Liderança & Redação Oficial",
+    "Secretariado Estratégico",
+    "Tecnologia & IA Aplicada",
+    "Outros"
+  ]
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,7 +49,7 @@ export function ContactForm() {
       }
 
       setIsSuccess(true)
-      setFormData({ name: '', email: '', phone: '', message: '' })
+      setFormData({ name: '', email: '', phone: '', course: '', message: '' })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao enviar mensagem')
     } finally {
@@ -72,52 +82,74 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5 flex flex-col flex-1">
-      <div className="space-y-1.5">
-        <Label htmlFor="contact-name" className="text-xs font-bold uppercase tracking-wider text-slate-500">
-          Nome Completo *
-        </Label>
-        <Input
-          id="contact-name"
-          type="text"
-          required
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          placeholder="Insira o seu nome"
-          className="rounded-xl border-slate-200 focus-visible:ring-[#8a66a8]"
-        />
+    <form onSubmit={handleSubmit} className="space-y-6 flex flex-col flex-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <Label htmlFor="contact-name" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Nome Completo *
+          </Label>
+          <Input
+            id="contact-name"
+            type="text"
+            required
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            placeholder="Insira o seu nome"
+            className="w-full h-16 rounded-xl border-slate-200 focus-visible:ring-[#8a66a8] text-base"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="contact-email" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Endereço de E-mail *
+          </Label>
+          <Input
+            id="contact-email"
+            type="email"
+            required
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            placeholder="exemplo@email.com"
+            className="w-full h-16 rounded-xl border-slate-200 focus-visible:ring-[#8a66a8] text-base"
+          />
+        </div>
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="contact-email" className="text-xs font-bold uppercase tracking-wider text-slate-500">
-          Endereço de E-mail *
-        </Label>
-        <Input
-          id="contact-email"
-          type="email"
-          required
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          placeholder="exemplo@email.com"
-          className="rounded-xl border-slate-200 focus-visible:ring-[#8a66a8]"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <Label htmlFor="contact-phone" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            WhatsApp / Telefone
+          </Label>
+          <Input
+            id="contact-phone"
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            placeholder="+244 9XX XXX XXX"
+            className="w-full h-16 rounded-xl border-slate-200 focus-visible:ring-[#8a66a8] text-base"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="contact-course" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Assunto / Curso de Interesse *
+          </Label>
+          <Select onValueChange={(value) => setFormData({ ...formData, course: value })} value={formData.course} required>
+            <SelectTrigger id="contact-course" className="w-full h-16 rounded-xl border-slate-200 focus:ring-[#8a66a8] focus-visible:ring-[#8a66a8] text-base bg-white px-3 py-2">
+              <SelectValue placeholder="Selecione um curso" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl bg-white">
+              {courses.map((course) => (
+                <SelectItem key={course} value={course} className="text-base">
+                  {course}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="contact-phone" className="text-xs font-bold uppercase tracking-wider text-slate-500">
-          WhatsApp / Telefone
-        </Label>
-        <Input
-          id="contact-phone"
-          type="tel"
-          value={formData.phone}
-          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-          placeholder="+244 9XX XXX XXX"
-          className="rounded-xl border-slate-200 focus-visible:ring-[#8a66a8]"
-        />
-      </div>
-
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         <Label htmlFor="contact-message" className="text-xs font-bold uppercase tracking-wider text-slate-500">
           Mensagem *
         </Label>
@@ -127,8 +159,8 @@ export function ContactForm() {
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
           placeholder="Escreva a sua mensagem aqui..."
-          rows={4}
-          className="rounded-xl resize-none border-slate-200 focus-visible:ring-[#8a66a8]"
+          rows={5}
+          className="w-full rounded-xl resize-none border-slate-200 focus-visible:ring-[#8a66a8]"
         />
       </div>
 
@@ -148,7 +180,7 @@ export function ContactForm() {
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-fit bg-[#312455] hover:bg-[#8a66a8] text-white rounded-2xl text-xs font-bold uppercase tracking-widest px-6 py-4 mt-auto shadow-sm transition-all duration-300"
+        className="w-full h-16 bg-[#312455] hover:bg-[#8a66a8] text-white rounded-xl text-base font-bold uppercase tracking-widest px-6 py-4 mt-auto shadow-md transition-all duration-300"
       >
         {isSubmitting ? (
           <>

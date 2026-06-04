@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     
     await resend.emails.send({
       from: 'Prime Academy <noreply@primeacademy.ao>',
-      to: ['geralprimeacademy@gmail.com'],
+      to: ['geral@primeacademy.ao'],
       subject: data.type === 'enrollment' 
         ? `Nova Inscrição: ${(data as EnrollmentData).course}`
         : 'Nova Mensagem de Contacto',
