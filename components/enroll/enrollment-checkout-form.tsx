@@ -31,6 +31,7 @@ import { useAuth } from '@/contexts/auth-context'
 import { useToast } from '@/hooks/use-toast'
 import { supabase } from '@/lib/supabase'
 import { createNotificationViaApi } from '@/lib/admin-api'
+import emailjs from '@emailjs/browser'
 
 interface EnrollmentCheckoutFormProps {
   courses: Course[]
@@ -216,6 +217,38 @@ export function EnrollmentCheckoutForm({
 
       if (!inscricaoResult.ok) {
         throw new Error(inscricaoResult.error || 'Erro ao criar inscrição')
+      }
+
+      // Enviar e-mail de notificação via EmailJS
+      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
+      const templateId = process.env.NEXT_PUBLIC_EMAILJS_ENROLL_TEMPLATE_ID || process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
+      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+
+      console.log('[checkout] Variáveis EmailJS:', { serviceId, templateId, publicKey: publicKey ? '✓ definida' : '✗ em falta' })
+
+      if (!serviceId || !templateId || !publicKey) {
+        console.error('[checkout] ERRO: Variáveis do EmailJS em falta no .env!')
+        toast({ title: 'Aviso', description: 'Configuração de e-mail em falta. Contacte o suporte.', variant: 'destructive' })
+      } else {
+        try {
+          const result = await emailjs.send(
+            serviceId,
+            templateId,
+            {
+              to_email: 'comercialprimeacademy@gmail.com',
+              name: userProfile.nome,
+              email: userProfile.email,
+              phone: 'N/A',
+              course: matchedCourse.name,
+              message: `Modalidade: ${formData.modalidade === 'presencial' ? 'Presencial' : 'Online'}. Comprovativo: ${comprovativoUrl}`,
+            },
+            publicKey
+          )
+          console.log('[checkout] E-mail enviado! Status:', result.status, result.text)
+        } catch (emailErr) {
+          console.error('[checkout] ERRO ao enviar e-mail:', emailErr)
+          toast({ title: 'Aviso de e-mail', description: `Erro: ${emailErr instanceof Error ? emailErr.message : String(emailErr)}`, variant: 'destructive' })
+        }
       }
 
       try {

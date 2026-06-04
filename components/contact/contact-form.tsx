@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { CheckCircle, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import emailjs from '@emailjs/browser'
 
 export function ContactForm() {
   const [formData, setFormData] = useState({
@@ -34,19 +35,30 @@ export function ContactForm() {
     setIsSubmitting(true)
     setError(null)
 
-    try {
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'contact',
-          ...formData,
-        }),
-      })
+    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
+    const templateId = process.env.NEXT_PUBLIC_EMAILJS_CONTACT_TEMPLATE_ID || process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
 
-      if (!response.ok) {
-        throw new Error('Erro ao enviar mensagem')
-      }
+    if (!serviceId || !templateId || !publicKey) {
+      setError('A configuração do EmailJS está incompleta. Verifique o seu ficheiro .env')
+      setIsSubmitting(false)
+      return
+    }
+
+    try {
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          to_email: 'comercialprimeacademy@gmail.com',
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone || 'Não fornecido',
+          course: formData.course || 'N/A',
+          message: formData.message,
+        },
+        publicKey
+      )
 
       setIsSuccess(true)
       setFormData({ name: '', email: '', phone: '', course: '', message: '' })
