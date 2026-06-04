@@ -73,7 +73,7 @@ export function CoursesSection() {
 
                 <CardFooter className="flex flex-col gap-3 pt-2 pb-6 px-6 border-t border-border/50 mt-4 bg-muted/10">
                   <Button asChild className="w-full bg-accent text-accent-foreground hover:bg-accent/90 rounded-2xl font-bold h-11 shadow-sm group-hover:shadow-md transition-all active:scale-[0.98]">
-                    <Link href={`/enroll?course=${encodeURIComponent(course.name)}`}>
+                    <Link href={`/enroll?course=${encodeURIComponent(cat.title)}`}>
                       Inscrever-me
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </Link>

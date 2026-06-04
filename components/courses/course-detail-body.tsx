@@ -55,7 +55,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
   const priceDisplay = getCoursePriceDisplay(course.id, course.price)
 
   // Breadcrumb usado apenas no Dashboard
-  const dashboardBreadcrumb = isDashboard && (
+  const dashboardBreadcrumb = isDashboard ? (
     <div className="shrink-0 mb-4 flex items-center gap-2 text-sm">
       <Link href={backHref} className="text-slate-500 hover:text-[#312455] transition-colors flex items-center gap-1 font-semibold">
         <ArrowLeft className="h-4 w-4" />
@@ -64,9 +64,9 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
       <ChevronRight className="h-4 w-4 text-slate-300" />
       <span className="text-[#312455] font-bold line-clamp-1">{course.name}</span>
     </div>
-  )
+  ) : null
 
-  const heroHeader = !isDashboard && (
+  const heroHeader = !isDashboard ? (
     <section className="relative bg-[#312455] pt-24 pb-12 overflow-hidden">
       {/* Elementos decorativos de fundo */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-[#8a66a8]/10 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3" />
@@ -98,7 +98,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
         </div>
       </div>
     </section>
-  )
+  ) : null
 
   const mainContent = (
     <div className="space-y-8">
