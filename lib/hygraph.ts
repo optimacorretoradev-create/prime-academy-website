@@ -19,7 +19,7 @@ export interface GalleryImage {
   title: string
   categoria: string
   destaque: boolean
-  image: string
+  imageUrl: string
   createdAt: string
 }
 
@@ -71,7 +71,14 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
   })
 
   if (!response.ok) {
-    throw new Error(`Hygraph API returned status ${response.status}`)
+    let errorDetail = ''
+    try {
+      const json = await response.json()
+      if (json.errors) {
+        errorDetail = ` GraphQL Errors: ${JSON.stringify(json.errors)}`
+      }
+    } catch (e) {}
+    throw new Error(`Hygraph API returned status ${response.status}.${errorDetail}`)
   }
 
   const json = await response.json()
@@ -131,7 +138,7 @@ function mapGalleryImage(item: any): GalleryImage {
     title: item.caption || item.title || '',
     categoria: item.category || item.categoria || 'Geral',
     destaque: Boolean(item.destaque),
-    image: item.imageUrl?.url || item.imageUrl?.handle && `https://media.graphassets.com/${item.imageUrl.handle}` || '/placeholder.jpg',
+    imageUrl: item.imageUrl?.url || item.imageUrl?.handle && `https://media.graphassets.com/${item.imageUrl.handle}` || '/placeholder.jpg',
     createdAt: item.createdAt || ''
   }
 }
@@ -187,7 +194,7 @@ const GET_COURSE_BY_SLUG = `
         html
       }
       # Requisita id, url e stage para diagnóstico — confirma que o asset está Published
-      image(locales: [pt, en, pt_BR]) {
+      image {
         id
         url
         stage

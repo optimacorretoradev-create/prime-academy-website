@@ -44,7 +44,13 @@ export function LoginForm() {
       const redirect = searchParams.get('redirect') || '/dashboard'
       router.push(redirect)
     } else {
-      setError(result.error || 'Erro ao fazer login. Verifique as suas credenciais.')
+      let friendlyError = result.error || 'Erro ao fazer login. Verifique as suas credenciais.'
+      if (friendlyError.toLowerCase().includes('invalid login credentials')) {
+        friendlyError = 'E-mail ou senha incorretos. Por favor, verifique as suas credenciais e tente novamente.'
+      } else if (friendlyError.toLowerCase().includes('email not confirmed')) {
+        friendlyError = 'O seu e-mail ainda não foi confirmado. Verifique a sua caixa de entrada e clique no link de confirmação para ativar a sua conta.'
+      }
+      setError(friendlyError)
     }
     
     setIsLoading(false)

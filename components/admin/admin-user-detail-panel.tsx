@@ -168,6 +168,7 @@ export function AdminUserDetailPanel({
             variant="outline"
             className="w-full rounded-xl border-red-200 text-red-600 hover:bg-red-50 font-semibold"
             onClick={() => onRemover(perfil)}
+            disabled={isUpdating}
           >
             <Trash2 className="w-4 h-4 mr-2" />
             Remover utilizador

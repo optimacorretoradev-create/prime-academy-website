@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
+import { SafeImage } from '@/components/ui/safe-image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BookOpen, Clock, Play, Search } from 'lucide-react'
@@ -195,22 +195,14 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
 
                     {/* Imagem de capa */}
                     <div className="relative h-44 overflow-hidden bg-slate-200">
-                      {/* Sanitização da URL — garante que o Turbopack não recebe strings inválidas */}
-                      {(() => {
-                        const validSrc = course.image?.startsWith('http')
-                          ? course.image
-                          : '/placeholder.jpg'
-                        return (
-                          <Image
-                            src={validSrc}
-                            alt={course.name}
-                            fill
-                            unoptimized
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                          />
-                        )
-                      })()}
+                      <SafeImage
+                        src={course.image}
+                        alt={course.name}
+                        fill
+                        unoptimized
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                       <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
                         <span className="bg-white/95 text-slate-800 font-bold text-[10px] tracking-wide uppercase py-1 px-2.5 rounded-full shadow-sm">

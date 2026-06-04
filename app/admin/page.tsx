@@ -8,6 +8,7 @@ import {
   Users,
   ClipboardList,
   BookOpen,
+  Loader2,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/auth-context'
@@ -106,7 +107,6 @@ export default function AdminPage() {
     const perfil = confirmModal.perfil
     const { action } = confirmModal
     setUpdatingId(perfil.id)
-    closeConfirm()
 
     if (action === 'remover') {
       const { ok, error, message } = await removeUserViaApi(perfil.id)
@@ -127,6 +127,7 @@ export default function AdminPage() {
         } else {
           setUpdatingId(null)
         }
+        closeConfirm()
       }
       return
     }
@@ -177,6 +178,7 @@ export default function AdminPage() {
       }
     }
     setUpdatingId(null)
+    closeConfirm()
   }
 
   const handleExport = () => {
@@ -277,7 +279,12 @@ export default function AdminPage() {
                 )}
               </p>
               <div className="flex gap-3">
-                <Button variant="outline" className="flex-1 rounded-lg" onClick={closeConfirm}>
+                <Button
+                  variant="outline"
+                  className="flex-1 rounded-lg"
+                  onClick={closeConfirm}
+                  disabled={updatingId !== null}
+                >
                   Cancelar
                 </Button>
                 <Button
@@ -287,8 +294,18 @@ export default function AdminPage() {
                       : 'bg-[#312455] hover:bg-[#3d2d6b]'
                   }`}
                   onClick={handleConfirmAction}
+                  disabled={updatingId !== null}
                 >
-                  {confirmModal.action === 'remover' ? 'Remover' : 'Confirmar'}
+                  {updatingId !== null ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin inline-block" />
+                      A processar...
+                    </>
+                  ) : confirmModal.action === 'remover' ? (
+                    'Remover'
+                  ) : (
+                    'Confirmar'
+                  )}
                 </Button>
               </div>
             </motion.div>

@@ -142,3 +142,15 @@ export async function updateInscricaoEstado(
   }
   return { ok: true }
 }
+
+export async function deleteInscricao(id: string): Promise<{ ok: boolean; error?: string }> {
+  const { error } = await supabase
+    .from('inscricoes')
+    .delete()
+    .eq('id', id)
+
+  if (error) {
+    return { ok: false, error: error.message }
+  }
+  return { ok: true }
+}

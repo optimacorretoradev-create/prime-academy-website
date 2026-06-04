@@ -4,6 +4,7 @@ import { useEffect, useState, Fragment, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { SafeImage } from '@/components/ui/safe-image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   BookOpen, Clock, Award, ArrowRight, Play, User, LogOut, 
@@ -44,6 +45,21 @@ function isAttendingCatalogCourse(
     return { attending: true, label: 'A Frequentar' }
   }
   return { attending: false, label: 'A Frequentar' }
+}
+
+function getCategoryLabel(category: string): string {
+  switch (category) {
+    case 'GESTAOADMINISTRATIVADIGITAL':
+      return 'Gestão Administrativa Digital'
+    case 'LIDERANCAECOMUNICACAO':
+      return 'Liderança e Comunicação'
+    case 'SECRETARIADOESTRATEGICO':
+      return 'Secretariado Estratégico'
+    case 'TECNOLOGIASINOVADORAS':
+      return 'Tecnologias Inovadoras'
+    default:
+      return category
+  }
 }
 
 
@@ -1007,7 +1023,7 @@ function DashboardPageContent() {
           <h2 className="font-extrabold text-sm tracking-tight text-white line-clamp-1">{displayName || user.name}</h2>
           <p className="text-[10px] text-white/50 font-semibold truncate max-w-full mt-0.5">{user.email}</p>
           <Badge className="mt-2 bg-[#8a66a8]/20 hover:bg-[#8a66a8]/35 text-[#c1a7d6] border border-[#8a66a8]/30 uppercase text-[8px] font-extrabold tracking-widest px-2.5 py-0.5 rounded-full">
-            {isInstructor ? 'Administrador' : 'Estudante'}
+            {isInstructor ? 'Administrador' : 'Formando'}
           </Badge>
         </div>
 
@@ -1136,7 +1152,7 @@ function DashboardPageContent() {
                 <h2 className="font-extrabold text-sm tracking-tight text-white line-clamp-1">{displayName || user.name}</h2>
                 <p className="text-[10px] text-white/50 font-semibold truncate max-w-full mt-0.5">{user.email}</p>
                 <Badge className="mt-2 bg-[#8a66a8]/20 text-[#c1a7d6] border border-[#8a66a8]/30 uppercase text-[8px] font-extrabold tracking-widest px-2.5 py-0.5 rounded-full">
-                  {isInstructor ? 'Administrador' : 'Estudante'}
+                  {isInstructor ? 'Administrador' : 'Formando'}
                 </Badge>
               </div>
 
@@ -1435,18 +1451,6 @@ function DashboardPageContent() {
                     </CardContent>
                   </Card>
 
-                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white overflow-hidden group">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                      <CardTitle className="text-xs font-bold text-slate-500 uppercase tracking-wider">Horas Lecionadas</CardTitle>
-                      <div className="bg-[#312455]/5 p-2 rounded-xl text-[#312455] group-hover:bg-[#312455] group-hover:text-white transition-all duration-300">
-                        <Clock className="h-4.5 w-4.5" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-2">
-                      <div className="text-3xl font-black text-[#312455]">85h</div>
-                      <p className="text-[10px] text-slate-400 mt-1 font-medium">Tempo letivo acumulado</p>
-                    </CardContent>
-                  </Card>
                 </>
               ) : (
                 <>
@@ -1491,18 +1495,6 @@ function DashboardPageContent() {
                     </CardContent>
                   </Card>
 
-                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white overflow-hidden group">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                      <CardTitle className="text-xs font-bold text-slate-500 uppercase tracking-wider">Certificados</CardTitle>
-                      <div className="bg-[#312455]/5 p-2 rounded-xl text-[#312455] group-hover:bg-[#312455] group-hover:text-white transition-all duration-300">
-                        <Award className="h-4.5 w-4.5" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-2">
-                      <div className="text-3xl font-black text-[#312455]">0</div>
-                      <p className="text-[10px] text-slate-400 mt-1 font-medium">Diplomas oficiais homologados</p>
-                    </CardContent>
-                  </Card>
                 </>
               )}
             </div>
@@ -1554,7 +1546,7 @@ function DashboardPageContent() {
                     <Card key={course.id} className="overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 rounded-3xl bg-white flex flex-col group">
                       <div className="relative h-48 w-full overflow-hidden">
                         {course.image ? (
-                          <Image
+                          <SafeImage
                             src={course.image}
                             alt={course.name}
                             fill
@@ -1568,8 +1560,8 @@ function DashboardPageContent() {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                         
                         <div className="absolute bottom-4 left-4 right-4">
-                          <Badge className="bg-[#8a66a8] text-white border-none uppercase text-[9px] font-bold tracking-widest px-3 py-1 rounded-full">
-                            {course.category}
+                          <Badge className="bg-[#8a66a8] text-white border-none text-[9px] font-bold px-3 py-1 rounded-full">
+                            {getCategoryLabel(course.category)}
                           </Badge>
                         </div>
                       </div>
@@ -1682,22 +1674,22 @@ function DashboardPageContent() {
                               <FileText className="h-6 w-6 text-red-500" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between gap-2">
-                                <h3 className="font-black text-[#312455] text-sm truncate">{pdf.title}</h3>
-                                <Badge className="bg-[#8a66a8]/10 text-[#8a66a8] border-none text-[9px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full flex-shrink-0">
+                              <div className="flex flex-wrap items-start justify-between gap-x-2 gap-y-1.5">
+                                <h3 className="font-black text-[#312455] text-sm truncate min-w-0 max-w-full">{pdf.title}</h3>
+                                <Badge className="bg-[#8a66a8]/10 text-[#8a66a8] border-none text-[9px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full flex-shrink-0 whitespace-normal text-left leading-tight">
                                   {pdf.courseName}
                                 </Badge>
                               </div>
                               <p className="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">{pdf.description}</p>
-                              <div className="flex items-center gap-4 mt-3">
+                              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3">
                                 <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
                                   <Calendar className="h-3 w-3 text-slate-400" />
                                   {pdf.uploadedAt}
                                 </span>
-                                <span className="text-[10px] text-slate-400 font-mono">{pdf.fileName}</span>
+                                <span className="text-[10px] text-slate-400 font-mono truncate max-w-[140px] sm:max-w-none">{pdf.fileName}</span>
                               </div>
                             </div>
-                            <div className="flex items-center gap-1.5 flex-shrink-0">
+                            <div className="flex items-center gap-1.5 flex-shrink-0 self-start">
                               <Button 
                                 variant="ghost"
                                 size="icon"
@@ -1950,16 +1942,16 @@ function DashboardPageContent() {
                         key={cat}
                         onClick={() => handleExploreCategoryChange(cat)}
                         disabled={isFiltering}
-                        className={`relative px-4 py-2 rounded-2xl text-xs font-bold transition-all duration-200 border flex items-center gap-1.5 ${
+                        className={`relative px-4 py-2.5 rounded-2xl text-xs font-bold transition-all duration-200 border flex items-center gap-1.5 max-w-[120px] sm:max-w-none text-center sm:text-left whitespace-normal justify-center sm:justify-start leading-tight ${
                           (exploreCategory === cat || loadingCategory === cat)
                             ? 'bg-[#312455] text-white border-[#312455] shadow-md'
                             : 'bg-white text-slate-600 border-slate-200 hover:border-[#8a66a8] hover:text-[#8a66a8]'
                         } disabled:opacity-80 disabled:cursor-default`}
                       >
                         {loadingCategory === cat ? (
-                          <Loader2 className="h-3 w-3 animate-spin" />
+                          <Loader2 className="h-3 w-3 animate-spin flex-shrink-0" />
                         ) : null}
-                        {cat}
+                        <span>{getCategoryLabel(cat)}</span>
                       </button>
                     ))}
                   </div>
@@ -2020,7 +2012,7 @@ function DashboardPageContent() {
                         >
                           <Card className="overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 rounded-3xl bg-white flex flex-col group h-full">
                             <div className="relative h-40 w-full overflow-hidden">
-                              <Image
+                              <SafeImage
                                 src={course.image}
                                 alt={course.name}
                                 fill
@@ -2029,8 +2021,8 @@ function DashboardPageContent() {
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                               <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                                <Badge className="bg-[#8a66a8] text-white border-none uppercase text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded-full">
-                                  {course.category}
+                                <Badge className="bg-[#8a66a8] text-white border-none text-[9px] font-bold px-2.5 py-0.5 rounded-full">
+                                  {getCategoryLabel(course.category)}
                                 </Badge>
                                 <Badge className="bg-emerald-500/90 text-white border-none uppercase text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded-full">
                                   Presencial / Online

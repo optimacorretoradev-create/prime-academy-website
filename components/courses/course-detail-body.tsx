@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
+import { SafeImage } from '@/components/ui/safe-image'
 import Link from 'next/link'
 import { Clock, BookOpen, ChevronRight, CheckCircle2, Award, ArrowLeft, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -12,6 +12,21 @@ import { getCoursePriceDisplay } from '@/lib/format-price'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/auth-context'
 import { toast } from 'sonner'
+
+function getCategoryLabel(category: string): string {
+  switch (category) {
+    case 'GESTAOADMINISTRATIVADIGITAL':
+      return 'Gestão Administrativa Digital'
+    case 'LIDERANCAECOMUNICACAO':
+      return 'Liderança e Comunicação'
+    case 'SECRETARIADOESTRATEGICO':
+      return 'Secretariado Estratégico'
+    case 'TECNOLOGIASINOVADORAS':
+      return 'Tecnologias Inovadoras'
+    default:
+      return category
+  }
+}
 
 
 interface CourseDetailBodyProps {
@@ -99,17 +114,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
                 : 'bg-accent text-accent-foreground font-semibold text-xs py-1 px-2.5 rounded-full border border-white/20'
             }
           >
-            {course.category}
-          </Badge>
-          <Badge
-            variant="outline"
-            className={
-              isDashboard
-                ? 'border-[#312455]/20 text-[#312455] rounded-full'
-                : 'border-primary/20 text-primary'
-            }
-          >
-            {course.online ? 'Online' : 'Presencial'}
+            {getCategoryLabel(course.category)}
           </Badge>
           <Badge variant="secondary" className={isDashboard ? 'rounded-full' : ''}>
             Nível {course.level}
@@ -207,9 +212,8 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
       }`}
     >
       <div className="relative aspect-[16/10]">
-        {/* Sanitização da URL — garante URL válida antes de passar ao Next.js Image */}
-        <Image
-          src={course.image?.startsWith('http') ? course.image : '/placeholder.jpg'}
+        <SafeImage
+          src={course.image}
           alt={course.name}
           fill
           unoptimized

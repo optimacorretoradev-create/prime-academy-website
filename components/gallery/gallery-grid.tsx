@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
+import { SafeImage } from '@/components/ui/safe-image'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { X, Eye, Calendar, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
@@ -110,8 +110,8 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
                 onClick={() => setSelectedImage(mainHighlight)}
               >
                 <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full overflow-hidden rounded-t-[2rem]">
-                  <Image
-                    src={mainHighlight.image || '/placeholder.jpg'}
+                  <SafeImage
+                    src={mainHighlight.imageUrl}
                     alt={mainHighlight.title}
                     fill
                     unoptimized
@@ -152,8 +152,8 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
                   onClick={() => setSelectedImage(img)}
                 >
                   <div className="relative w-full sm:w-40 aspect-video sm:aspect-square overflow-hidden rounded-2xl shrink-0">
-                    <Image
-                      src={img.image || '/placeholder.jpg'}
+                    <SafeImage
+                      src={img.imageUrl}
                       alt={img.title}
                       fill
                       unoptimized
@@ -227,8 +227,8 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
               >
                 {/* Shorter landscape image frame */}
                 <div className="relative aspect-[4/3] w-full overflow-hidden">
-                  <Image
-                    src={image.image || '/placeholder.jpg'}
+                  <SafeImage
+                    src={image.imageUrl || '/placeholder.jpg'}
                     alt={image.title}
                     fill
                     unoptimized
@@ -342,8 +342,8 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
                 <X className="h-5 w-5" />
               </button>
               <div className="relative aspect-[4/3] md:aspect-[16/10]">
-                <Image
-                  src={selectedImage.image || '/placeholder.jpg'}
+                <SafeImage
+                  src={selectedImage.imageUrl}
                   alt={selectedImage.title}
                   fill
                   unoptimized

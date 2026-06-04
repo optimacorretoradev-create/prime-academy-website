@@ -115,10 +115,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signup = async (name: string, email: string, password: string, role: 'aluno' | 'admin' = 'aluno') => {
     try {
       setIsLoading(true)
+      const redirectToUrl = typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : undefined
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
+          emailRedirectTo: redirectToUrl,
           data: {
             name: name,
             role: 'aluno',
@@ -151,9 +153,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           k.startsWith('prime_academy_')
         )
         keys.forEach((k) => localStorage.removeItem(k))
+        // Forçar um redirecionamento completo para limpar qualquer cache de estado do React/Next.js
+        window.location.href = '/login'
       }
     } catch (err) {
       console.error('[auth] Erro ao terminar sessão:', err)
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login'
+      }
     } finally {
       setIsLoading(false)
     }

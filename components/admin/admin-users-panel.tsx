@@ -5,10 +5,13 @@ import {
   Search,
   SlidersHorizontal,
   ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
   Download,
   RefreshCw,
   Database,
   Users,
+  Loader2,
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import {
@@ -68,6 +71,16 @@ export function AdminUsersPanel({
   onRevogar,
   onRemover,
 }: AdminUsersPanelProps) {
+  const [isExporting, setIsExporting] = useState(false)
+
+  const handleExportClick = () => {
+    setIsExporting(true)
+    setTimeout(() => {
+      onExport()
+      setIsExporting(false)
+    }, 600)
+  }
+
   const filteredPerfis = perfis
     .filter((p) => {
       const q = search.toLowerCase()
@@ -120,26 +133,43 @@ export function AdminUsersPanel({
             <button
               type="button"
               onClick={onToggleSort}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 border border-slate-200 rounded-lg px-3 py-2 hover:bg-slate-50 cursor-pointer"
+              className={`inline-flex items-center gap-1.5 text-xs font-semibold border rounded-lg px-3 py-2 transition-colors cursor-pointer ${
+                sortAsc
+                  ? 'text-[#312455] border-[#312455]/20 bg-[#312455]/5 hover:bg-[#312455]/10'
+                  : 'text-slate-600 border-slate-200 hover:bg-slate-50'
+              }`}
             >
-              <ArrowUpDown className="w-3.5 h-3.5" />
-              Ordenar
+              {sortAsc ? (
+                <ArrowUp className="w-3.5 h-3.5" />
+              ) : (
+                <ArrowDown className="w-3.5 h-3.5" />
+              )}
+              Ordem: {sortAsc ? 'Asc' : 'Desc'}
             </button>
             <button
               type="button"
               onClick={onToggleSortKey}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 border border-slate-200 rounded-lg px-3 py-2 hover:bg-slate-50 cursor-pointer"
+              className={`inline-flex items-center gap-1.5 text-xs font-semibold border rounded-lg px-3 py-2 transition-colors cursor-pointer ${
+                sortKey !== 'nome'
+                  ? 'text-[#312455] border-[#312455]/20 bg-[#312455]/5 hover:bg-[#312455]/10'
+                  : 'text-slate-600 border-slate-200 hover:bg-slate-50'
+              }`}
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
-              Filtrar
+              Filtrar: {sortKey === 'nome' ? 'Nome' : 'Data'}
             </button>
             <button
               type="button"
-              onClick={onExport}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#312455] border border-[#312455]/30 rounded-lg px-3 py-2 hover:bg-[#312455]/5 cursor-pointer"
+              onClick={handleExportClick}
+              disabled={isExporting}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#312455] border border-[#312455]/30 rounded-lg px-3 py-2 hover:bg-[#312455]/5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
-              <Download className="w-3.5 h-3.5" />
-              Exportar
+              {isExporting ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Download className="w-3.5 h-3.5" />
+              )}
+              {isExporting ? 'A exportar...' : 'Exportar'}
             </button>
             <button
               type="button"
