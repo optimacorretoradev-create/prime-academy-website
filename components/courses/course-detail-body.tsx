@@ -69,42 +69,57 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
   const backLabel = isDashboard ? 'Explorar Cursos' : 'Cursos'
   const priceDisplay = getCoursePriceDisplay(course.id, course.price)
 
-  const breadcrumb = (
-    <div
-      className={
-        isDashboard
-          ? 'shrink-0 mb-4 flex items-center gap-2 text-sm'
-          : 'bg-muted/30 py-4 border-b border-border -mx-0'
-      }
-    >
-      <div className={isDashboard ? 'flex items-center gap-2' : 'container mx-auto px-4 flex items-center gap-2'}>
-        <Link
-          href={backHref}
-          className={
-            isDashboard
-              ? 'text-slate-500 hover:text-[#312455] transition-colors flex items-center gap-1 font-semibold'
-              : 'text-muted-foreground hover:text-primary transition-colors flex items-center gap-1'
-          }
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {backLabel}
-        </Link>
-        <ChevronRight className={`h-4 w-4 ${isDashboard ? 'text-slate-300' : 'text-muted-foreground'}`} />
-        <span
-          className={
-            isDashboard
-              ? 'text-[#312455] font-bold line-clamp-1'
-              : 'text-foreground font-semibold line-clamp-1'
-          }
-        >
-          {course.name}
-        </span>
-      </div>
+  // Breadcrumb usado apenas no Dashboard
+  const dashboardBreadcrumb = isDashboard ? (
+    <div className="shrink-0 mb-4 flex items-center gap-2 text-sm">
+      <Link href={backHref} className="text-slate-500 hover:text-[#312455] transition-colors flex items-center gap-1 font-semibold">
+        <ArrowLeft className="h-4 w-4" />
+        {backLabel}
+      </Link>
+      <ChevronRight className="h-4 w-4 text-slate-300" />
+      <span className="text-[#312455] font-bold line-clamp-1">{course.name}</span>
     </div>
-  )
+  ) : null
+
+  const heroHeader = !isDashboard ? (
+    <section className="relative bg-[#312455] pt-24 pb-12 overflow-hidden">
+      {/* Elementos decorativos de fundo */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-[#8a66a8]/10 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3" />
+      
+      <div className="relative z-10 container mx-auto px-4">
+        {/* Conteúdo da Hero */}
+        <div className="mt-2 pt-6">
+          <div className="flex flex-wrap items-center gap-3 mb-6">
+            <span className="bg-[#8a66a8] text-white font-bold text-xs tracking-wider uppercase py-2 px-5 rounded-full shadow-lg">
+              {course.category}
+            </span>
+            <span className="bg-white/10 backdrop-blur-sm text-white/90 font-semibold text-xs tracking-wider uppercase py-2 px-5 rounded-full border border-white/10">
+              {course.online ? 'Online' : 'Presencial'}
+            </span>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight max-w-3xl">
+            {course.name}
+          </h1>
+        </div>
+
+        {/* Breadcrumb integrado e compacto (movido para baixo do título) */}
+        <div className="mt-8 flex items-center gap-2 text-sm text-white/70 pt-6">
+          <Link href={backHref} className="hover:text-white transition-colors flex items-center gap-1 font-medium z-20">
+            <ArrowLeft className="h-4 w-4" />
+            {backLabel}
+          </Link>
+          <ChevronRight className="h-4 w-4 text-white/50" />
+          <span className="text-white font-semibold truncate">{course.name}</span>
+        </div>
+      </div>
+    </section>
+  ) : null
 
   const mainContent = (
     <div className="space-y-8">
+      {/* Renderiza o dashboard breadcrumb se estiver no dashboard */}
+      {isDashboard && dashboardBreadcrumb}
+      
       <div>
         <div className="flex flex-wrap items-center gap-2 mb-4">
           <Badge
@@ -325,7 +340,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
   if (isDashboard) {
     return (
       <div className="flex flex-col flex-1 min-h-0">
-        {breadcrumb}
+        {dashboardBreadcrumb}
         {desktopSplitLayout}
         {mobileStackLayout}
       </div>
@@ -334,7 +349,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {breadcrumb}
+      {heroHeader}
       <div className="container mx-auto px-4 py-8 lg:py-10 flex flex-col flex-1 min-h-0 lg:min-h-[calc(100dvh-11rem)]">
         {desktopSplitLayout}
         {mobileStackLayout}

@@ -8,37 +8,37 @@ export function TrainersSection() {
     {
       name: "Lourença Ricardo",
       role: "Protocolo & Secretariado de Direção",
-      image: "/images/trainers/trainer1.jpeg"
+      image: "/images/trainers/LourençaRicardo.jpeg"
     },
     {
       name: "Hosana Inglês",
       role: "Gestão de Processos & Inovação",
-      image: "/images/trainers/trainer2.png"
+      image: "/images/trainers/HossanaInglês.png"
     },
     {
-      name: "Claúdia Roceth",
+      name: "Cláudia Chaffer",
       role: "Liderança & Desenvolvimento Executivo",
-      image: "/images/trainers/trainer3.png"
+      image: "/images/trainers/CláudiaChaffer.png"
     },
     {
       name: "Isabel Gaspar",
       role: "Sistemas & Tecnologias de Gestão",
-      image: "/images/trainers/trainer4.jpeg"
+      image: "/images/trainers/IsabelGaspar.jpeg"
     },
     {
       name: "Valéria Serra",
       role: "Gestão de Pessoas & Cultura Organizacional",
-      image: "/images/trainers/trainer6.png"
+      image: "/images/trainers/ValériaSerra.png"
     },
     {
       name: "Santos Egas Moniz",
       role: "Liderança & Gestão de Recursos Humanos",
-      image: "/images/trainers/trainer7.png"
+      image: "/images/trainers/SantosEgasMoniz.png"
     },
     {
-      name: "Eduardo Chilowa",
+      name: "Eduardo Chiloya",
       role: "Tecnologias Inovadoras & IA",
-      image: "/images/trainers/trainer8.png"
+      image: "/images/trainers/EduardoChiloya.jpeg"
     }
   ]
 

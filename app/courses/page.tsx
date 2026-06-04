@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { getCourses } from '@/lib/hygraph'
 import { CoursesGrid } from '@/components/courses/courses-grid'
 
@@ -23,5 +24,9 @@ export default async function CoursesPage() {
   // Cursos reais vindos do Hygraph — nenhum dado mockado permitido aqui
   const courses = await getCourses()
 
-  return <CoursesGrid courses={courses} categories={[...OFFICIAL_CATEGORIES]} />
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Carregando cursos...</div>}>
+      <CoursesGrid courses={courses} categories={[...OFFICIAL_CATEGORIES]} />
+    </Suspense>
+  )
 }

@@ -27,7 +27,7 @@ export function CtaSection() {
             {/* Text block left */}
             <div className="text-center lg:text-left flex-1">
               <h2 className="text-xl md:text-2xl lg:text-3xl font-extrabold text-white tracking-tight mb-2 leading-tight">
-                Pronto para transformar a sua carreira?
+                Pronto para atualizar os seus conhecimentos?
               </h2>
               <p className="text-white/80 text-xs md:text-sm max-w-xl mx-auto lg:mx-0 font-light leading-relaxed">
                 Dê o próximo passo estratégico e capacite-se com formadores de elite na Prime Academy. A sua jornada começa hoje.

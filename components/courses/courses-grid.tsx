@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import type { Course } from '@/lib/hygraph'
 import { getTrainerForCourse } from '@/lib/course-trainers'
 import { getCoursePriceDisplay } from '@/lib/format-price'
+import { PreEnrollmentModal } from './pre-enrollment-modal'
 
 interface CoursesGridProps {
   courses: Course[]
@@ -30,10 +31,26 @@ const normalizeStr = (str: string): string =>
     .replace(/\s+/g, '')             // Colapsa todos os espaços em branco
 
 export function CoursesGrid({ courses, categories }: CoursesGridProps) {
+  const searchParams = useSearchParams()
+  const categoryParam = searchParams.get('category')
+  
   // activeFilter default 'TODOS' — matches the first entry in OFFICIAL_CATEGORIES
-  const [activeFilter, setActiveFilter] = useState('TODOS')
+  const [activeFilter, setActiveFilter] = useState(categoryParam || 'TODOS')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedType, setSelectedType] = useState('Todos')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedCourseForModal, setSelectedCourseForModal] = useState<Course | null>(null)
+
+  useEffect(() => {
+    if (categoryParam) {
+      setActiveFilter(categoryParam)
+    }
+  }, [categoryParam])
+
+  const openPreEnrollment = (course: Course) => {
+    setSelectedCourseForModal(course)
+    setIsModalOpen(true)
+  }
 
   const getTrainerInfo = (courseId: string, coursePrice: string) => {
     const trainer = getTrainerForCourse(courseId)
@@ -58,9 +75,6 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
       course.description.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesCategory && matchesType && matchesSearch
   })
-
-  const featuredCourse = courses.find((c) => c.id === '5') || courses[0]
-  const featuredTrainer = featuredCourse ? getTrainerInfo(featuredCourse.id, featuredCourse.price) : null
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -94,55 +108,7 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
             com certificação reconhecida pelo mercado angolano.
           </motion.p>
 
-          {/* Barra de pesquisa Glassmorphic integrada na Hero */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-white/[0.06] backdrop-blur-xl border border-white/10 p-2.5 rounded-2xl md:rounded-full flex flex-col md:flex-row items-center gap-2 shadow-[0_20px_50px_rgba(0,0,0,0.25)] w-full max-w-4xl mx-auto text-left"
-          >
-            <div className="flex items-center gap-2 flex-1 w-full px-4 py-1.5">
-              <Search className="h-4 w-4 text-[#8a66a8] shrink-0" />
-              <input
-                type="text"
-                placeholder="Pesquisar por palavra-chave..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-transparent border-none outline-none text-white placeholder-white/50 w-full text-sm font-medium focus:ring-0"
-              />
-            </div>
-
-            <div className="hidden md:block h-6 w-px bg-white/10" />
-            <div className="w-full md:w-auto px-4 py-1.5">
-              <select
-                value={activeFilter}
-                onChange={(e) => setActiveFilter(e.target.value)}
-                className="bg-transparent border-none outline-none text-white/95 font-semibold text-sm w-full md:w-48 cursor-pointer focus:ring-0 py-1"
-              >
-                <option value="TODOS" className="bg-[#312455] text-white">Todas as Categorias</option>
-                {categories.filter((c) => c !== 'TODOS').map((cat) => (
-                  <option key={cat} value={cat} className="bg-[#312455] text-white">{cat}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="hidden md:block h-6 w-px bg-white/10" />
-            <div className="w-full md:w-auto px-4 py-1.5">
-              <select
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-                className="bg-transparent border-none outline-none text-white/95 font-semibold text-sm w-full md:w-40 cursor-pointer focus:ring-0 py-1"
-              >
-                <option value="Todos" className="bg-[#312455] text-white">Todos Formatos</option>
-                <option value="online" className="bg-[#312455] text-white">Online</option>
-                <option value="presencial" className="bg-[#312455] text-white">Presencial</option>
-              </select>
-            </div>
-
-            <button className="w-full md:w-auto bg-[#8a66a8] hover:bg-[#a882c5] text-white font-bold text-xs tracking-widest uppercase px-8 py-3.5 rounded-xl md:rounded-full transition-all duration-300 shadow-[0_4px_20px_rgba(138,102,168,0.2)] shrink-0 cursor-pointer">
-              Pesquisar
-            </button>
-          </motion.div>
+          {/* Barra de pesquisa Glassmorphic integrada na Hero - REMOVIDA conforme solicitado */}
         </div>
       </section>
 
@@ -150,7 +116,7 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
       <div className="container mx-auto px-4 max-w-screen-xl pb-20">
 
         {/* Título da secção + underline */}
-        <div className="text-center mb-8 flex flex-col items-center">
+        <div className="text-center pt-15 mb-16 flex flex-col items-center">
           <h2 className="text-2xl md:text-3xl font-extrabold text-[#312455] uppercase tracking-wider mb-2">
             Os Nossos Cursos
           </h2>
@@ -179,8 +145,6 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredCourses.map((course, index) => {
               const trainer = getTrainerInfo(course.id, course.price)
-              // 🔍 DIAGNÓSTICO TEMPORÁRIO — remover após confirmar URLs no CMS
-              console.log(`🖼️ [Image Check] Curso: "${course.name}" | URL: ${course.image ?? 'undefined'} | Categoria: ${course.category}`)
               return (
                 <motion.div
                   key={course.id}
@@ -204,14 +168,6 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                      <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
-                        <span className="bg-white/95 text-slate-800 font-bold text-[10px] tracking-wide uppercase py-1 px-2.5 rounded-full shadow-sm">
-                          {course.category}
-                        </span>
-                        <span className="bg-emerald-500/90 text-white font-bold text-[10px] tracking-wide uppercase py-1 px-2.5 rounded-full shadow-sm">
-                          Presencial / Online
-                        </span>
-                      </div>
                     </div>
 
                     {/* Preço */}
@@ -238,6 +194,10 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
                           <Clock className="w-3 h-3 text-[#8a66a8]" />
                           {course.duration}
                         </span>
+                        <span className="flex items-center gap-1">
+                          <BookOpen className="w-3 h-3 text-[#312455]" />
+                          {course.lessons} Aulas
+                        </span>
                         <span className="bg-[#8a66a8]/8 text-[#8a66a8] font-bold px-2 py-0.5 rounded-md text-[10px]">
                           {course.level}
                         </span>
@@ -245,12 +205,17 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
                     </div>
 
                     {/* CTA */}
-                    <div className="px-4 pb-4">
-                      <Button asChild className="w-full bg-[#312455] hover:bg-[#8a66a8] text-white rounded-xl h-10 text-xs font-bold shadow-md cursor-pointer transition-all duration-300">
+                    <div className="px-4 pb-4 flex gap-2">
+                      <Button asChild variant="outline" className="w-1/2 rounded-xl h-10 text-xs font-bold border-slate-200 text-slate-600 hover:border-[#312455] hover:text-[#312455] hover:bg-transparent cursor-pointer transition-colors duration-300">
                         <Link href={`/courses/${course.id}`}>
-                          <Play className="mr-1.5 h-3 w-3 fill-white" />
                           Saber Mais
                         </Link>
+                      </Button>
+                      <Button 
+                        onClick={() => openPreEnrollment(course)}
+                        className="w-1/2 bg-[#312455] hover:bg-[#8a66a8] text-white rounded-xl h-10 text-xs font-bold shadow-md cursor-pointer transition-all duration-300"
+                      >
+                        Pré-inscrição
                       </Button>
                     </div>
 
@@ -277,6 +242,12 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
         )}
 
       </div>
+
+      <PreEnrollmentModal 
+        course={selectedCourseForModal} 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
     </div>
   )
 }
