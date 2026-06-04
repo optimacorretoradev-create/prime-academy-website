@@ -53,6 +53,13 @@ export function HeroSection() {
     return () => clearInterval(timer)
   }, [])
 
+  const slidePositions = [
+    'center', // hero1
+    '25%',    // hero2
+    '25%',    // hero3
+    'center'  // hero4
+  ]
+
   return (
     <section className="relative min-h-screen w-full flex items-stretch overflow-hidden">
       {/* Background Images Slideshow - Spans full screen with fallback brand dark background to avoid white flashes */}
@@ -71,6 +78,7 @@ export function HeroSection() {
               alt="Prime Academy Background"
               fill
               className="object-cover"
+              style={{ objectPosition: slidePositions[currentSlide] }}
               priority
             />
           </motion.div>
