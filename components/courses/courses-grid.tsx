@@ -193,10 +193,6 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
                           <Clock className="w-3 h-3 text-[#8a66a8]" />
                           {course.duration}
                         </span>
-                        <span className="flex items-center gap-1">
-                          <BookOpen className="w-3 h-3 text-[#312455]" />
-                          {course.lessons} Aulas
-                        </span>
                         <span className="bg-[#8a66a8]/8 text-[#8a66a8] font-bold px-2 py-0.5 rounded-md text-[10px]">
                           {course.level}
                         </span>

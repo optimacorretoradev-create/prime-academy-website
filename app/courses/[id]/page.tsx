@@ -10,7 +10,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const resolvedParams = await params
   const courses = await getCourses()
-  const course = courses.find((c) => c.id === resolvedParams.id || c.slug === resolvedParams.id)
+  const course = courses.find((c) => c.id === resolvedParams.id)
 
   if (!course) {
     return {
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function CourseDetailsPage({ params }: PageProps) {
   const resolvedParams = await params
   const courses = await getCourses()
-  const course = courses.find((c) => c.id === resolvedParams.id || c.slug === resolvedParams.id)
+  const course = courses.find((c) => c.id === resolvedParams.id)
 
   if (!course) {
     notFound()

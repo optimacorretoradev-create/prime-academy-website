@@ -123,7 +123,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
       </div>
 
       <div
-        className={`grid grid-cols-2 md:grid-cols-3 gap-4 py-6 border-y ${
+        className={`grid grid-cols-2 gap-4 py-6 border-y ${
           isDashboard ? 'border-slate-100' : 'border-border'
         }`}
       >
@@ -140,23 +140,6 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
           <div>
             <p className={`text-xs ${isDashboard ? 'text-slate-500' : 'text-muted-foreground'}`}>Duração</p>
             <p className={`font-semibold text-sm ${isDashboard ? 'text-[#312455]' : ''}`}>{course.duration}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <div
-            className={
-              isDashboard
-                ? 'bg-[#312455]/5 p-3 rounded-xl border border-[#312455]/10'
-                : 'bg-primary/5 p-3 rounded-xl border border-primary/10'
-            }
-          >
-            <BookOpen className={`h-5 w-5 ${isDashboard ? 'text-[#312455]' : 'text-primary'}`} />
-          </div>
-          <div>
-            <p className={`text-xs ${isDashboard ? 'text-slate-500' : 'text-muted-foreground'}`}>Grade de Aula</p>
-            <p className={`font-semibold text-sm ${isDashboard ? 'text-[#312455]' : ''}`}>
-              {course.lessons} aulas
-            </p>
           </div>
         </div>
         <div className="flex items-center gap-3">

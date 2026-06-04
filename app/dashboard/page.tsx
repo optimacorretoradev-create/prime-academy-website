@@ -334,14 +334,14 @@ function DashboardPageContent() {
 
           coursesWithDetails = Object.values(uniqueCoursesMap).map(item => {
             const matchedCourse = allCatalogCourses.find(
-              (c) => c.id === item.catalogId || c.slug === item.catalogId
+              (c) => c.id === item.catalogId
             );
 
             if (!matchedCourse) {
               return null;
             }
 
-            const totalAulas = matchedCourse.lessons || 0;
+            const totalAulas = 12; // Fallback as lessons field was removed
             const avgProgress = Math.round(item.progresso_total / item.count);
 
             return {
@@ -362,16 +362,16 @@ function DashboardPageContent() {
           coursesWithDetails = matriculas.map((item) => {
             if (!item.curso_id_catalogo) return null;
 
-            // Encontrar o curso correspondente no catálogo do Hygraph (por id ou slug)
+            // Encontrar o curso correspondente no catálogo do Hygraph (por id)
             const matchedCourse = allCatalogCourses.find(
-              (c) => c.id === item.curso_id_catalogo || c.slug === item.curso_id_catalogo
+              (c) => c.id === item.curso_id_catalogo
             );
 
             if (!matchedCourse) {
               return null;
             }
 
-            const totalAulas = matchedCourse.lessons || 0;
+            const totalAulas = 12; // Fallback as lessons field was removed
 
             return {
               id: matchedCourse.id,
@@ -443,7 +443,7 @@ function DashboardPageContent() {
         const mapped = matriculas.map(m => {
           const profile = m.perfil_id ? profilesMap[m.perfil_id] : null
           const matchedCourse = allCatalogCourses.find(
-            (c) => c.id === m.curso_id_catalogo || c.slug === m.curso_id_catalogo
+            (c) => c.id === m.curso_id_catalogo
           )
 
           const progressVal = m.progresso_percentagem || 0
@@ -578,7 +578,7 @@ function DashboardPageContent() {
         if (databasePDFs && databasePDFs.length > 0) {
           const allCatalogCourses = await getCourses() || []
           const mappedPDFs: PDFMaterial[] = databasePDFs.map((pdf: any) => {
-            const matchedCourse = allCatalogCourses.find(c => c.id === pdf.curso_id || c.slug === pdf.curso_id)
+            const matchedCourse = allCatalogCourses.find(c => c.id === pdf.curso_id)
             return {
               id: pdf.id,
               title: pdf.titulo,
@@ -2057,9 +2057,6 @@ function DashboardPageContent() {
                                 </span>
                                 <span className="flex items-center gap-1">
                                   <Star className="h-3 w-3 text-amber-400 fill-amber-400" />{course.rating.toFixed(1)}
-                                </span>
-                                <span className="flex items-center gap-1">
-                                  <BookOpen className="h-3 w-3" />{course.lessons} aulas
                                 </span>
                               </div>
                               {isAttending ? (
