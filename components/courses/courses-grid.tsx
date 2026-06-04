@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { SafeImage } from '@/components/ui/safe-image'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BookOpen, Clock, Play, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -196,7 +197,7 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
                         </span>
                         <span className="flex items-center gap-1">
                           <BookOpen className="w-3 h-3 text-[#312455]" />
-                          {course.lessons} Aulas
+                          12 Aulas
                         </span>
                         <span className="bg-[#8a66a8]/8 text-[#8a66a8] font-bold px-2 py-0.5 rounded-md text-[10px]">
                           {course.level}
