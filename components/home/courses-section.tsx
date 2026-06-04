@@ -70,22 +70,13 @@ export function CoursesSection() {
                 <div className="h-56 overflow-hidden">
                   <img src={cat.image} alt={cat.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-black text-[#312455] leading-tight">{cat.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <ul className="space-y-3">
-                    {cat.items.map((item, i) => (
-                      <li key={i} className="text-slate-600 text-xs flex items-start gap-2">
-                        <span className="mt-1 w-1.5 h-1.5 bg-[#8a66a8] rounded-full shrink-0" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter className="pt-4">
-                  <Button asChild className="w-full bg-[#8a66a8] hover:bg-[#312455] text-white rounded-full font-bold h-10 text-xs">
-                    <Link href="/courses">Saber mais</Link>
+
+                <CardFooter className="flex flex-col gap-3 pt-2 pb-6 px-6 border-t border-border/50 mt-4 bg-muted/10">
+                  <Button asChild className="w-full bg-accent text-accent-foreground hover:bg-accent/90 rounded-2xl font-bold h-11 shadow-sm group-hover:shadow-md transition-all active:scale-[0.98]">
+                    <Link href={`/enroll?course=${encodeURIComponent(cat.title)}`}>
+                      Inscrever-me
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Link>
                   </Button>
                 </CardFooter>
               </Card>

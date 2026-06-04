@@ -1,11 +1,9 @@
 export interface Course {
   id: string
-  slug?: string
   name: string
   description: string
   category: string
   duration: string
-  lessons: number
   price: string
   image: string
   rating: number
@@ -18,9 +16,11 @@ export interface Course {
 
 export interface GalleryImage {
   id: string
-  imageUrl: string
-  caption: string
-  category: string
+  title: string
+  categoria: string
+  destaque: boolean
+  image: string
+  createdAt: string
 }
 
 export interface Testimonial {
@@ -54,9 +54,9 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
   }
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    'gcms-stage': 'PUBLISHED',
   }
   if (token) {
-    // If the token already has the 'Bearer ' prefix, use it directly; otherwise, prepend it.
     const formattedToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`
     headers['Authorization'] = formattedToken
   }
@@ -65,7 +65,7 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
     method: 'POST',
     headers,
     body: JSON.stringify({ query, variables }),
-    next: { revalidate: 3600 } // Cache results for 1 hour
+    next: { revalidate: 3600 }
   })
 
   if (!response.ok) {
@@ -77,12 +77,9 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
   const json = await response.json()
 
   if (json.errors) {
-    // Erros parciais (ex: campo sem permissão 403) — regista aviso mas não aborta
-    // se o Hygraph devolveu data na mesma (partial success).
     if (json.data) {
-      console.warn('[Hygraph] Erros parciais na query (campos sem permissão?):', JSON.stringify(json.errors))
+      console.warn('[Hygraph] Erros parciais na query:', JSON.stringify(json.errors))
     } else {
-      // Sem data alguma — erro fatal
       throw new Error(`Hygraph GraphQL errors: ${JSON.stringify(json.errors)}`)
     }
   }
@@ -93,117 +90,39 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
 /**
  * Helper mapper to convert Hygraph Course schema to frontend Course interface
  */
-/**
- * Helper mapper to convert Hygraph Course schema to frontend Course interface
- */
 function mapCourse(c: any): Course {
-  // Normalise category: prefer `categoria` (Hygraph field), trim whitespace and uppercase for safe comparison
   const rawCategory = c.categoria ?? c.category ?? ''
   const category = rawCategory.toString().trim().toUpperCase() || 'GERAL'
 
   return {
     id: c.id,
-    slug: c.id, // Fallback para o ID
     name: c.name,
     description: c.description || '',
     category,
     duration: c.duration || '',
-    lessons: 0, // Campo não existe no schema atual
     price: c.price || 'Sob consulta',
-    // c.image é um Asset Picker do Hygraph — extrai .url de forma resiliente
     image: c.image?.url || '/placeholder.jpg',
-    rating: 4.8, // Fallback rating
+    rating: 4.8,
     level: c.level || 'Todos',
-    online: false, // Campo não existe
-    // Lê HTML do Rich Text do campo syllabus
+    online: false,
     syllabus: c.syllabus?.html || '',
     highlights: Array.isArray(c.highlights) ? c.highlights : []
   }
 }
 
 /**
- * Fetch all courses (GraphQL)
- */
-export async function getCourses(featured?: boolean): Promise<Course[]> {
-  if (!endpoint) {
-    console.warn('[Hygraph] NEXT_PUBLIC_HYGRAPH_ENDPOINT não configurado.')
-    return []
-  }
-
-  try {
-    const query = `
-      query GetCursos {
-        cursos {
-          id
-          name
-          description
-          duration
-          price
-          level
-          syllabus { html }
-          highlights
-          categoria
-          image { url }
-        }
-      }
-    `
-
-    const data = await hygraphFetch<{ cursos: any[] }>(query)
-    return data?.cursos?.map(mapCourse) ?? []
-  } catch (error) {
-    console.error('[Hygraph] Erro ao obter cursos:', error)
-    return []
-  }
-}
-
-/**
- * Fetch a single course by ID (GraphQL)
- */
-export async function getCourseBySlug(id: string): Promise<Course | null> {
-  if (!endpoint) {
-    console.warn('[Hygraph] NEXT_PUBLIC_HYGRAPH_ENDPOINT não configurado.')
-    return null
-  }
-
-  try {
-    const query = `
-      query GetCourseById($id: ID!) {
-        curso(where: { id: $id }) {
-          id
-          name
-          description
-          duration
-          price
-          level
-          syllabus { html }
-          highlights
-          categoria
-          image { url }
-        }
-      }
-    `
-
-    const data = await hygraphFetch<{ curso: any }>(query, { id })
-    return data?.curso ? mapCourse(data.curso) : null
-  } catch (error) {
-    console.error(`[Hygraph] Erro ao obter curso "${id}":`, error)
-    return null
-  }
-}
-
-/**
  * Helper mapper to convert Hygraph Gallery Image schema to frontend GalleryImage interface
  */
-function mapGalleryImage(img: any): GalleryImage {
+function mapGalleryImage(item: any): GalleryImage {
   return {
-    id: img.id,
-    imageUrl: img.imageUrl?.url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80',
-    caption: img.caption || '',
-    category: img.category || 'Geral'
+    id: item.id,
+    title: item.caption || item.title || '',
+    categoria: item.category || item.categoria || 'Geral',
+    destaque: Boolean(item.destaque),
+    image: item.imageUrl?.url || (item.imageUrl?.handle && `https://media.graphassets.com/${item.imageUrl.handle}`) || '/placeholder.jpg',
+    createdAt: item.createdAt || ''
   }
 }
-
-// ⛔ fallbackCourses ELIMINADO — a aplicação exibe APENAS dados reais do Hygraph CMS.
 
 const contactInfoData: ContactInfo = {
   phone: '(+244) 921 394 946',
@@ -216,47 +135,100 @@ const contactInfoData: ContactInfo = {
   }
 }
 
-/**
- * Fetch all gallery images (GraphQL)
- */
-export async function getGalleryImages(): Promise<GalleryImage[]> {
+const GET_CURSOS = `
+  query GetCursos {
+    cursos {
+      id
+      name
+      description
+      duration
+      price
+      level
+      highlights
+      categoria
+      syllabus { html }
+      image { url }
+    }
+  }
+`
+
+const GET_COURSE_BY_SLUG = `
+  query GetCourseById($id: ID!) {
+    curso(where: { id: $id }) {
+      id
+      name
+      description
+      duration
+      price
+      level
+      highlights
+      categoria
+      syllabus { html }
+      image { url }
+    }
+  }
+`
+
+export async function getCourses(): Promise<Course[]> {
+  if (!endpoint) return []
   try {
-    if (!endpoint) {
-      return []
-    }
-
-    const query = `
-      query GetGalleryImages {
-        galleryImages {
-          id
-          imageUrl { url }
-          caption
-          category
-        }
-      }
-    `
-
-    const data = await hygraphFetch<{ galleryImages: any[] }>(query)
-    if (data && data.galleryImages) {
-      return data.galleryImages.map(mapGalleryImage)
-    }
-    return []
+    const data = await hygraphFetch<{ cursos: any[] }>(GET_CURSOS)
+    return data?.cursos?.map(mapCourse) ?? []
   } catch (error) {
-    console.warn('Error fetching gallery images from Hygraph (returning empty array):', error)
+    console.error('[Hygraph] Erro ao obter cursos:', error)
     return []
   }
 }
 
-/**
- * Fetch testimonials (empty array - no mock data allowed)
- */
+export async function getCourseBySlug(id: string): Promise<Course | null> {
+  if (!endpoint) return null
+  try {
+    const data = await hygraphFetch<{ curso: any }>(GET_COURSE_BY_SLUG, { id })
+    return data?.curso ? mapCourse(data.curso) : null
+  } catch (error) {
+    console.error(`[Hygraph] Erro ao obter curso "${id}":`, error)
+    return null
+  }
+}
+
+const GET_GALLERY_IMAGES = `
+  query GetGalleryImages {
+    galleryImages {
+      id
+      imageUrl { url handle }
+      caption
+      category
+      destaque
+      createdAt
+    }
+  }
+`
+
+function sortByDestaque(images: GalleryImage[]): GalleryImage[] {
+  return [...images].sort((a, b) => {
+    if (a.destaque && !b.destaque) return -1
+    if (!a.destaque && b.destaque) return 1
+    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0
+    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0
+    return dateB - dateA
+  })
+}
+
+export async function getGalleryImages(): Promise<GalleryImage[]> {
+  if (!endpoint) return []
+  try {
+    const data = await hygraphFetch<{ galleryImages: any[] }>(GET_GALLERY_IMAGES)
+    return data?.galleryImages?.length ? sortByDestaque(data.galleryImages.map(mapGalleryImage)) : []
+  } catch (error) {
+    console.error('[Gallery] Erro ao obter imagens:', error)
+    return []
+  }
+}
+
 export async function getTestimonials(): Promise<Testimonial[]> {
   return []
 }
 
-/**
- * Fetch contact info
- */
 export async function getContactInfo(): Promise<ContactInfo> {
   return contactInfoData
 }
