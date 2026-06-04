@@ -5,6 +5,7 @@ import './globals.css'
 import { AuthProvider } from '@/contexts/auth-context'
 import { NotificationsProvider } from '@/contexts/notifications-context'
 import { ConditionalChrome } from '@/components/layout/conditional-chrome'
+import { Toaster } from '@/components/ui/sonner'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -38,6 +39,7 @@ export default function RootLayout({
             <ConditionalChrome>{children}</ConditionalChrome>
           </NotificationsProvider>
         </AuthProvider>
+        <Toaster />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
