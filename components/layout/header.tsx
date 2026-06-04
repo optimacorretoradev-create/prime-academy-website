@@ -54,18 +54,31 @@ export function Header() {
         ? 'bg-[#312455]/30 py-5 border-b border-white/10' 
         : 'bg-[#312455]/95 border-b border-[#312455]/20 py-3.5 shadow-md'
     }`}>
-      <div className="w-full max-w-7xl mx-auto px-6">
-        <div className="flex items-center justify-between h-10 md:h-12 relative">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
+        <div className="flex items-center justify-between min-h-[60px] md:min-h-0 md:h-12 relative">
+          
+          {/* Mobile Logo (Visible only on mobile) */}
+          <Link href="/" className="md:hidden shrink-0">
+             <Image 
+                src="/logo.svg" 
+                alt="Prime Academy Logo" 
+                width={207}
+                height={56} 
+                className="w-auto h-14" 
+                style={{ filter: 'brightness(0) invert(1)' }}
+                priority 
+              />
+          </Link>
 
           {/* Left Side: Logo with white filter */}
-          <Link href="/" className="flex items-center gap-2 group shrink-0">
-            <div className="transition-transform group-hover:scale-105 -translate-y-2">
+          <Link href="/" className="hidden md:flex items-center gap-2 group shrink-0">
+            <div className="transition-transform group-hover:scale-105 md:-translate-y-2">
               <Image 
                 src="/logo.svg" 
                 alt="Prime Academy Logo" 
                 width={200} 
                 height={54} 
-                className="h-85 md:h-58 w-auto transition-all" 
+                className="w-[200px] h-auto md:w-auto md:h-58 transition-all" 
                 style={{ filter: 'brightness(0) invert(1)' }}
                 priority 
               />
@@ -98,7 +111,7 @@ export function Header() {
           </nav>
 
           {/* Right Side: Auth & Mobile Toggle */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 ml-auto">
             {/* Desktop Auth Buttons */}
             <div className="hidden md:flex items-center">
               {!isLoading && user ? (

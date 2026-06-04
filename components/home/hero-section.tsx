@@ -93,8 +93,8 @@ export function HeroSection() {
       </div>
 
       {/* Left Typography Container - positioned cleanly over the fading gradient without cutting the image */}
-      <div className="relative z-20 w-full md:w-[50%] flex flex-col justify-center px-6 sm:px-12 md:pl-16 lg:pl-24 md:pr-8 py-32 transition-all duration-500">
-        <div className="max-w-xl text-left my-auto h-[380px] flex flex-col justify-center">
+      <div className="relative z-20 w-full md:w-[50%] flex flex-col justify-center px-6 sm:px-12 md:pl-16 lg:pl-24 md:pr-8 py-20 md:py-32 transition-all duration-500">
+        <div className="max-w-xl text-left my-auto min-h-[350px] md:min-h-[450px] flex flex-col justify-center">
           {/* Trust Badges */}
           <div className="flex flex-wrap items-center gap-3 mb-6">
             <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full text-white text-xs border border-white/10">
@@ -111,10 +111,11 @@ export function HeroSection() {
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSlide}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="h-[280px] md:h-[280px] overflow-hidden"
             >
               {/* Dynamic Main Headline */}
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-tight uppercase">
