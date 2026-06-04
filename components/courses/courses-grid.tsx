@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -31,12 +32,21 @@ const normalizeStr = (str: string): string =>
     .replace(/\s+/g, '')             // Colapsa todos os espaços em branco
 
 export function CoursesGrid({ courses, categories }: CoursesGridProps) {
+  const searchParams = useSearchParams()
+  const categoryParam = searchParams.get('category')
+  
   // activeFilter default 'TODOS' — matches the first entry in OFFICIAL_CATEGORIES
-  const [activeFilter, setActiveFilter] = useState('TODOS')
+  const [activeFilter, setActiveFilter] = useState(categoryParam || 'TODOS')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedType, setSelectedType] = useState('Todos')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedCourseForModal, setSelectedCourseForModal] = useState<Course | null>(null)
+
+  useEffect(() => {
+    if (categoryParam) {
+      setActiveFilter(categoryParam)
+    }
+  }, [categoryParam])
 
   const openPreEnrollment = (course: Course) => {
     setSelectedCourseForModal(course)
@@ -192,6 +202,10 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3 text-[#8a66a8]" />
                           {course.duration}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <BookOpen className="w-3 h-3 text-[#312455]" />
+                          {course.lessons} Aulas
                         </span>
                         <span className="bg-[#8a66a8]/8 text-[#8a66a8] font-bold px-2 py-0.5 rounded-md text-[10px]">
                           {course.level}

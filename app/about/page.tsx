@@ -30,14 +30,15 @@ export default function AboutPage() {
   ]
 
   const trainers = [
-    { name: 'Cláudia Chaffer', role: 'Tecnologias de Secretariado', bio: 'Especialista em Novas Tecnologias de Secretariado e Organização de Eventos Corporativos', avatar: '/placeholder-user.jpg' },
-    { name: 'Lourença Ricardo', role: 'Gestão Pública', bio: 'Especialista em Gestão e Administração Pública', avatar: '/placeholder-user.jpg' },
-    { name: 'Isabel Gaspar', role: 'Jurista / Compliance', bio: 'Jurista (Advogada), Especialista em Compliance', avatar: '/placeholder-user.jpg' },
-    { name: 'Francisco Domingos', role: 'Língua Portuguesa', bio: 'Especialista em Técnicas de Expressão Oral e Escrita em Língua Portuguesa', avatar: '/placeholder-user.jpg' },
-    { name: 'Hossana Inglês', role: 'Comunicação', bio: 'Especialista em Comunicação e Persuasão', avatar: '/placeholder-user.jpg' },
-    { name: 'Santos Egas Moniz', role: 'Gestão & Inovação', bio: 'Especialista em Gestão, Empreendedorismo e Inovação, Comunicação Institucional.', avatar: '/placeholder-user.jpg' },
-    { name: 'Valéria Serra', role: 'Secretariado Alta Gestão', bio: 'Especialista em Secretariado para Alta Gestão', avatar: '/placeholder-user.jpg' },
-    { name: 'Jacira Pimental', role: 'Gestão de Projetos', bio: 'Especialista em Gestão de Projectos de Desenvolvimento Institucional.', avatar: '/placeholder-user.jpg' },
+    { name: 'Cláudia Chaffer', role: 'Secretariado e Eventos', bio: 'Especialista em Novas Tecnologias de Secretariado e Organização de Eventos Corporativos', avatar: '/images/trainers/CláudiaChaffer.png' },
+    { name: 'Lourença Ricardo', role: 'Gestão e Administração', bio: 'Especialista em Gestão e Administração Pública', avatar: '/images/trainers/LourençaRicardo.jpeg' },
+    { name: 'Isabel Gaspar', role: 'Jurista e Compliance', bio: 'Jurista (Advogada), Especialista em Compliance', avatar: '/images/trainers/IsabelGaspar.jpeg' },
+    { name: 'Francisco Domingos', role: 'Comunicação', bio: 'Especialista em Técnicas de Expressão Oral e Escrita em Língua Portuguesa', avatar: '/images/trainers/FranciscoDomingos.jpeg' },
+    { name: 'Hossana Inglês', role: 'Comunicação', bio: 'Especialista em Comunicação e Persuasão', avatar: '/images/trainers/HossanaInglês.png' },
+    { name: 'Santos Egas Moniz', role: 'Gestão e Inovação', bio: 'Especialista em Gestão Empreendedorismo e Inovação, Comunicação Institucional.', avatar: '/images/trainers/SantosEgasMoniz.png' },
+    { name: 'Valéria Serra', role: 'Secretariado', bio: 'Especialista em Secretariado para Alta Gestão', avatar: '/images/trainers/ValériaSerra.png' },
+    { name: 'Eduardo Chiloya', role: 'Recursos Humanos', bio: 'Especialista em Gestão Estratégica de Recursos Humanos.', avatar: '/images/trainers/EduardoChiloya.jpeg' },
+    { name: 'Jacira Pimental', role: 'Gestão de Projectos', bio: 'Especialista em Gestão de Projectos de Desenvolvimento Institucional.', avatar: '/images/trainers/JaciraPimental.jpeg' },
   ]
 
   const targetAudience = [
@@ -60,7 +61,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
       {/* ── HERO BANNER (Top) ── */}
-      <section className="relative pt-32 pb-24 md:pt-40 md:pb-32 overflow-hidden bg-[#312455]">
+      <section className="relative py-24 md:py-32 overflow-hidden bg-[#312455]">
         {/* Background Image with elegant overlay */}
         <div 
           className="absolute inset-0 bg-cover bg-center"
