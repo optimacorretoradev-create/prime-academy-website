@@ -32,12 +32,11 @@ export function Header() {
   const pathname = usePathname()
 
   useEffect(() => {
+    // Definir estado inicial com base na posição do scroll
+    setScrolled(window.scrollY > 20)
+    
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true)
-      } else {
-        setScrolled(false)
-      }
+      setScrolled(window.scrollY > 20)
     }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
@@ -47,18 +46,13 @@ export function Header() {
     return null
   }
 
-  const handleLogout = () => {
-    logout()
-    setIsOpen(false)
-  }
-
   const isTransparent = !scrolled
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${
       isTransparent 
-        ? 'bg-transparent py-5 border-b border-white/5' 
-        : 'bg-[#312455]/95 backdrop-blur-md border-b border-[#312455]/20 py-3.5 shadow-md'
+        ? 'bg-[#312455]/30 py-5 border-b border-white/10' 
+        : 'bg-[#312455]/95 border-b border-[#312455]/20 py-3.5 shadow-md'
     }`}>
       <div className="w-full max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between h-10 md:h-12 relative">

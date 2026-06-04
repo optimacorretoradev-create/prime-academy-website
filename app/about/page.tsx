@@ -3,8 +3,9 @@ import Link from 'next/link'
 import {
   Award, Users, Target, Shield, CheckCircle2, TrendingUp,
   Briefcase, Heart, Cpu, Landmark, GraduationCap,
-  MonitorPlay, BookOpen, Star, BadgeCheck
+  MonitorPlay, BookOpen, BadgeCheck
 } from 'lucide-react'
+import { CtaSection } from '@/components/home/cta-section'
 
 export const metadata: Metadata = {
   title: 'Sobre Nós - Prime Academy',
@@ -30,14 +31,15 @@ export default function AboutPage() {
   ]
 
   const trainers = [
-    { name: 'Lourença Ricardo', role: 'Protocolo & Secretariado', bio: 'Especialista em protocolo com vasta experiência.', avatar: '/images/trainers/trainer1.jpeg' },
-    { name: 'Hosana Inglês', role: 'Gestão de Processos', bio: 'Consultora de gestão focada em eficiência.', avatar: '/images/trainers/trainer2.png' },
-    { name: 'Claúdia Roceth', role: 'Liderança Executiva', bio: 'Mentora de líderes de alto desempenho.', avatar: '/images/trainers/trainer3.png' },
-    { name: 'Isabel Gaspar', role: 'Tecnologias de Gestão', bio: 'Expert em transformação digital.', avatar: '/images/trainers/trainer4.jpeg' },
-    { name: 'Valéria Serra', role: 'Gestão de Pessoas', bio: 'Especialista em desenvolvimento de RH.', avatar: '/images/trainers/trainer6.png' },
-    { name: 'Santos Egas Moniz', role: 'Finanças Corporativas', bio: 'Analista sênior com foco estratégico.', avatar: '/images/trainers/trainer7.png' },
-    { name: 'Eduardo Chilowa', role: 'Logística & Supply Chain', bio: 'Líder em operações e cadeia de suprimentos.', avatar: '/images/trainers/trainer8.png' },
-    { name: 'Jacira Pimentel', role: 'Formadora', bio: 'Especialista com vasta experiência na sua área.', avatar: '/images/trainers/trainer9.jpeg' },
+    { name: 'Cláudia Chaffer', role: 'Secretariado e Eventos', bio: 'Especialista em Novas Tecnologias de Secretariado e Organização de Eventos Corporativos', avatar: '/images/trainers/CláudiaChaffer.png' },
+    { name: 'Lourença Ricardo', role: 'Gestão e Administração', bio: 'Especialista em Gestão e Administração Pública', avatar: '/images/trainers/LourençaRicardo.jpeg' },
+    { name: 'Isabel Gaspar', role: 'Jurista e Compliance', bio: 'Jurista (Advogada), Especialista em Compliance', avatar: '/images/trainers/IsabelGaspar.jpeg' },
+    { name: 'Francisco Domingos', role: 'Comunicação', bio: 'Especialista em Técnicas de Expressão Oral e Escrita em Língua Portuguesa', avatar: '/images/trainers/FranciscoDomingos.jpeg' },
+    { name: 'Hossana Inglês', role: 'Comunicação', bio: 'Especialista em Comunicação e Persuasão', avatar: '/images/trainers/HossanaInglês.png' },
+    { name: 'Santos Egas Moniz', role: 'Gestão e Inovação', bio: 'Especialista em Gestão Empreendedorismo e Inovação, Comunicação Institucional.', avatar: '/images/trainers/SantosEgasMoniz.png' },
+    { name: 'Valéria Serra', role: 'Secretariado', bio: 'Especialista em Secretariado para Alta Gestão', avatar: '/images/trainers/ValériaSerra.png' },
+    { name: 'Eduardo Chiloya', role: 'Recursos Humanos', bio: 'Especialista em Gestão Estratégica de Recursos Humanos.', avatar: '/images/trainers/EduardoChiloya.jpeg' },
+    { name: 'Jacira Pimental', role: 'Gestão de Projectos', bio: 'Especialista em Gestão de Projectos de Desenvolvimento Institucional.', avatar: '/images/trainers/JaciraPimental.jpeg' },
   ]
 
   const targetAudience = [
@@ -247,8 +249,7 @@ export default function AboutPage() {
       </section>
 
       {/* ══════════════════════════════════════════════
-          SECÇÃO 2 — Diferenciais (Grid de cards como 
-          a secção "Popular Courses" da referência)
+          SECÇÃO 2 — Diferenciais
       ══════════════════════════════════════════════ */}
       <section className="py-20 bg-slate-50">
         <div className="container mx-auto px-4 max-w-6xl">
@@ -276,7 +277,6 @@ export default function AboutPage() {
             })}
           </div>
 
-          {/* Explore CTA strip (matching reference "23.000+ more" bar) */}
           <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
             <p className="text-sm font-semibold text-slate-600">
               <span className="text-[#312455] font-black">+10.353</span> profissionais já transformaram a sua carreira connosco
@@ -293,7 +293,6 @@ export default function AboutPage() {
 
       {/* ══════════════════════════════════════════════
           SECÇÃO 3 — Faixa full-width com ícones
-          (exactamente como a faixa roxa da referência)
       ══════════════════════════════════════════════ */}
       <section className="bg-[#312455] py-12 relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.04]"
@@ -354,6 +353,8 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ── CTA FINAL ── */}
+      <CtaSection />
     </div>
   )
 }
