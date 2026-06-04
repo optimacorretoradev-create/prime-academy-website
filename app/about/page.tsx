@@ -3,8 +3,9 @@ import Link from 'next/link'
 import {
   Award, Users, Target, Shield, CheckCircle2, TrendingUp,
   Briefcase, Heart, Cpu, Landmark, GraduationCap,
-  MonitorPlay, BookOpen, Star, BadgeCheck
+  MonitorPlay, BookOpen, BadgeCheck
 } from 'lucide-react'
+import { CtaSection } from '@/components/home/cta-section'
 
 export const metadata: Metadata = {
   title: 'Sobre Nós - Prime Academy',
@@ -248,8 +249,7 @@ export default function AboutPage() {
       </section>
 
       {/* ══════════════════════════════════════════════
-          SECÇÃO 2 — Diferenciais (Grid de cards como 
-          a secção "Popular Courses" da referência)
+          SECÇÃO 2 — Diferenciais
       ══════════════════════════════════════════════ */}
       <section className="py-20 bg-slate-50">
         <div className="container mx-auto px-4 max-w-6xl">
@@ -277,7 +277,6 @@ export default function AboutPage() {
             })}
           </div>
 
-          {/* Explore CTA strip (matching reference "23.000+ more" bar) */}
           <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
             <p className="text-sm font-semibold text-slate-600">
               <span className="text-[#312455] font-black">+10.353</span> profissionais já transformaram a sua carreira connosco
@@ -294,7 +293,6 @@ export default function AboutPage() {
 
       {/* ══════════════════════════════════════════════
           SECÇÃO 3 — Faixa full-width com ícones
-          (exactamente como a faixa roxa da referência)
       ══════════════════════════════════════════════ */}
       <section className="bg-[#312455] py-12 relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.04]"
@@ -355,6 +353,8 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ── CTA FINAL ── */}
+      <CtaSection />
     </div>
   )
 }

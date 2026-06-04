@@ -68,9 +68,9 @@ export function CoursesSection() {
             >
               <Link href={`/courses?category=${encodeURIComponent(cat.title)}`} className="block h-full">
                 <Card className="h-full flex flex-col border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 rounded-3xl overflow-hidden bg-white">
-                  <div className="h-56 overflow-hidden">
-                    <img src={cat.image} alt={cat.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  </div>
+                <div className="h-48 overflow-hidden">
+                  <img src={cat.image} alt={cat.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                </div>
                   
                   <CardHeader>
                     <CardTitle className="text-xl font-bold text-[#312455]">{cat.title}</CardTitle>
