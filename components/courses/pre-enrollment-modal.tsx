@@ -22,6 +22,7 @@ export function PreEnrollmentModal({ course, isOpen, onClose }: PreEnrollmentMod
     email: '',
     telefone: '',
     empresa: '',
+    modalidade: 'online',
   })
 
   if (!course) return null
@@ -34,17 +35,17 @@ export function PreEnrollmentModal({ course, isOpen, onClose }: PreEnrollmentMod
     await new Promise((resolve) => setTimeout(resolve, 1500))
 
     toast.success('Pré-inscrição enviada!', {
-      description: 'Entraremos em contacto brevemente.'
+      description: `Entraremos em contacto brevemente sobre a modalidade ${formData.modalidade}.`
     })
     setIsSubmitting(false)
     onClose()
-    setFormData({ nome: '', email: '', telefone: '', empresa: '' })
+    setFormData({ nome: '', email: '', telefone: '', empresa: '', modalidade: 'online' })
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-3xl gap-0 border-none shadow-2xl [&>button]:hidden">
-        {/* Usando estilos visíveis para cumprir o requisito de acessibilidade sem pacote extra */}
+        {/* Usando a classe sr-only do Tailwind para acessibilidade sem dependências extras */}
         <div className="sr-only">
           <DialogTitle>Pré-inscrição em {course.name}</DialogTitle>
           <DialogDescription>Formulário de pré-inscrição para o curso {course.name}.</DialogDescription>
@@ -64,7 +65,6 @@ export function PreEnrollmentModal({ course, isOpen, onClose }: PreEnrollmentMod
             <span>Nível: {course.level}</span>
           </div>
         </div>
-
 
         {/* Formulário com espaçamento profissional */}
         <form onSubmit={handleSubmit} className="p-8 space-y-6 bg-white">
@@ -105,6 +105,34 @@ export function PreEnrollmentModal({ course, isOpen, onClose }: PreEnrollmentMod
                   onChange={(e) => setFormData({...formData, telefone: e.target.value})}
                   className="bg-slate-50 border-slate-200 rounded-xl h-11 focus:ring-2 focus:ring-[#312455]/20 focus:border-[#312455]"
                 />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Modalidade *</Label>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setFormData({...formData, modalidade: 'online'})}
+                  className={`h-11 rounded-xl border-2 font-bold text-sm transition-all ${
+                    formData.modalidade === 'online' 
+                      ? 'border-[#312455] bg-[#312455]/5 text-[#312455]' 
+                      : 'border-slate-200 text-slate-500 hover:border-slate-300'
+                  }`}
+                >
+                  Online
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({...formData, modalidade: 'presencial'})}
+                  className={`h-11 rounded-xl border-2 font-bold text-sm transition-all ${
+                    formData.modalidade === 'presencial' 
+                      ? 'border-[#312455] bg-[#312455]/5 text-[#312455]' 
+                      : 'border-slate-200 text-slate-500 hover:border-slate-300'
+                  }`}
+                >
+                  Presencial
+                </button>
               </div>
             </div>
 
