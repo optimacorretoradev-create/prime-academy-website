@@ -70,12 +70,26 @@ export function CoursesSection() {
                 <div className="h-56 overflow-hidden">
                   <img src={cat.image} alt={cat.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
+                
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold text-[#312455]">{cat.title}</CardTitle>
+                </CardHeader>
+                
+                <CardContent className="flex-1">
+                  <ul className="space-y-3">
+                    {cat.items.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
+                        <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#8a66a8] shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
 
-                <CardFooter className="flex flex-col gap-3 pt-2 pb-6 px-6 border-t border-border/50 mt-4 bg-muted/10">
-                  <Button asChild className="w-full bg-accent text-accent-foreground hover:bg-accent/90 rounded-2xl font-bold h-11 shadow-sm group-hover:shadow-md transition-all active:scale-[0.98]">
-                    <Link href={`/enroll?course=${encodeURIComponent(cat.title)}`}>
-                      Inscrever-me
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <CardFooter className="pt-6 px-6 pb-6">
+                  <Button asChild className="w-full bg-[#8a66a8] hover:bg-[#312455] text-white rounded-full font-bold h-12 shadow-sm transition-all">
+                    <Link href="/courses">
+                      Saber mais
                     </Link>
                   </Button>
                 </CardFooter>
