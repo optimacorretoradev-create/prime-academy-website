@@ -9,6 +9,7 @@ import {
   ClipboardList,
   BookOpen,
   Loader2,
+  X,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/auth-context'
@@ -50,6 +51,7 @@ export default function AdminPage() {
   const [sortAsc, setSortAsc] = useState(true)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const [showMobileDetail, setShowMobileDetail] = useState(false)
   const [confirmModal, setConfirmModal] = useState<{
     open: boolean
     perfil: AdminPerfil | null
@@ -373,6 +375,7 @@ export default function AdminPage() {
               onSelectId={setSelectedId}
               currentUserEmail={user.email}
               updatingId={updatingId}
+              onRowClick={() => setShowMobileDetail(true)}
               onPromover={(p) =>
                 setConfirmModal({ open: true, perfil: p, action: 'promover' })
               }
@@ -383,22 +386,39 @@ export default function AdminPage() {
                 setConfirmModal({ open: true, perfil: p, action: 'remover' })
               }
             />
-            {selectedPerfil && (
-              <div className="xl:hidden shrink-0 bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden max-h-[42vh]">
-                <AdminUserDetailPanel
-                  perfil={selectedPerfil}
-                  currentUserEmail={user.email}
-                  updatingId={updatingId}
-                  onPromover={(p) =>
-                    setConfirmModal({ open: true, perfil: p, action: 'promover' })
-                  }
-                  onRevogar={(p) =>
-                    setConfirmModal({ open: true, perfil: p, action: 'revogar' })
-                  }
-                  onRemover={(p) =>
-                    setConfirmModal({ open: true, perfil: p, action: 'remover' })
-                  }
-                />
+            {showMobileDetail && selectedPerfil && (
+              <div className="fixed inset-0 z-50 xl:hidden flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+                <div className="bg-white rounded-t-[2rem] sm:rounded-2xl border border-slate-100 shadow-2xl overflow-hidden max-h-[85vh] w-full max-w-lg flex flex-col">
+                  {/* Cabeçalho do modal mobile */}
+                  <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                    <span className="text-xs font-black text-[#312455] uppercase tracking-wider">Detalhes do Utilizador</span>
+                    <button
+                      type="button"
+                      onClick={() => setShowMobileDetail(false)}
+                      className="w-7 h-7 rounded-full bg-slate-200/70 hover:bg-slate-200 flex items-center justify-center text-slate-700 transition-colors cursor-pointer"
+                      aria-label="Fechar detalhes"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  
+                  <div className="flex-1 overflow-y-auto">
+                    <AdminUserDetailPanel
+                      perfil={selectedPerfil}
+                      currentUserEmail={user.email}
+                      updatingId={updatingId}
+                      onPromover={(p) => {
+                        setConfirmModal({ open: true, perfil: p, action: 'promover' })
+                      }}
+                      onRevogar={(p) => {
+                        setConfirmModal({ open: true, perfil: p, action: 'revogar' })
+                      }}
+                      onRemover={(p) => {
+                        setConfirmModal({ open: true, perfil: p, action: 'remover' })
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
             )}
           </>

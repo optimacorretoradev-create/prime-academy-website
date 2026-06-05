@@ -117,9 +117,6 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
 
   const mainContent = (
     <div className="space-y-8">
-      {/* Renderiza o dashboard breadcrumb se estiver no dashboard */}
-      {isDashboard && dashboardBreadcrumb}
-      
       <div>
         <div className="flex flex-wrap items-center gap-2 mb-4">
           <Badge
@@ -281,8 +278,15 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
 
         <div className={isDashboard ? 'pt-2' : 'pt-4 border-t border-border'}>
           {isEnrolled === null ? (
-            <Button disabled className="w-full h-12 rounded-2xl">
-              <Loader2 className="h-4 w-4 animate-spin" />
+            <Button
+              disabled
+              className={
+                isDashboard
+                  ? 'w-full bg-[#312455]/70 text-white/70 rounded-2xl h-12 text-sm font-bold cursor-not-allowed'
+                  : 'w-full bg-primary/70 text-primary-foreground/70 rounded-xl h-12 text-sm font-semibold cursor-not-allowed'
+              }
+            >
+              Inscrever-se Agora
             </Button>
           ) : isEnrolled ? (
             <Button
@@ -331,8 +335,8 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
       }
     >
       <div className="space-y-8 pb-8">
-        {mainContent}
         {investmentCard}
+        {mainContent}
       </div>
     </div>
   )

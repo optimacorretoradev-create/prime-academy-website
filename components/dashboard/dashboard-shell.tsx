@@ -17,6 +17,8 @@ import {
   Settings,
   Users,
   Video,
+  Loader2,
+  CheckCheck,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -44,16 +46,49 @@ export function DashboardShell({
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [displayName, setDisplayName] = useState('')
   const [showNotifications, setShowNotifications] = useState(false)
+  const [markingId, setMarkingId] = useState<string | null>(null)
+  const [markingAll, setMarkingAll] = useState(false)
   const { notifications, unreadCount, markRead, markAllRead } = useNotifications()
 
   const handleNotificationClick = async (notif: any) => {
+    if (markingId) return
+    setMarkingId(notif.id)
     await markRead(notif.id)
+    setMarkingId(null)
     setShowNotifications(false)
-    if (notif.tipo === 'material') {
+
+    // Smart routing based on notification type
+    const tipo = notif.tipo as string
+    if (tipo === 'material') {
       router.push('/dashboard?tab=pdfs')
-    } else if (notif.tipo === 'aula' || notif.tipo === 'transmissao') {
+    } else if (tipo === 'aula' || tipo === 'transmissao') {
       router.push('/dashboard?tab=online-classes')
+    } else if (tipo === 'nova_inscricao' || tipo === 'promovido_admin') {
+      // Admin notifications → painel admin
+      router.push('/admin')
+    } else if (
+      tipo === 'inscricao_aceite' ||
+      tipo === 'inscricao_recebida' ||
+      tipo === 'inscricao_em_analise' ||
+      tipo === 'inscricao_processada' ||
+      tipo === 'inscricao_pendente_pagamento'
+    ) {
+      // Enrollment status notifications → Meus Cursos
+      router.push('/dashboard?tab=courses')
+    } else if (tipo === 'inscricao_rejeitada') {
+      // Rejected → suggest exploring other courses
+      router.push('/dashboard?tab=explore')
+    } else if (tipo === 'cargo_revogado') {
+      // Role revoked → dashboard principal
+      router.push('/dashboard')
     }
+  }
+
+  const handleMarkAllRead = async () => {
+    if (markingAll) return
+    setMarkingAll(true)
+    await markAllRead()
+    setMarkingAll(false)
   }
 
   useEffect(() => {
@@ -117,7 +152,7 @@ export function DashboardShell({
       icon: FileText,
     },
     ...(isInstructor
-      ? [{ id: 'students' as const, label: 'Lista de Alunos', href: '/dashboard?tab=students', icon: Users }]
+      ? [{ id: 'students' as const, label: 'Lista de Formandos', href: '/dashboard?tab=students', icon: Users }]
       : []),
     { id: 'explore', label: 'Explorar Cursos', href: '/dashboard?tab=explore', icon: Compass },
     { id: 'settings', label: 'Definições', href: '/dashboard?tab=settings', icon: Settings },
@@ -234,10 +269,35 @@ export function DashboardShell({
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               className="fixed top-0 bottom-0 left-0 w-64 bg-[#312455] text-white z-50 flex flex-col lg:hidden rounded-r-[2.5rem]"
             >
-              <div className="pt-8 pb-4 px-6 border-b border-white/10 flex justify-end">
-                <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)} className="text-white/70">
-                  <X className="h-5 w-5" />
-                </Button>
+              {/* Profile Section */}
+              <div className="pt-6 pb-4 px-6 border-b border-white/10 flex flex-col items-center justify-between">
+                <div className="flex items-center justify-between w-full mb-3">
+                  <div className="flex-1" />
+                  <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)} className="text-white/70 -mr-2">
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+                <div className="relative w-16 h-16 rounded-full p-1 bg-white/10 ring-2 ring-white/20 ring-offset-2 ring-offset-[#312455] flex items-center justify-center overflow-hidden mb-3">
+                  {avatarUrl ? (
+                    <img src={avatarUrl} className="w-full h-full rounded-full object-cover" alt="Avatar" />
+                  ) : (
+                    <div className="w-full h-full rounded-full bg-gradient-to-br from-[#8a66a8] to-[#4a347c] flex items-center justify-center text-lg font-black text-white">
+                      {(displayName || user.name)
+                        .split(' ')
+                        .map((n: string) => n[0])
+                        .join('')
+                        .slice(0, 2)
+                        .toUpperCase()}
+                    </div>
+                  )}
+                </div>
+                <h2 className="font-extrabold text-[11px] tracking-tight text-white text-center line-clamp-2 px-1 leading-snug">
+                  {displayName || user.name}
+                </h2>
+                <p className="text-[8px] text-white/50 font-semibold text-center line-clamp-2 px-1 mt-1 leading-tight">{user.email}</p>
+                <Badge className="mt-3 bg-[#8a66a8]/20 text-[#c1a7d6] border border-[#8a66a8]/30 uppercase text-[7px] font-extrabold tracking-widest px-2.5 py-1 rounded-full whitespace-nowrap">
+                  {isInstructor ? 'Admin' : 'Formando'}
+                </Badge>
               </div>
               <nav className="flex-1 pl-4 py-6 space-y-1 overflow-y-auto">
                 {navLinks.map((link) => renderNavItem(link, () => setSidebarOpen(false)))}
@@ -266,8 +326,8 @@ export function DashboardShell({
       </AnimatePresence>
 
       <div
-        className={`flex-1 flex flex-col lg:pl-64 ${
-          lockScrollLayout ? 'h-screen min-h-0 overflow-hidden' : 'min-h-screen'
+        className={`flex-1 flex flex-col lg:pl-64 min-w-0 ${
+          lockScrollLayout ? 'h-screen min-h-0 overflow-hidden' : 'min-h-screen overflow-x-hidden'
         }`}
       >
         <header
@@ -284,9 +344,16 @@ export function DashboardShell({
             >
               <Menu className="h-5 w-5" />
             </Button>
-            <div className="flex items-center gap-2 text-slate-500 text-xs font-medium bg-slate-100/80 px-3.5 py-1.5 rounded-full border border-slate-200/50 shadow-sm">
-              <Calendar className="h-3.5 w-3.5 text-[#8a66a8]" />
-              <span className="text-[#312455] font-semibold">{currentDate}</span>
+            <div className="flex items-center gap-2 text-slate-500 text-xs font-medium bg-slate-100/80 px-3.5 py-2 rounded-full border border-slate-200/50 shadow-sm">
+              <Calendar className="h-3.5 w-3.5 text-[#8a66a8] flex-shrink-0 mt-0.5" />
+              <div className="text-center">
+                <div className="text-[#312455] font-semibold leading-tight">
+                  {currentDate.slice(0, currentDate.lastIndexOf(' '))}
+                </div>
+                <div className="text-[#312455] font-semibold leading-tight">
+                  {currentDate.slice(currentDate.lastIndexOf(' ') + 1)}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -307,47 +374,127 @@ export function DashboardShell({
                   </span>
                 )}
               </Button>
-              {showNotifications && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setShowNotifications(false)} />
-                  <div className="absolute right-0 mt-2 w-80 bg-white border border-slate-100 rounded-[2rem] shadow-xl z-50 overflow-hidden">
-                    <div className="p-4 bg-[#312455] text-white text-xs font-extrabold">Notificações</div>
-                    <div className="divide-y divide-slate-100 max-h-60 overflow-y-auto">
-                      {notifications.length === 0 ? (
-                        <p className="p-4 text-xs text-slate-400 text-center">
-                          Sem notificações de momento.
-                        </p>
-                      ) : (
-                        notifications.map((notif) => (
-                          <button
-                            key={notif.id}
-                            type="button"
-                            onClick={() => handleNotificationClick(notif)}
-                            className={`w-full p-4 text-left hover:bg-slate-50 ${!notif.lida ? 'bg-[#f8fafc]/40' : ''}`}
-                          >
-                            <p className="font-black text-xs text-[#312455]">{notif.titulo}</p>
-                            <p className="text-[10px] text-slate-500 mt-0.5">{notif.descricao}</p>
-                            {notif.time && (
-                              <p className="text-[9px] text-slate-400 mt-1">{notif.time}</p>
-                            )}
-                          </button>
-                        ))
-                      )}
-                    </div>
-                    {notifications.some((n) => !n.lida) && (
-                      <div className="p-2 border-t border-slate-100">
+              <AnimatePresence>
+                {showNotifications && (
+                  <>
+                    {/* Overlay — fecha ao clicar fora */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="fixed inset-0 z-40"
+                      onClick={() => setShowNotifications(false)}
+                    />
+
+                    {/* Painel de notificações */}
+                    <motion.div
+                      initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.97 }}
+                      transition={{ duration: 0.18, ease: 'easeOut' }}
+                      className="
+                        fixed z-50 overflow-hidden
+                        bg-white border border-slate-100 shadow-2xl
+                        rounded-[2rem]
+                        top-[4.5rem] right-4 left-4
+                        sm:absolute sm:top-full sm:left-auto sm:right-0 sm:mt-2
+                        sm:w-[360px]
+                      "
+                    >
+                      {/* Cabeçalho */}
+                      <div className="flex items-center justify-between px-5 py-4 bg-[#312455]">
+                        <div className="flex items-center gap-2">
+                          <Bell className="w-4 h-4 text-white/70" />
+                          <span className="text-white text-sm font-extrabold tracking-tight">Notificações</span>
+                          {unreadCount > 0 && (
+                            <span className="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                              {unreadCount} nova{unreadCount !== 1 ? 's' : ''}
+                            </span>
+                          )}
+                        </div>
                         <button
                           type="button"
-                          onClick={() => markAllRead()}
-                          className="w-full text-[10px] font-bold text-[#8a66a8] hover:underline cursor-pointer py-2"
+                          onClick={() => setShowNotifications(false)}
+                          className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors cursor-pointer"
+                          aria-label="Fechar notificações"
                         >
-                          Marcar todas como lidas
+                          <X className="w-3.5 h-3.5" />
                         </button>
                       </div>
-                    )}
-                  </div>
-                </>
-              )}
+
+                      {/* Lista de notificações */}
+                      <div className="divide-y divide-slate-100 max-h-[55vh] sm:max-h-72 overflow-y-auto">
+                        {notifications.length === 0 ? (
+                          <div className="py-10 text-center">
+                            <Bell className="w-8 h-8 mx-auto text-slate-200 mb-2" />
+                            <p className="text-xs text-slate-400 font-medium">Sem notificações de momento.</p>
+                          </div>
+                        ) : (
+                          notifications.map((notif) => {
+                            const isMarking = markingId === notif.id
+                            const isDisabled = markingId !== null || markingAll
+                            return (
+                              <button
+                                key={notif.id}
+                                type="button"
+                                onClick={() => handleNotificationClick(notif)}
+                                disabled={isDisabled}
+                                className={`w-full px-5 py-4 text-left transition-colors flex items-start gap-3 group
+                                  ${!notif.lida ? 'bg-[#312455]/[0.03]' : 'bg-white'}
+                                  ${isDisabled ? 'cursor-not-allowed opacity-60' : 'hover:bg-slate-50 cursor-pointer'}
+                                `}
+                              >
+                                {/* Indicador não lido */}
+                                <span
+                                  className={`mt-1.5 w-2 h-2 rounded-full shrink-0 transition-all ${
+                                    !notif.lida ? 'bg-[#8a66a8]' : 'bg-transparent'
+                                  }`}
+                                />
+                                <div className="flex-1 min-w-0">
+                                  <p className={`text-xs font-bold leading-snug ${
+                                    !notif.lida ? 'text-[#312455]' : 'text-slate-600'
+                                  }`}>
+                                    {notif.titulo}
+                                  </p>
+                                  <p className="text-[11px] text-slate-500 mt-0.5 leading-snug line-clamp-2">
+                                    {notif.descricao}
+                                  </p>
+                                  {notif.time && (
+                                    <p className="text-[10px] text-slate-400 mt-1.5 font-medium">{notif.time}</p>
+                                  )}
+                                </div>
+                                {/* Spinner de loading */}
+                                {isMarking && (
+                                  <Loader2 className="w-3.5 h-3.5 text-[#8a66a8] animate-spin shrink-0 mt-0.5" />
+                                )}
+                              </button>
+                            )
+                          })
+                        )}
+                      </div>
+
+                      {/* Rodapé: marcar todas como lidas */}
+                      {notifications.some((n) => !n.lida) && (
+                        <div className="px-5 py-3 border-t border-slate-100 bg-slate-50/60">
+                          <button
+                            type="button"
+                            onClick={handleMarkAllRead}
+                            disabled={markingAll || markingId !== null}
+                            className="w-full flex items-center justify-center gap-1.5 text-[11px] font-bold text-[#8a66a8] hover:text-[#312455] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer py-1 transition-colors"
+                          >
+                            {markingAll ? (
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                              <CheckCheck className="w-3 h-3" />
+                            )}
+                            {markingAll ? 'A marcar...' : 'Marcar todas como lidas'}
+                          </button>
+                        </div>
+                      )}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
             </div>
             <Link
               href="/dashboard?tab=settings"

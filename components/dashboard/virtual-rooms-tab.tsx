@@ -276,6 +276,10 @@ export function MapModal({ isOpen, onClose, title }: MapModalProps) {
 interface VirtualRoomsTabProps {
   isInstructor: boolean
   availableCourses: { id: string; name: string; online: boolean }[]
+  activeTab?: 'live' | 'presencial'
+  setActiveTab?: (tab: 'live' | 'presencial') => void
+  showScheduleForm?: boolean
+  setShowScheduleForm?: (show: boolean) => void
 }
 
 /** Returns today's date in YYYY-MM-DD format for the min attribute of the date input */
@@ -286,7 +290,7 @@ function todayISO(): string {
 
 const LOCAL_STORAGE_KEY = 'prime_academy_virtual_rooms_data'
 
-export function VirtualRoomsTab({ isInstructor, availableCourses }: VirtualRoomsTabProps) {
+export function VirtualRoomsTab({ isInstructor, availableCourses, activeTab: externalActiveTab, setActiveTab: externalSetActiveTab, showScheduleForm: externalShowScheduleForm, setShowScheduleForm: externalSetShowScheduleForm }: VirtualRoomsTabProps) {
   const { user } = useAuth()
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
   const [selectedMapClass, setSelectedMapClass] = useState<OnlineClass | null>(null)
@@ -368,8 +372,14 @@ export function VirtualRoomsTab({ isInstructor, availableCourses }: VirtualRooms
     loadOnlineClasses()
   }, [])
 
-  const [activeTab, setActiveTab] = useState<'live' | 'presencial'>('live')
-  const [showScheduleForm, setShowScheduleForm] = useState(false)
+  const [internalActiveTab, setInternalActiveTab] = useState<'live' | 'presencial'>('live')
+  const [internalShowScheduleForm, setInternalShowScheduleForm] = useState(false)
+  
+  // Use external state if provided, otherwise use internal state
+  const activeTab = externalActiveTab ?? internalActiveTab
+  const setActiveTab = externalSetActiveTab ?? setInternalActiveTab
+  const showScheduleForm = externalShowScheduleForm ?? internalShowScheduleForm
+  const setShowScheduleForm = externalSetShowScheduleForm ?? setInternalShowScheduleForm
 
   // Form states for scheduling - manual inputs
   const [formCourseName, setFormCourseName] = useState('')
@@ -538,9 +548,9 @@ export function VirtualRoomsTab({ isInstructor, availableCourses }: VirtualRooms
   })
 
   return (
-    <div className="space-y-6">
-      {/* HEADER SECTION - Minimalist top bar */}
-      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+    <div className="space-y-3 pt-[160px] md:pt-0">
+      {/* HEADER SECTION - Minimalist top bar (hidden on mobile, visible on desktop) */}
+      <div className="hidden md:flex items-center justify-between border-b border-slate-100 pb-4">
         <div className="flex items-center gap-6">
           <div className="flex gap-4 text-xs font-semibold">
             <button
@@ -601,7 +611,7 @@ export function VirtualRoomsTab({ isInstructor, availableCourses }: VirtualRooms
             exit={{ opacity: 0, y: -8 }}
             className="overflow-hidden"
           >
-            <Card className="border border-slate-100 bg-white shadow-xs rounded-2xl p-5 mb-4 max-w-2xl text-xs">
+            <Card className="border border-slate-100 bg-white shadow-xs rounded-2xl p-5 mb-2 max-w-2xl text-xs">
               <form onSubmit={handleCreateClass} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="space-y-1">
@@ -754,28 +764,29 @@ export function VirtualRoomsTab({ isInstructor, availableCourses }: VirtualRooms
         )}
       </AnimatePresence>
 
-      {/* REFERENCED CONSULTANT CARD GRID LAYOUT */}
-      <AnimatePresence mode="popLayout">
-        {filteredClasses.length === 0 ? (
-          <motion.div
-            key="empty"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="text-center py-16"
-          >
-            <p className="text-xs font-semibold text-slate-400 tracking-wide animate-pulse">
-              {activeTab === 'live' ? 'Nenhuma aula online agendada de momento.' : 'Nenhuma aula presencial agendada de momento.'}
-            </p>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="grid"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
-          >
+      {/* REFERENCED CONSULTANT CARD GRID LAYOUT - Hidden on mobile when form is open */}
+      {!(showScheduleForm && isInstructor) && (
+        <AnimatePresence mode="popLayout">
+          {filteredClasses.length === 0 ? (
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="text-center py-16"
+            >
+              <p className="text-xs font-semibold text-slate-400 tracking-wide animate-pulse">
+                {activeTab === 'live' ? 'Nenhuma aula online agendada de momento.' : 'Nenhuma aula presencial agendada de momento.'}
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="grid"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+            >
             {filteredClasses.map((c) => {
               const isLiveNow = c.type === 'live'
               const isPresencial = c.type === 'presencial'
@@ -962,6 +973,7 @@ export function VirtualRoomsTab({ isInstructor, availableCourses }: VirtualRooms
           </motion.div>
         )}
       </AnimatePresence>
+      )}
 
       <MapModal
         isOpen={!!selectedMapClass}
