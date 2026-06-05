@@ -47,6 +47,18 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Bloquear scroll quando a drawer estiver aberta
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
+
   if (pathname === '/login' || pathname === '/signup' || pathname.startsWith('/dashboard') || pathname.startsWith('/admin')) {
     return null
   }
@@ -56,21 +68,34 @@ export function Header() {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${
       isTransparent 
-        ? 'bg-[#312455]/30 py-5 border-b border-white/10' 
+        ? 'bg-transparent py-5 border-b border-white/10' 
         : 'bg-[#312455]/95 border-b border-[#312455]/20 py-3.5 shadow-md'
     }`}>
-      <div className="w-full max-w-7xl mx-auto px-6">
-        <div className="flex items-center justify-between h-10 md:h-12 relative">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
+        <div className="flex items-center justify-between min-h-[60px] md:min-h-0 md:h-12 relative">
+          
+          {/* Mobile Logo (Visible only on mobile) */}
+          <Link href="/" className="md:hidden shrink-0">
+             <Image 
+                src="/logo.svg" 
+                alt="Prime Academy Logo" 
+                width={207}
+                height={56} 
+                className="w-auto h-14" 
+                style={{ filter: 'brightness(0) invert(1)' }}
+                priority 
+              />
+          </Link>
 
           {/* Left Side: Logo with white filter */}
-          <Link href="/" className="flex items-center gap-2 group shrink-0">
-            <div className="transition-transform group-hover:scale-105 -translate-y-2">
+          <Link href="/" className="hidden md:flex items-center gap-2 group shrink-0">
+            <div className="transition-transform group-hover:scale-105 md:-translate-y-2">
               <Image 
                 src="/logo.svg" 
                 alt="Prime Academy Logo" 
                 width={200} 
                 height={54} 
-                className="h-85 md:h-58 w-auto transition-all" 
+                className="w-[200px] h-auto md:w-auto md:h-58 transition-all" 
                 style={{ filter: 'brightness(0) invert(1)' }}
                 priority 
               />
@@ -103,7 +128,7 @@ export function Header() {
           </nav>
 
           {/* Right Side: Auth & Mobile Toggle */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 ml-auto">
             {/* Desktop Auth Buttons */}
             <div className="hidden md:flex items-center">
               {!isLoading && user ? (
@@ -176,88 +201,122 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation Drawer */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden overflow-hidden bg-[#312455]/98 backdrop-blur-xl rounded-2xl mt-4 shadow-2xl border border-white/10 max-w-5xl mx-auto"
-          >
-            <nav className="container mx-auto px-4 py-4 flex flex-col gap-2">
-              {navLinks.map((link) => {
-                const isActive = pathname === link.href
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`px-4 py-3 text-sm font-semibold rounded-lg transition-colors flex items-center justify-between ${
-                      isActive ? 'bg-white/10 text-white' : 'text-white/80 hover:bg-white/5 hover:text-white'
-                    }`}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {link.label}
-                    {isActive && <div className="w-1.5 h-1.5 rounded-full bg-[#8a66a8]" />}
-                  </Link>
-                )
-              })}
+          <>
+            {/* Backdrop Overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="md:hidden fixed inset-0 z-[55] bg-black/50 backdrop-blur-sm"
+              onClick={() => setIsOpen(false)}
+            />
+            {/* Drawer */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="md:hidden fixed inset-0 z-[60] w-full bg-white/5 backdrop-blur-[1px] p-6 flex flex-col pt-24 shadow-2xl"
+            >
+              {/* Close button at the top */}
+              <button
+                className="absolute top-5 right-4 p-2 rounded-full text-white hover:bg-white/10 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                <X className="h-8 w-8" />
+              </button>
+              
+              <motion.nav 
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+                }}
+                className="flex flex-col gap-2"
+              >
+                {navLinks.map((link) => {
+                  const isActive = pathname === link.href
+                  return (
+                    <motion.div
+                      key={link.href}
+                      variants={{ hidden: { x: 20, opacity: 0 }, visible: { x: 0, opacity: 1 } }}
+                    >
+                      <Link
+                        href={link.href}
+                        className={`px-4 py-4 text-lg font-semibold rounded-xl transition-all flex items-center justify-between ${
+                          isActive ? 'bg-white/10 text-white' : 'text-white/80 hover:bg-white/5 hover:text-white hover:translate-x-2'
+                        }`}
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {link.label}
+                        {isActive && <div className="w-2 h-2 rounded-full bg-[#8a66a8]" />}
+                      </Link>
+                    </motion.div>
+                  )
+                })}
 
-              {/* Mobile Auth */}
-              <div className="border-t border-white/10 mt-2 pt-4 space-y-2">
-                {!isLoading && user ? (
-                  <>
-                    <div className="px-4 py-2 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-[#8a66a8] flex items-center justify-center text-lg font-bold text-white">
-                        {user.name.charAt(0).toUpperCase()}
+                {/* Mobile Auth */}
+                <motion.div 
+                  variants={{ hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } }}
+                  className="border-t border-white/10 mt-6 pt-6 space-y-4"
+                >
+                  {!isLoading && user ? (
+                    <>
+                      <div className="px-4 py-2 flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-[#8a66a8] flex items-center justify-center text-xl font-bold text-white">
+                          {user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-medium text-white text-lg">{user.name}</p>
+                          <p className="text-sm text-white/60">{user.email}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-medium text-white">{user.name}</p>
-                        <p className="text-sm text-white/60">{user.email}</p>
-                      </div>
-                    </div>
-                    <Link
-                      href="/dashboard"
-                      className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-white/80 rounded-lg transition-colors hover:bg-white/5 hover:text-white"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <LayoutDashboard className="h-4 w-4 text-[#8a66a8]" />
-                      Meu Painel
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center gap-2 w-full px-4 py-3 text-sm font-semibold text-white/80 rounded-lg transition-colors hover:bg-white/5 hover:text-white text-left cursor-pointer"
-                    >
-                      <LogOut className="h-4 w-4 text-red-400" />
-                      Sair
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      asChild
-                      variant="ghost"
-                      className="w-full justify-start text-white/90 hover:bg-white/5 rounded-xl hover:text-white cursor-pointer"
-                    >
-                      <Link href="/login" onClick={() => setIsOpen(false)}>
-                        <User className="mr-2 h-4 w-4 text-[#8a66a8]" />
-                        Entrar
+                      <Link
+                        href="/dashboard"
+                        className="flex items-center gap-2 px-4 py-3 text-lg font-semibold text-white/80 rounded-xl transition-all hover:bg-white/5 hover:text-white hover:translate-x-2"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <LayoutDashboard className="h-5 w-5 text-[#8a66a8]" />
+                        Meu Painel
                       </Link>
-                    </Button>
-                    <Button
-                      asChild
-                      className="w-full bg-[#8a66a8] text-white hover:bg-[#8a66a8]/90 rounded-full font-bold cursor-pointer transition-all"
-                    >
-                      <Link href="/signup" onClick={() => setIsOpen(false)}>
-                        Criar Conta Gratuita
-                      </Link>
-                    </Button>
-                  </>
-                )}
-              </div>
-            </nav>
-          </motion.div>
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-2 w-full px-4 py-3 text-lg font-semibold text-white/80 rounded-xl transition-all hover:bg-white/5 hover:text-white hover:translate-x-2 text-left cursor-pointer"
+                      >
+                        <LogOut className="h-5 w-5 text-red-400" />
+                        Sair
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        asChild
+                        variant="ghost"
+                        className="w-full justify-start text-white/90 text-lg hover:bg-white/5 rounded-xl hover:text-white cursor-pointer py-6"
+                      >
+                        <Link href="/login" onClick={() => setIsOpen(false)}>
+                          <User className="mr-2 h-5 w-5 text-[#8a66a8]" />
+                          Entrar
+                        </Link>
+                      </Button>
+                      <Button
+                        asChild
+                        className="w-full bg-[#8a66a8] text-white hover:bg-[#8a66a8]/90 rounded-full font-bold cursor-pointer transition-all py-6 text-lg hover:scale-[1.02]"
+                      >
+                        <Link href="/signup" onClick={() => setIsOpen(false)}>
+                          Criar Conta Gratuita
+                        </Link>
+                      </Button>
+                    </>
+                  )}
+                </motion.div>
+              </motion.nav>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>

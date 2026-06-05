@@ -124,13 +124,13 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
           <div className="w-14 h-1 bg-[#8a66a8] rounded-full" />
         </div>
 
-        {/* Filtros por categoria (tabs pílula) */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+        {/* Filtros por categoria (tabs responsivas) */}
+        <div className="flex overflow-x-auto pb-4 -mb-4 scrollbar-hide md:flex-wrap items-center justify-start md:justify-center gap-2 mb-10">
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => setActiveFilter(category)}
-              className={`px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer shadow-sm ${
+              className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer shadow-sm whitespace-nowrap ${
                 activeFilter.trim().toUpperCase() === category.trim().toUpperCase()
                   ? 'bg-[#8a66a8] text-white shadow-md'
                   : 'bg-white text-slate-600 border border-slate-100 hover:bg-slate-50 hover:text-slate-900'

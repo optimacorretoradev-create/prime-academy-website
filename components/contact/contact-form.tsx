@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { CheckCircle, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import emailjs from '@emailjs/browser'
 
 export function ContactForm() {
   const [formData, setFormData] = useState({
@@ -34,19 +35,30 @@ export function ContactForm() {
     setIsSubmitting(true)
     setError(null)
 
-    try {
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'contact',
-          ...formData,
-        }),
-      })
+    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
+    const templateId = process.env.NEXT_PUBLIC_EMAILJS_CONTACT_TEMPLATE_ID || process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
 
-      if (!response.ok) {
-        throw new Error('Erro ao enviar mensagem')
-      }
+    if (!serviceId || !templateId || !publicKey) {
+      setError('A configuração do EmailJS está incompleta. Verifique o seu ficheiro .env')
+      setIsSubmitting(false)
+      return
+    }
+
+    try {
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          to_email: 'comercialprimeacademy@gmail.com',
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone || 'Não fornecido',
+          course: formData.course || 'N/A',
+          message: formData.message,
+        },
+        publicKey
+      )
 
       setIsSuccess(true)
       setFormData({ name: '', email: '', phone: '', course: '', message: '' })
@@ -88,100 +100,100 @@ export function ContactForm() {
           <Label htmlFor="contact-name" className="text-xs font-bold uppercase tracking-wider text-slate-500">
             Nome Completo *
           </Label>
-          <Input
-            id="contact-name"
-            type="text"
+            <Input
+              id="contact-name"
+              type="text"
+              required
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder="Insira o seu nome"
+              className="w-full h-14 sm:h-16 rounded-xl border-slate-200 focus-visible:ring-[#8a66a8] text-base"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="contact-email" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Endereço de E-mail *
+            </Label>
+            <Input
+              id="contact-email"
+              type="email"
+              required
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              placeholder="exemplo@email.com"
+              className="w-full h-14 sm:h-16 rounded-xl border-slate-200 focus-visible:ring-[#8a66a8] text-base"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="contact-phone" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              WhatsApp / Telefone
+            </Label>
+            <Input
+              id="contact-phone"
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              placeholder="+244 9XX XXX XXX"
+              className="w-full h-14 sm:h-16 rounded-xl border-slate-200 focus-visible:ring-[#8a66a8] text-base"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="contact-course" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Assunto / Curso de Interesse *
+            </Label>
+            <Select onValueChange={(value) => setFormData({ ...formData, course: value })} value={formData.course} required>
+              <SelectTrigger id="contact-course" className="w-full h-14 sm:h-16 rounded-xl border-slate-200 focus:ring-[#8a66a8] focus-visible:ring-[#8a66a8] text-base bg-white px-3 py-2">
+                <SelectValue placeholder="Selecione um curso" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl bg-white">
+                {courses.map((course) => (
+                  <SelectItem key={course} value={course} className="text-base">
+                    {course}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="contact-message" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Mensagem *
+          </Label>
+          <Textarea
+            id="contact-message"
             required
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            placeholder="Insira o seu nome"
-            className="w-full h-16 rounded-xl border-slate-200 focus-visible:ring-[#8a66a8] text-base"
+            value={formData.message}
+            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+            placeholder="Escreva a sua mensagem aqui..."
+            rows={5}
+            className="w-full rounded-xl resize-none border-slate-200 focus-visible:ring-[#8a66a8]"
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="contact-email" className="text-xs font-bold uppercase tracking-wider text-slate-500">
-            Endereço de E-mail *
-          </Label>
-          <Input
-            id="contact-email"
-            type="email"
-            required
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            placeholder="exemplo@email.com"
-            className="w-full h-16 rounded-xl border-slate-200 focus-visible:ring-[#8a66a8] text-base"
-          />
-        </div>
-      </div>
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="bg-destructive/10 text-destructive p-4 rounded-xl text-sm"
+            >
+              {error}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <Label htmlFor="contact-phone" className="text-xs font-bold uppercase tracking-wider text-slate-500">
-            WhatsApp / Telefone
-          </Label>
-          <Input
-            id="contact-phone"
-            type="tel"
-            value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            placeholder="+244 9XX XXX XXX"
-            className="w-full h-16 rounded-xl border-slate-200 focus-visible:ring-[#8a66a8] text-base"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="contact-course" className="text-xs font-bold uppercase tracking-wider text-slate-500">
-            Assunto / Curso de Interesse *
-          </Label>
-          <Select onValueChange={(value) => setFormData({ ...formData, course: value })} value={formData.course} required>
-            <SelectTrigger id="contact-course" className="w-full h-16 rounded-xl border-slate-200 focus:ring-[#8a66a8] focus-visible:ring-[#8a66a8] text-base bg-white px-3 py-2">
-              <SelectValue placeholder="Selecione um curso" />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl bg-white">
-              {courses.map((course) => (
-                <SelectItem key={course} value={course} className="text-base">
-                  {course}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="contact-message" className="text-xs font-bold uppercase tracking-wider text-slate-500">
-          Mensagem *
-        </Label>
-        <Textarea
-          id="contact-message"
-          required
-          value={formData.message}
-          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-          placeholder="Escreva a sua mensagem aqui..."
-          rows={5}
-          className="w-full rounded-xl resize-none border-slate-200 focus-visible:ring-[#8a66a8]"
-        />
-      </div>
-
-      <AnimatePresence>
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="bg-destructive/10 text-destructive p-4 rounded-xl text-sm"
-          >
-            {error}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full h-16 bg-[#312455] hover:bg-[#8a66a8] text-white rounded-xl text-base font-bold uppercase tracking-widest px-6 py-4 mt-auto shadow-md transition-all duration-300"
-      >
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full h-14 sm:h-16 bg-[#312455] hover:bg-[#8a66a8] text-white rounded-xl text-base font-bold uppercase tracking-widest px-6 py-4 mt-auto shadow-md transition-all duration-300"
+        >
         {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

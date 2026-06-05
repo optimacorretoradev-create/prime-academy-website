@@ -54,14 +54,14 @@ export function HeroSection() {
   }, [])
 
   const slidePositions = [
-    'center', // hero1
-    '25%',    // hero2
-    '25%',    // hero3
-    'center'  // hero4
+    'object-center',                  // hero1
+    'object-center md:object-[25%]',  // hero2
+    'object-center md:object-[25%]',  // hero3
+    'object-center'                   // hero4
   ]
 
   return (
-    <section className="relative min-h-screen w-full flex items-stretch overflow-hidden">
+    <section className="relative min-h-screen w-full flex items-stretch overflow-hidden pt-16 md:pt-0">
       {/* Background Images Slideshow - Spans full screen with fallback brand dark background to avoid white flashes */}
       <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-primary">
         <AnimatePresence>
@@ -77,8 +77,7 @@ export function HeroSection() {
               src={slides[currentSlide].image}
               alt="Prime Academy Background"
               fill
-              className="object-cover"
-              style={{ objectPosition: slidePositions[currentSlide] }}
+              className={`object-cover ${slidePositions[currentSlide]}`}
               priority
             />
           </motion.div>
@@ -93,28 +92,30 @@ export function HeroSection() {
       </div>
 
       {/* Left Typography Container - positioned cleanly over the fading gradient without cutting the image */}
-      <div className="relative z-20 w-full md:w-[50%] flex flex-col justify-center px-6 sm:px-12 md:pl-16 lg:pl-24 md:pr-8 py-32 transition-all duration-500">
-        <div className="max-w-xl text-left my-auto h-[380px] flex flex-col justify-center">
-          {/* Trust Badges */}
-          <div className="flex flex-wrap items-center gap-3 mb-6">
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full text-white text-xs border border-white/10">
-              <Star className="h-3.5 w-3.5 text-secondary fill-secondary" />
-              <span className="font-semibold">+10.353 Profissionais Capacitados</span>
-            </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full text-white text-xs border border-white/10">
-              <TrendingUp className="h-3.5 w-3.5 text-secondary" />
-              <span className="font-semibold">Metodologia 80% Prática</span>
-            </div>
+      <div className="relative z-20 w-full md:w-[50%] flex flex-col justify-center px-6 sm:px-12 md:pl-16 lg:pl-24 md:pr-8 py-20 md:py-32 transition-all duration-500">
+        
+        {/* Trust Badges - Moved to the very top for mobile */}
+        <div className="flex flex-wrap items-center gap-3 mb-6">
+          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full text-white text-xs border border-white/10">
+            <Star className="h-3.5 w-3.5 text-secondary fill-secondary" />
+            <span className="font-semibold">+10.353 Profissionais Capacitados</span>
           </div>
+          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full text-white text-xs border border-white/10">
+            <TrendingUp className="h-3.5 w-3.5 text-secondary" />
+            <span className="font-semibold">Metodologia 80% Prática</span>
+          </div>
+        </div>
 
+        <div className="max-w-xl text-left my-auto min-h-[350px] md:min-h-[450px] flex flex-col justify-center">
           {/* Dynamic Content Transitions */}
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSlide}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="h-[280px] md:h-[280px] overflow-hidden"
             >
               {/* Dynamic Main Headline */}
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-tight uppercase">

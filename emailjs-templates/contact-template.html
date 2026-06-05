@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova Mensagem de Contacto</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #334155;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 40px 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .header {
+      margin-bottom: 32px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 20px;
+    }
+    .brand {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #312455;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #0f172a;
+      margin: 0;
+    }
+    .intro {
+      font-size: 15px;
+      color: #64748b;
+      margin-top: 8px;
+      margin-bottom: 0;
+    }
+    .details {
+      margin-bottom: 32px;
+    }
+    .field {
+      border-bottom: 1px solid #f1f5f9;
+      padding: 14px 0;
+    }
+    .field:last-child {
+      border-bottom: none;
+    }
+    .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .value {
+      font-size: 15px;
+      color: #0f172a;
+      margin: 0;
+    }
+    .value strong {
+      font-weight: 600;
+    }
+    .value a {
+      color: #8a66a8;
+      text-decoration: none;
+    }
+    .value a:hover {
+      text-decoration: underline;
+    }
+    .message-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .message-container {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 32px;
+    }
+    .message-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #334155;
+      margin: 0;
+      white-space: pre-wrap;
+    }
+    .action-row {
+      margin-top: 24px;
+    }
+    .btn {
+      display: inline-block;
+      background-color: #312455;
+      color: #ffffff !important;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    .btn:hover {
+      background-color: #4c3782;
+    }
+    .footer {
+      margin-top: 48px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 24px;
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+    .footer a {
+      color: #64748b;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">Prime Academy</div>
+      <h1 class="title">Nova mensagem de contacto</h1>
+      <p class="intro">Recebeu uma mensagem submetida através do formulário do website.</p>
+    </div>
+    
+    <div class="details">
+      <div class="field">
+        <div class="label">Nome</div>
+        <div class="value"><strong>{{name}}</strong></div>
+      </div>
+      
+      <div class="field">
+        <div class="label">E-mail</div>
+        <div class="value"><a href="mailto:{{email}}">{{email}}</a></div>
+      </div>
+      
+      <div class="field">
+        <div class="label">WhatsApp / Telefone</div>
+        <div class="value">{{phone}}</div>
+      </div>
+      
+      <div class="field">
+        <div class="label">Assunto / Interesse</div>
+        <div class="value"><strong>{{course}}</strong></div>
+      </div>
+    </div>
+    
+    <div class="message-label">Mensagem</div>
+    <div class="message-container">
+      <p class="message-text">{{message}}</p>
+    </div>
+    
+    <div class="action-row">
+      <a href="mailto:{{email}}?subject=Re: Contacto Prime Academy" class="btn">Responder por e-mail</a>
+    </div>
+    
+    <div class="footer">
+      Esta mensagem foi enviada de forma automática pelo sistema de formulários.<br>
+      &copy; 2026 <a href="https://primeacademy.ao" target="_blank">Prime Academy</a>. Todos os direitos reservados.
+    </div>
+  </div>
+</body>
+</html>

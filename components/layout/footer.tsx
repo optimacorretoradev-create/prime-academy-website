@@ -28,7 +28,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="relative bg-primary text-primary-foreground border-t border-primary-foreground/10 pt-16 pb-8 overflow-hidden">
+    <footer className="relative bg-primary text-primary-foreground border-t border-primary-foreground/10 pt-12 pb-6 overflow-hidden">
       {/* Background Image Layer - Preserves the royal purple brand color while introducing a stunning abstract tech texture */}
       <div 
         className="absolute inset-0 z-0 opacity-10 pointer-events-none mix-blend-overlay"
@@ -47,106 +47,101 @@ export function Footer() {
 
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
         
-        {/* Middle Section: Columns matching the structure of reference image */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+        {/* Main Section */}
+        <div className="flex flex-col gap-10 mb-8">
           
-          {/* Column 1: Logo and About */}
-          <div className="space-y-4">
+          {/* Logo and About - Centered on Mobile */}
+          <div className="flex flex-col items-center text-center gap-4">
             <Link href="/" className="inline-block group">
-              <div className="transition-transform group-hover:scale-105 -translate-y-31">
-                <Image 
-                  src="/logo.svg" 
-                  alt="Prime Academy Logo" 
-                  width={180} 
-                  height={48} 
-                  className="h-85 md:h-58 w-auto invert brightness-0 transition-transform" 
-                />
-              </div>
+              <Image 
+                src="/logo.svg" 
+                alt="Prime Academy Logo" 
+                width={150} 
+                height={40} 
+                className="h-10 w-auto invert brightness-0" 
+              />
             </Link>
-            <p className="text-sm text-primary-foreground/80 leading-relaxed font-light -translate-y-45">
+            <p className="text-sm text-primary-foreground/80 leading-relaxed font-light max-w-xs">
               Capacitação e desenvolvimento profissional de excelência em Angola.
             </p>
           </div>
 
-          {/* Column 2: Navigation Links (arranged as in the reference image) */}
-          <div className="space-y-4">
-            <h3 className="font-bold text-sm tracking-widest text-white uppercase border-l-2 border-[#8a66a8] pl-2.5">
-              Navegação Rápida
-            </h3>
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-primary-foreground/80">
-              {quickLinks.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="hover:text-white transition-colors duration-200 font-light flex items-center gap-1 group">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#8a66a8]/40 group-hover:bg-white transition-colors" />
-                    {link.label}
-                  </Link>
+          {/* Columns Section */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            {/* Nav Links */}
+            <div className="space-y-3">
+              <h3 className="font-bold text-sm tracking-widest text-white uppercase border-l-2 border-[#8a66a8] pl-2.5">
+                Menu
+              </h3>
+              <ul className="grid grid-cols-2 gap-y-2 text-sm text-primary-foreground/80">
+                {quickLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="hover:text-white transition-colors duration-200 font-light flex items-center gap-1 group">
+                      <span className="w-1 h-1 rounded-full bg-[#8a66a8]/40 group-hover:bg-white transition-colors" />
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Contacts */}
+            <div className="space-y-3">
+              <h3 className="font-bold text-sm tracking-widest text-white uppercase border-l-2 border-[#8a66a8] pl-2.5">
+                Contactos
+              </h3>
+              <ul className="space-y-2 text-sm text-primary-foreground/80 font-light">
+                <li className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-[#8a66a8]" />
+                  <a href="tel:+244921394946" className="hover:text-white transition-colors">(+244) 921 394 946</a>
                 </li>
-              ))}
-            </ul>
-          </div>
+                <li className="flex items-start gap-2">
+                  <Mail className="h-4 w-4 text-[#8a66a8] mt-0.5" />
+                  <div className="flex flex-col">
+                    <a href="mailto:geral@primeacademy.ao" className="hover:text-white transition-colors">geral@primeacademy.ao</a>
+                  </div>
+                </li>
+              </ul>
+            </div>
 
-          {/* Column 3: Contacts */}
-          <div className="space-y-4">
-            <h3 className="font-bold text-sm tracking-widest text-white uppercase border-l-2 border-[#8a66a8] pl-2.5">
-              Contactos
-            </h3>
-            <ul className="space-y-3 text-sm text-primary-foreground/80 font-light">
-              <li className="flex items-center gap-2.5">
-                <Phone className="h-4.5 w-4.5 text-[#8a66a8] flex-shrink-0" />
-                <a href="tel:+244921394946" className="hover:text-white transition-colors duration-200">(+244) 921 394 946</a>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <Mail className="h-4.5 w-4.5 text-[#8a66a8] mt-0.5 flex-shrink-0" />
-                <div className="flex flex-col gap-0.5">
-                  <a href="mailto:geral@primeacademy.ao" className="hover:text-white transition-colors duration-200 break-all">geral@primeacademy.ao</a>
-                  <a href="mailto:comercialprimeacademy@gmail.com" className="hover:text-white transition-colors duration-200 break-all">comercialprimeacademy@gmail.com</a>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-          {/* Column 4: Socials */}
-          <div className="space-y-4">
-            <h3 className="font-bold text-sm tracking-widest text-white uppercase border-l-2 border-[#8a66a8] pl-2.5">
-              Redes Sociais
-            </h3>
-            <div className="flex gap-3">
-              <a 
-                href="https://facebook.com/primeacademy" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-white/10 hover:bg-[#8a66a8] hover:text-white text-white p-2.5 rounded-xl transition-all duration-300 hover:-translate-y-0.5 shadow-md"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-4 w-4" />
-              </a>
-              <a 
-                href="https://instagram.com/primeacademy" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-white/10 hover:bg-[#8a66a8] hover:text-white text-white p-2.5 rounded-xl transition-all duration-300 hover:-translate-y-0.5 shadow-md"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-4 w-4" />
-              </a>
+            {/* Socials */}
+            <div className="space-y-3">
+              <h3 className="font-bold text-sm tracking-widest text-white uppercase border-l-2 border-[#8a66a8] pl-2.5">
+                Redes Sociais
+              </h3>
+              <div className="flex gap-4">
+                <a 
+                  href="https://facebook.com/primeacademy" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-white/10 hover:bg-[#8a66a8] text-white p-3 rounded-xl transition-all duration-300"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="h-5 w-5" />
+                </a>
+                <a 
+                  href="https://instagram.com/primeacademy" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-white/10 hover:bg-[#8a66a8] text-white p-3 rounded-xl transition-all duration-300"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="h-5 w-5" />
+                </a>
+              </div>
             </div>
           </div>
-
         </div>
 
-        {/* Bottom Section: Footer Bottom with scroll-to-top button */}
-        <div className="pt-8 border-t border-primary-foreground/10 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-primary-foreground/60 relative">
-          <p>© {new Date().getFullYear()} Prime Academy. Desenvolvido em Angola.</p>
+        {/* Bottom Section */}
+        <div className="pt-6 border-t border-primary-foreground/10 flex flex-col items-center gap-4 text-xs text-primary-foreground/60">
+          <p>© {new Date().getFullYear()} Prime Academy. Todos os direitos reservados.</p>
           
-          <div className="flex gap-6">
-            <Link href="/privacy" className="hover:text-white transition-colors duration-200 font-light">Política de Privacidade</Link>
-            <Link href="/terms" className="hover:text-white transition-colors duration-200 font-light">Termos de Uso</Link>
-          </div>
-
-          {/* Scroll to Top Arrow Button - Styled exactly like the bottom-right chevron in reference image */}
+          {/* Scroll to Top Arrow Button */}
           <button 
             onClick={scrollToTop}
-            className="flex items-center justify-center w-10 h-10 rounded-full border border-white/15 text-primary-foreground/65 hover:text-white hover:border-white/40 bg-transparent transition-all duration-300 hover:scale-105 active:scale-95 shrink-0 animate-bounce-subtle"
+            className="flex items-center justify-center w-10 h-10 rounded-full border border-white/15 text-primary-foreground/65 hover:text-white hover:border-white/40 bg-transparent transition-all duration-300"
             aria-label="Voltar ao Topo"
           >
             <ChevronUp className="h-5 w-5" />

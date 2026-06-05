@@ -17,7 +17,7 @@ export default async function GalleryPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* ── HERO BANNER (Top) ── */}
-      <section className="relative py-24 md:py-32 overflow-hidden bg-[#312455]">
+      <section className="relative py-24 md:py-32 overflow-hidden bg-[#312455] pt-32 md:pt-32">
         {/* Background Image with elegant overlay */}
         <div 
           className="absolute inset-0 bg-cover bg-center"

@@ -20,6 +20,7 @@ interface ContactData {
   name: string
   email: string
   phone?: string
+  course?: string
   message: string
 }
 
@@ -40,24 +41,60 @@ export async function POST(request: NextRequest) {
     // Log the submission (for development)
     console.log('Form submission received:', data)
 
-    // Option 1: Using Resend (recommended)
-    // Uncomment and configure if you have RESEND_API_KEY set
-    /*
-    const resend = new Resend(process.env.RESEND_API_KEY)
+    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
     
-    await resend.emails.send({
-      from: 'Prime Academy <noreply@primeacademy.ao>',
-      to: ['geral@primeacademy.ao'],
-      subject: data.type === 'enrollment' 
-        ? `Nova Inscrição: ${(data as EnrollmentData).course}`
-        : 'Nova Mensagem de Contacto',
-      html: generateEmailHtml(data),
-    })
-    */
+    // Select the correct template ID based on form type
+    let templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
+    if (data.type === 'enrollment' && process.env.NEXT_PUBLIC_EMAILJS_ENROLL_TEMPLATE_ID) {
+      templateId = process.env.NEXT_PUBLIC_EMAILJS_ENROLL_TEMPLATE_ID
+    } else if (data.type === 'contact' && process.env.NEXT_PUBLIC_EMAILJS_CONTACT_TEMPLATE_ID) {
+      templateId = process.env.NEXT_PUBLIC_EMAILJS_CONTACT_TEMPLATE_ID
+    }
 
-    // Option 2: Simulate success for development
-    // In production, replace with actual email sending
-    await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulate network delay
+    // If EmailJS keys are set, send the email
+    if (serviceId && publicKey && templateId) {
+      console.log(`Sending email via EmailJS (Template: ${templateId})...`)
+      
+      const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          service_id: serviceId,
+          template_id: templateId,
+          user_id: publicKey,
+          accessToken: process.env.EMAILJS_PRIVATE_KEY || undefined,
+          template_params: {
+            to_email: 'comercialprimeacademy@gmail.com',
+            type: data.type,
+            name: data.name,
+            email: data.email,
+            phone: data.phone || 'Não fornecido',
+            course: data.course || 'N/A',
+            message: data.message || 'Sem mensagem adicional',
+          },
+        }),
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error('EmailJS Error response:', errorText)
+        return NextResponse.json(
+          { error: `EmailJS Error: ${response.status} - ${errorText}` },
+          { status: 500 }
+        )
+      }
+
+      console.log('Email sent successfully via EmailJS!')
+    } else {
+      console.warn(
+        'EmailJS environment variables are not configured. Simulating success in development.'
+      )
+      // Simulate network delay
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    }
 
     return NextResponse.json({ 
       success: true, 
@@ -68,33 +105,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error processing form submission:', error)
     return NextResponse.json(
-      { error: 'Erro ao processar o pedido. Tente novamente.' },
+      { error: error instanceof Error ? error.message : 'Erro ao processar o pedido. Tente novamente.' },
       { status: 500 }
     )
   }
-}
-
-// Helper function to generate email HTML
-function generateEmailHtml(data: FormData): string {
-  if (data.type === 'enrollment') {
-    const enrollData = data as EnrollmentData
-    return `
-      <h2>Nova Inscrição na Prime Academy</h2>
-      <p><strong>Nome:</strong> ${enrollData.name}</p>
-      <p><strong>Email:</strong> ${enrollData.email}</p>
-      <p><strong>Telefone:</strong> ${enrollData.phone}</p>
-      <p><strong>Curso:</strong> ${enrollData.course}</p>
-      ${enrollData.message ? `<p><strong>Mensagem:</strong> ${enrollData.message}</p>` : ''}
-    `
-  }
-
-  const contactData = data as ContactData
-  return `
-    <h2>Nova Mensagem de Contacto</h2>
-    <p><strong>Nome:</strong> ${contactData.name}</p>
-    <p><strong>Email:</strong> ${contactData.email}</p>
-    ${contactData.phone ? `<p><strong>Telefone/WhatsApp:</strong> ${contactData.phone}</p>` : ''}
-    <p><strong>Mensagem:</strong></p>
-    <p>${contactData.message}</p>
-  `
 }

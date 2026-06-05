@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { Course } from '@/lib/hygraph'
 import { createInscricao } from '@/lib/enrollments-service'
 import { useAuth } from '@/contexts/auth-context'
+import emailjs from '@emailjs/browser'
 
 interface EnrollFormProps {
   courses: Course[]
@@ -65,19 +66,32 @@ export function EnrollForm({ courses }: EnrollFormProps) {
     setIsSubmitting(true)
     setError(null)
 
-    try {
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'enrollment',
-          ...formData,
-        }),
-      })
+    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
+    const templateId = process.env.NEXT_PUBLIC_EMAILJS_ENROLL_TEMPLATE_ID || process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
 
-      if (!response.ok) {
-        throw new Error('Erro ao enviar inscrição')
-      }
+    if (!serviceId || !templateId || !publicKey) {
+      setError('A configuração do EmailJS está incompleta. Verifique o seu ficheiro .env')
+      setIsSubmitting(false)
+      return
+    }
+
+    try {
+      console.log('[EnrollForm] A enviar email via EmailJS...', { serviceId, templateId })
+      const result = await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          to_email: 'comercialprimeacademy@gmail.com',
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone || 'Não fornecido',
+          course: formData.course || 'N/A',
+          message: formData.message || 'Sem observações adicionais',
+        },
+        publicKey
+      )
+      console.log('[EnrollForm] EmailJS resposta:', result.status, result.text)
 
       const matchedCourse = courses.find((c) => c.name === formData.course)
       await createInscricao({
@@ -93,6 +107,7 @@ export function EnrollForm({ courses }: EnrollFormProps) {
       setIsSuccess(true)
       setFormData({ name: '', email: '', phone: '', course: '', message: '' })
     } catch (err) {
+      console.error('[EnrollForm] Erro EmailJS:', err)
       setError(err instanceof Error ? err.message : 'Erro ao enviar inscrição')
     } finally {
       setIsSubmitting(false)
