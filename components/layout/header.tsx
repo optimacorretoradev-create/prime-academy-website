@@ -42,6 +42,18 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Bloquear scroll quando a drawer estiver aberta
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
+
   if (pathname === '/login' || pathname === '/signup' || pathname.startsWith('/dashboard') || pathname.startsWith('/admin')) {
     return null
   }
@@ -184,88 +196,122 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation Drawer */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden overflow-hidden bg-[#312455]/98 backdrop-blur-xl rounded-2xl mt-4 shadow-2xl border border-white/10 max-w-5xl mx-auto"
-          >
-            <nav className="container mx-auto px-4 py-4 flex flex-col gap-2">
-              {navLinks.map((link) => {
-                const isActive = pathname === link.href
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`px-4 py-3 text-sm font-semibold rounded-lg transition-colors flex items-center justify-between ${
-                      isActive ? 'bg-white/10 text-white' : 'text-white/80 hover:bg-white/5 hover:text-white'
-                    }`}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {link.label}
-                    {isActive && <div className="w-1.5 h-1.5 rounded-full bg-[#8a66a8]" />}
-                  </Link>
-                )
-              })}
+          <>
+            {/* Backdrop Overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="md:hidden fixed inset-0 z-[55] bg-black/50 backdrop-blur-sm"
+              onClick={() => setIsOpen(false)}
+            />
+            {/* Drawer */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="md:hidden fixed inset-y-0 right-0 z-[60] w-[85%] bg-gradient-to-b from-[#312455] to-[#251b40] p-6 flex flex-col pt-24 shadow-2xl border-l border-white/10"
+            >
+              {/* Close button at the top */}
+              <button
+                className="absolute top-5 right-4 p-2 rounded-full text-white hover:bg-white/10 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                <X className="h-8 w-8" />
+              </button>
+              
+              <motion.nav 
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+                }}
+                className="flex flex-col gap-2"
+              >
+                {navLinks.map((link) => {
+                  const isActive = pathname === link.href
+                  return (
+                    <motion.div
+                      key={link.href}
+                      variants={{ hidden: { x: 20, opacity: 0 }, visible: { x: 0, opacity: 1 } }}
+                    >
+                      <Link
+                        href={link.href}
+                        className={`px-4 py-4 text-lg font-semibold rounded-xl transition-all flex items-center justify-between ${
+                          isActive ? 'bg-white/10 text-white' : 'text-white/80 hover:bg-white/5 hover:text-white hover:translate-x-2'
+                        }`}
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {link.label}
+                        {isActive && <div className="w-2 h-2 rounded-full bg-[#8a66a8]" />}
+                      </Link>
+                    </motion.div>
+                  )
+                })}
 
-              {/* Mobile Auth */}
-              <div className="border-t border-white/10 mt-2 pt-4 space-y-2">
-                {!isLoading && user ? (
-                  <>
-                    <div className="px-4 py-2 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-[#8a66a8] flex items-center justify-center text-lg font-bold text-white">
-                        {user.name.charAt(0).toUpperCase()}
+                {/* Mobile Auth */}
+                <motion.div 
+                  variants={{ hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } }}
+                  className="border-t border-white/10 mt-6 pt-6 space-y-4"
+                >
+                  {!isLoading && user ? (
+                    <>
+                      <div className="px-4 py-2 flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-[#8a66a8] flex items-center justify-center text-xl font-bold text-white">
+                          {user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-medium text-white text-lg">{user.name}</p>
+                          <p className="text-sm text-white/60">{user.email}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-medium text-white">{user.name}</p>
-                        <p className="text-sm text-white/60">{user.email}</p>
-                      </div>
-                    </div>
-                    <Link
-                      href="/dashboard"
-                      className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-white/80 rounded-lg transition-colors hover:bg-white/5 hover:text-white"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <LayoutDashboard className="h-4 w-4 text-[#8a66a8]" />
-                      Meu Painel
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center gap-2 w-full px-4 py-3 text-sm font-semibold text-white/80 rounded-lg transition-colors hover:bg-white/5 hover:text-white text-left cursor-pointer"
-                    >
-                      <LogOut className="h-4 w-4 text-red-400" />
-                      Sair
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      asChild
-                      variant="ghost"
-                      className="w-full justify-start text-white/90 hover:bg-white/5 rounded-xl hover:text-white cursor-pointer"
-                    >
-                      <Link href="/login" onClick={() => setIsOpen(false)}>
-                        <User className="mr-2 h-4 w-4 text-[#8a66a8]" />
-                        Entrar
+                      <Link
+                        href="/dashboard"
+                        className="flex items-center gap-2 px-4 py-3 text-lg font-semibold text-white/80 rounded-xl transition-all hover:bg-white/5 hover:text-white hover:translate-x-2"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <LayoutDashboard className="h-5 w-5 text-[#8a66a8]" />
+                        Meu Painel
                       </Link>
-                    </Button>
-                    <Button
-                      asChild
-                      className="w-full bg-[#8a66a8] text-white hover:bg-[#8a66a8]/90 rounded-full font-bold cursor-pointer transition-all"
-                    >
-                      <Link href="/signup" onClick={() => setIsOpen(false)}>
-                        Criar Conta Gratuita
-                      </Link>
-                    </Button>
-                  </>
-                )}
-              </div>
-            </nav>
-          </motion.div>
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-2 w-full px-4 py-3 text-lg font-semibold text-white/80 rounded-xl transition-all hover:bg-white/5 hover:text-white hover:translate-x-2 text-left cursor-pointer"
+                      >
+                        <LogOut className="h-5 w-5 text-red-400" />
+                        Sair
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        asChild
+                        variant="ghost"
+                        className="w-full justify-start text-white/90 text-lg hover:bg-white/5 rounded-xl hover:text-white cursor-pointer py-6"
+                      >
+                        <Link href="/login" onClick={() => setIsOpen(false)}>
+                          <User className="mr-2 h-5 w-5 text-[#8a66a8]" />
+                          Entrar
+                        </Link>
+                      </Button>
+                      <Button
+                        asChild
+                        className="w-full bg-[#8a66a8] text-white hover:bg-[#8a66a8]/90 rounded-full font-bold cursor-pointer transition-all py-6 text-lg hover:scale-[1.02]"
+                      >
+                        <Link href="/signup" onClick={() => setIsOpen(false)}>
+                          Criar Conta Gratuita
+                        </Link>
+                      </Button>
+                    </>
+                  )}
+                </motion.div>
+              </motion.nav>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>
