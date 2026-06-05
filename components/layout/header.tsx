@@ -63,7 +63,7 @@ export function Header() {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${
       isTransparent 
-        ? 'bg-[#312455]/30 py-5 border-b border-white/10' 
+        ? 'bg-transparent py-5 border-b border-white/10' 
         : 'bg-[#312455]/95 border-b border-[#312455]/20 py-3.5 shadow-md'
     }`}>
       <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
@@ -214,7 +214,7 @@ export function Header() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="md:hidden fixed inset-y-0 right-0 z-[60] w-[85%] bg-gradient-to-b from-[#312455] to-[#251b40] p-6 flex flex-col pt-24 shadow-2xl border-l border-white/10"
+              className="md:hidden fixed inset-0 z-[60] w-full bg-white/5 backdrop-blur-[1px] p-6 flex flex-col pt-24 shadow-2xl"
             >
               {/* Close button at the top */}
               <button
