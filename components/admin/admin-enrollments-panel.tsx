@@ -41,7 +41,7 @@ export function AdminEnrollmentsPanel({ adminPerfilId, onUpdated }: AdminEnrollm
         filter === 'todos' ? await fetchInscricoes() : await fetchInscricoes(filter)
       setInscricoes(data)
     } catch (e: any) {
-      console.error('[AdminEnrollmentsPanel] Erro ao carregar:', e)
+
       setError(e.message || 'Erro desconhecido ao carregar inscrições.')
     } finally {
       setLoading(false)

@@ -330,7 +330,6 @@ function DashboardPageContent() {
       try {
         // Blindagem total contra IDs indefinidos ou strings "undefined"
         if (!user || !user.id || user.id === 'undefined' || typeof user.id !== 'string') {
-          console.log('Aguardando sessão do utilizador estabilizar...');
           return;
         }
 
@@ -345,7 +344,6 @@ function DashboardPageContent() {
             .select('id, curso_id_catalogo, progresso_percentagem');
 
           if (matriculaError) {
-            console.error('Error fetching matriculas for instructor:', JSON.stringify(matriculaError, null, 2));
             return;
           }
           matriculas = data || [];
@@ -357,14 +355,12 @@ function DashboardPageContent() {
             .eq('perfil_id', user.id);
 
           if (matriculaError) {
-            console.error('Error fetching student matriculas:', JSON.stringify(matriculaError, null, 2));
             return;
           }
           matriculas = data || [];
         }
 
         if (!matriculas || matriculas.length === 0) {
-          console.log('Nenhuma matrícula ativa encontrada.');
           setActiveCourses([]);
           return;
         }
@@ -454,7 +450,6 @@ function DashboardPageContent() {
         setActiveCourses(validCourses);
 
       } catch (err) {
-        console.error('Runtime error loading active courses:', err);
       }
     }
 
@@ -472,7 +467,6 @@ function DashboardPageContent() {
           .select('id, perfil_id, curso_id_catalogo, curso_nome, progresso_percentagem')
 
         if (matriculasError) {
-          console.error('Error fetching students from matriculas:', matriculasError)
           return
         }
 
@@ -491,7 +485,7 @@ function DashboardPageContent() {
             .in('id', perfilIds)
 
           if (profilesError) {
-            console.error('Error fetching profiles:', profilesError)
+            // Error fetching profiles
           } else if (profilesData) {
             profilesData.forEach(p => {
               profilesMap[p.id] = { nome: p.nome, email: p.email }
@@ -523,7 +517,7 @@ function DashboardPageContent() {
 
         setStudents(mapped)
       } catch (err) {
-        console.error('Runtime error loading students:', err)
+        // Runtime error loading students
       } finally {
         setIsLoadingStudents(false)
       }
@@ -545,7 +539,7 @@ function DashboardPageContent() {
           setSelectedCourseId(courses[0].id)
         }
       } catch (err) {
-        console.error('Error fetching courses:', err)
+        // Error fetching courses
       }
     }
     loadCourses()
@@ -558,7 +552,7 @@ function DashboardPageContent() {
       try {
         setEnrolledCourses(JSON.parse(saved))
       } catch (err) {
-        console.error('Error loading enrolled courses:', err)
+        // Error loading enrolled courses
       }
     }
   }, [])
@@ -606,7 +600,6 @@ function DashboardPageContent() {
           .order('id', { ascending: false })
 
         if (pdfError) {
-          console.warn('[materials-pdf] Table public.materiais_pdf read failed or not created yet:', pdfError)
           // Fallback to localStorage or mock
           const savedPDFs = localStorage.getItem('prime_academy_pdfs')
           if (savedPDFs) {
@@ -660,7 +653,7 @@ function DashboardPageContent() {
           setPdfMaterials([])
         }
       } catch (err) {
-        console.error('Exception loading PDF materials:', err)
+        // Exception loading PDF materials
       }
     }
 
@@ -734,7 +727,7 @@ function DashboardPageContent() {
           })
 
         if (uploadError) {
-          console.warn('[materials-pdf] Storage upload failed, fallback to local URL:', uploadError)
+          // Storage upload failed, fallback to local URL
         } else if (storageData) {
           const { data: urlData } = supabase.storage
             .from('materiais')
@@ -745,7 +738,7 @@ function DashboardPageContent() {
           }
         }
       } catch (uploadException) {
-        console.warn('[materials-pdf] Exception during file upload:', uploadException)
+        // Exception during file upload
       }
     }
 
@@ -763,7 +756,7 @@ function DashboardPageContent() {
         .select()
 
       if (insertError) {
-        console.warn('[materials-pdf] Table public.materiais_pdf INSERT failed, using local storage fallback:', insertError)
+        // Table public.materiais_pdf INSERT failed, using local storage fallback
       } else if (insertedData && insertedData.length > 0) {
         // successfully saved to database
         const row = insertedData[0]
@@ -804,7 +797,7 @@ function DashboardPageContent() {
               .insert(notifs)
           }
         } catch (notifErr) {
-          console.warn('[materials-pdf] Notification broadcast failed:', notifErr)
+          // Notification broadcast failed
         }
         
         // Reset states
@@ -816,7 +809,7 @@ function DashboardPageContent() {
         return
       }
     } catch (insertException) {
-      console.warn('[materials-pdf] Exception during INSERT, keeping local fallback:', insertException)
+      // Exception during INSERT, keeping local fallback
     }
 
     // Fallback block if table INSERT was not completed
@@ -871,10 +864,10 @@ function DashboardPageContent() {
               .from('materiais')
               .remove([storageFileName])
             if (storageError) {
-              console.warn('[delete-pdf] Storage deletion warning:', storageError)
+
             }
           } catch (storageException) {
-            console.warn('[delete-pdf] Storage deletion exception:', storageException)
+
           }
         }
         try {
@@ -883,10 +876,10 @@ function DashboardPageContent() {
             .delete()
             .eq('id', pdfId)
           if (dbError) {
-            console.warn('[delete-pdf] Database DELETE warning:', dbError)
+
           }
         } catch (dbException) {
-          console.warn('[delete-pdf] Database DELETE exception:', dbException)
+
         }
       }
 
@@ -900,7 +893,7 @@ function DashboardPageContent() {
           )
         }
       } catch (e) {
-        console.warn('[delete-pdf] Failed to update localStorage:', e)
+
       }
       toast.success(`"${pdfTitle}" eliminado com sucesso!`)
     }

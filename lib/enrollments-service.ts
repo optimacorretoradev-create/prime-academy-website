@@ -35,7 +35,7 @@ async function notifyAdminsAboutInscricao(params: {
       }
     }
   } catch (e) {
-    console.warn('[inscricoes] Erro ao notificar admins:', e)
+
   }
 }
 
@@ -108,7 +108,7 @@ export async function fetchInscricoes(estado?: InscricaoEstado): Promise<Inscric
     const { data, error } = await query
 
     if (error) {
-      console.error('[Supabase Error] fetchInscricoes:', error)
+
       throw error // Propaga o erro para o componente tratar
     }
 

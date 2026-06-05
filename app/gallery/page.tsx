@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default async function GalleryPage() {
   const images = await getGalleryImages()
-  console.log("📸 [Gallery Data Check] Itens recebidos:", images?.length, images?.[0]);
+
 
   // Extract unique categories
   const categories = ['Todos', ...new Set(images.map((img) => img.categoria))]

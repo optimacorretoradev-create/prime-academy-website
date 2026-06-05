@@ -45,13 +45,13 @@ async function run() {
   const json = await response.json();
 
   if (json.errors) {
-    console.error("❌ Errors:", JSON.stringify(json.errors, null, 2));
+
     return;
   }
 
-  console.log("Fields of Curso:");
+
   json.data.__type.fields.forEach(field => {
-    console.log(`- ${field.name} (${field.type.name || field.type.kind} -> ${field.type.ofType ? field.type.ofType.name : 'none'})`);
+
   });
 }
 

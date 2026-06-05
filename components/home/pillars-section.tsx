@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Building, BookOpen, Briefcase, Cpu, ArrowRight, Check } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
@@ -137,9 +138,9 @@ export function PillarsSection() {
 
                 <div className="border-t pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
                    <p className="text-xs text-muted-foreground text-center md:text-left">Todos os módulos contam com material de apoio completo em formato PDF e avaliação prática continuada.</p>
-                   <button className="bg-primary text-white px-6 py-2 rounded-lg font-bold text-sm flex items-center gap-2 hover:bg-primary/90 transition-colors whitespace-nowrap">
+                   <Link href="/courses" className="bg-primary text-white px-6 py-2 rounded-lg font-bold text-sm flex items-center gap-2 hover:bg-primary/90 transition-colors whitespace-nowrap">
                      Ver Horários e Preços <ArrowRight className="w-4 h-4" />
-                   </button>
+                   </Link>
                 </div>
               </motion.div>
             </AnimatePresence>

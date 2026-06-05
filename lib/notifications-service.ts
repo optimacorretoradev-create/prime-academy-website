@@ -27,11 +27,11 @@ export async function fetchNotifications(perfilId: string): Promise<AppNotificat
         return json.notifications as AppNotification[]
       }
       if (!res.ok && json.error) {
-        console.warn('[notificacoes] API:', json.error)
+
       }
     }
   } catch (e) {
-    console.warn('[notificacoes] fetch API:', e)
+
   }
 
   // Fallback: tentar com cliente anon (respeita RLS)
@@ -57,7 +57,7 @@ export async function fetchNotifications(perfilId: string): Promise<AppNotificat
       }))
     }
   } catch (e) {
-    console.warn('[notificacoes] fallback RLS:', e)
+
   }
 
   // Se tudo falhar, retornar vazio (não há cache local)
@@ -86,14 +86,14 @@ export async function createNotification(params: {
       ]);
 
     if (error) {
-      console.warn('[notificacoes] Ignorado bloqueio de RLS ou erro na inserção:', error.message);
+
       // Retorna ok: true para não travar o fluxo principal de inscrição (ex: enrollments-service)
       return { ok: true, warned: true };
     }
 
     return { ok: true };
   } catch (err) {
-    console.error('[notificacoes] Erro inesperado ao criar:', err);
+
     return { ok: false, error: 'Erro inesperado ao criar notificação.' };
   }
 }
@@ -114,7 +114,7 @@ export async function markNotificationRead(id: string): Promise<void> {
     try {
       await supabase.from('notificacoes').update({ lida: true }).eq('id', id)
     } catch (e) {
-      console.warn('[notificacoes] markNotificationRead falhou:', e)
+
     }
   }
 }
@@ -142,7 +142,7 @@ export async function markAllNotificationsRead(): Promise<void> {
           .eq('lida', false)
       }
     } catch (e) {
-      console.warn('[notificacoes] markAllNotificationsRead falhou:', e)
+
     }
   }
 }

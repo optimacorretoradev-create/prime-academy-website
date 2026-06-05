@@ -13,7 +13,7 @@ export async function GET() {
     const courses = await getCourses()
     return NextResponse.json(courses)
   } catch (error) {
-    console.error('[API/courses] Error fetching courses:', error)
+
     return NextResponse.json([], { status: 500 })
   }
 }

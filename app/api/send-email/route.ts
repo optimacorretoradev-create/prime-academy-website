@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Log the submission (for development)
-    console.log('Form submission received:', data)
+
 
     const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
     const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
     // If EmailJS keys are set, send the email
     if (serviceId && publicKey && templateId) {
-      console.log(`Sending email via EmailJS (Template: ${templateId})...`)
+
       
       const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
         method: 'POST',
@@ -80,14 +80,14 @@ export async function POST(request: NextRequest) {
 
       if (!response.ok) {
         const errorText = await response.text()
-        console.error('EmailJS Error response:', errorText)
+
         return NextResponse.json(
           { error: `EmailJS Error: ${response.status} - ${errorText}` },
           { status: 500 }
         )
       }
 
-      console.log('Email sent successfully via EmailJS!')
+
     } else {
       console.warn(
         'EmailJS environment variables are not configured. Simulating success in development.'
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
         : 'Mensagem enviada com sucesso!'
     })
   } catch (error) {
-    console.error('Error processing form submission:', error)
+
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Erro ao processar o pedido. Tente novamente.' },
       { status: 500 }

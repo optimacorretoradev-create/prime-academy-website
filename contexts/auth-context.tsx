@@ -42,11 +42,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(userData)
       } else {
         // Perfil não encontrado ou erro na leitura — utilizador sem acesso
-        console.warn('[auth] Perfil não encontrado para ID:', id)
+
         setUser(null)
       }
     } catch (err) {
-      console.error('[auth] Erro ao carregar perfil:', err)
+
       setUser(null)
     } finally {
       setIsLoading(false)
@@ -65,7 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setIsLoading(false)
         }
       } catch (error) {
-        console.error('[auth] Erro ao verificar sessão:', error)
+
         setUser(null)
         setIsLoading(false)
       }
@@ -157,7 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         window.location.href = '/login'
       }
     } catch (err) {
-      console.error('[auth] Erro ao terminar sessão:', err)
+
       if (typeof window !== 'undefined') {
         window.location.href = '/login'
       }
