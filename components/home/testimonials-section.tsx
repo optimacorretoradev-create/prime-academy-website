@@ -98,16 +98,16 @@ export async function TestimonialsSection() {
             <p className="text-xs text-muted-foreground">Parceiros e clientes dos principais segmentos do mercado angolano</p>
           </div>
           
-          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
+          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-10">
             {partners.map((p, idx) => {
               const PartnerIcon = p.icon
               return (
                 <div 
                   key={idx} 
-                  className="flex items-center gap-2.5 bg-card px-5 py-3 rounded-2xl border border-border/80 shadow-sm hover:border-accent/40 hover:shadow-md transition-all duration-300"
+                  className="flex items-center gap-2.5 bg-card px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl border border-border/80 shadow-sm hover:border-accent/40 hover:shadow-md transition-all duration-300 w-auto sm:w-auto"
                 >
-                  <PartnerIcon className="h-4.5 w-4.5 text-accent" />
-                  <span className="text-xs font-bold text-primary">{p.name}</span>
+                  <PartnerIcon className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-accent" />
+                  <span className="text-[10px] sm:text-xs font-bold text-primary">{p.name}</span>
                 </div>
               )
             })}

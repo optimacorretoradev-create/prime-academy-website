@@ -57,54 +57,54 @@ export default async function ContactPage() {
               </div>
 
               {/* Grid of 4 Items */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 pt-4">
                 {/* 1. Location */}
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-center bg-slate-50 sm:bg-transparent p-4 sm:p-0 rounded-2xl border border-slate-100 sm:border-0">
                   <div className="bg-[#312455]/5 text-[#312455] p-3 rounded-2xl h-fit">
                     <MapPin className="h-6 w-6 text-[#312455]" />
                   </div>
                   <div className="space-y-1">
-                    <h4 className="font-bold text-[#312455] text-base">Localização</h4>
+                    <h4 className="font-bold text-[#312455] text-sm sm:text-base">Localização</h4>
                     <p className="text-slate-500 text-xs font-light leading-relaxed">{contactInfo.address}</p>
                   </div>
                 </div>
 
                 {/* 2. Phone */}
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-center bg-slate-50 sm:bg-transparent p-4 sm:p-0 rounded-2xl border border-slate-100 sm:border-0">
                   <div className="bg-[#312455]/5 text-[#312455] p-3 rounded-2xl h-fit">
                     <Phone className="h-6 w-6 text-[#312455]" />
                   </div>
                   <div className="space-y-1">
-                    <h4 className="font-bold text-[#312455] text-base">Telefone</h4>
+                    <h4 className="font-bold text-[#312455] text-sm sm:text-base">Telefone</h4>
                     <a href={`tel:${contactInfo.phone}`} className="block text-slate-500 text-xs hover:text-[#8a66a8] transition-colors">{contactInfo.phone}</a>
                   </div>
                 </div>
 
                 {/* 3. Email */}
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-center bg-slate-50 sm:bg-transparent p-4 sm:p-0 rounded-2xl border border-slate-100 sm:border-0">
                   <div className="bg-[#312455]/5 text-[#312455] p-3 rounded-2xl h-fit">
                     <Mail className="h-6 w-6 text-[#312455]" />
                   </div>
                   <div className="space-y-1">
-                    <h4 className="font-bold text-[#312455] text-base">Email</h4>
+                    <h4 className="font-bold text-[#312455] text-sm sm:text-base">Email</h4>
                     <a href="mailto:geral@primeacademy.ao" className="block text-slate-500 text-xs hover:text-[#8a66a8] transition-colors break-all">geral@primeacademy.ao</a>
                   </div>
                 </div>
 
                 {/* 4. Social networks */}
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-center bg-slate-50 sm:bg-transparent p-4 sm:p-0 rounded-2xl border border-slate-100 sm:border-0">
                   <div className="bg-[#312455]/5 text-[#312455] p-3 rounded-2xl h-fit">
                     <MessageCircle className="h-6 w-6 text-[#312455]" />
                   </div>
                   <div className="space-y-1.5">
-                    <h4 className="font-bold text-[#312455] text-base">Redes Sociais</h4>
+                    <h4 className="font-bold text-[#312455] text-sm sm:text-base">Redes Sociais</h4>
                     <div className="flex gap-2">
                       {contactInfo.socialLinks.facebook && (
                         <a
                           href={contactInfo.socialLinks.facebook}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="bg-slate-50 hover:bg-[#312455] text-slate-700 hover:text-white p-2 rounded-xl transition-all duration-300 border border-slate-100 shadow-sm"
+                          className="bg-white sm:bg-slate-50 hover:bg-[#312455] text-slate-700 hover:text-white p-2 rounded-xl transition-all duration-300 border border-slate-100 shadow-sm"
                           aria-label="Facebook"
                         >
                           <Facebook className="h-4 w-4" />
@@ -115,7 +115,7 @@ export default async function ContactPage() {
                           href={contactInfo.socialLinks.instagram}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="bg-slate-50 hover:bg-[#312455] text-slate-700 hover:text-white p-2 rounded-xl transition-all duration-300 border border-slate-100 shadow-sm"
+                          className="bg-white sm:bg-slate-50 hover:bg-[#312455] text-slate-700 hover:text-white p-2 rounded-xl transition-all duration-300 border border-slate-100 shadow-sm"
                           aria-label="Instagram"
                         >
                           <Instagram className="h-4 w-4" />
@@ -129,8 +129,8 @@ export default async function ContactPage() {
 
             {/* RIGHT COLUMN: CARD & FORM */}
             <div className="h-full">
-              <div className="bg-white border border-slate-200 rounded-3xl p-10 shadow-lg h-full flex flex-col">
-                <h3 className="text-2xl font-bold text-[#312455] mb-8">
+              <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-lg h-full flex flex-col">
+                <h3 className="text-2xl font-bold text-[#312455] mb-6 sm:mb-8">
                   Envie-nos uma Mensagem
                 </h3>
                 <div className="flex-1">
