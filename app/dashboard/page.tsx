@@ -4,13 +4,14 @@ import { useEffect, useState, Fragment, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { SafeImage } from '@/components/ui/safe-image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   BookOpen, Clock, Award, ArrowRight, Play, User, LogOut, 
   Download, Upload, Plus, CheckCircle2, Globe, Users, FileText, 
   ChevronRight, ShieldCheck, Menu, X, Bell, Calendar, Search, 
   BookOpenCheck, LayoutDashboard, Settings, Compass, Eye, EyeOff,
-  Lock, UserCircle, Mail, Tag, Star, Loader2, Video, Trash2
+  Lock, UserCircle, Mail, Tag, Star, Loader2, Video, Trash2, CheckCheck
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -20,7 +21,7 @@ import { useNotifications } from '@/contexts/notifications-context'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
-import { getCourses, type Course } from '@/lib/hygraph'
+import type { Course } from '@/lib/hygraph'
 import { supabase } from '@/lib/supabase'
 import { VirtualRoomsTab } from '@/components/dashboard/virtual-rooms-tab'
 
@@ -44,6 +45,21 @@ function isAttendingCatalogCourse(
     return { attending: true, label: 'A Frequentar' }
   }
   return { attending: false, label: 'A Frequentar' }
+}
+
+function getCategoryLabel(category: string): string {
+  switch (category) {
+    case 'GESTAOADMINISTRATIVADIGITAL':
+      return 'Gestão Administrativa Digital'
+    case 'LIDERANCAECOMUNICACAO':
+      return 'Liderança e Comunicação'
+    case 'SECRETARIADOESTRATEGICO':
+      return 'Secretariado Estratégico'
+    case 'TECNOLOGIASINOVADORAS':
+      return 'Tecnologias Inovadoras'
+    default:
+      return category
+  }
 }
 
 
@@ -142,11 +158,17 @@ function DashboardPageContent() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [currentDate, setCurrentDate] = useState('')
   const [showNotifications, setShowNotifications] = useState(false)
+  const [markingId, setMarkingId] = useState<string | null>(null)
+  const [markingAll, setMarkingAll] = useState(false)
   const { notifications, unreadCount, markRead, markAllRead } = useNotifications()
   
   // User profile extensions state
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [displayName, setDisplayName] = useState('')
+
+  // Online Classes state
+  const [onlineClassesActiveTab, setOnlineClassesActiveTab] = useState<'live' | 'presencial'>('live')
+  const [showScheduleForm, setShowScheduleForm] = useState(false)
 
   // Student visual hidden PDFs
   const [hiddenPdfIds, setHiddenPdfIds] = useState<string[]>(() => {
@@ -157,23 +179,60 @@ function DashboardPageContent() {
     return []
   })
 
-  const handleHidePdf = (id: string) => {
-    const confirmHide = window.confirm('Deseja ocultar este material pedagógico da sua biblioteca?')
-    if (!confirmHide) return
-    const updated = [...hiddenPdfIds, id]
-    setHiddenPdfIds(updated)
-    localStorage.setItem('prime_academy_hidden_pdfs', JSON.stringify(updated))
-    toast.success('Material pedagógico removido da sua vista.')
+  // PDF confirm modal state
+  const [pdfConfirmModal, setPdfConfirmModal] = useState<{
+    open: boolean
+    action: 'delete' | 'hide'
+    pdfId: string
+    pdfTitle: string
+    fileUrl?: string
+  }>({ open: false, action: 'hide', pdfId: '', pdfTitle: '' })
+  const [isPdfActionLoading, setIsPdfActionLoading] = useState(false)
+
+  const handleHidePdf = (id: string, title: string) => {
+    setPdfConfirmModal({ open: true, action: 'hide', pdfId: id, pdfTitle: title })
   }
 
   const handleNotificationClick = async (notif: any) => {
+    if (markingId || markingAll) return
+    setMarkingId(notif.id)
     await markRead(notif.id)
+    setMarkingId(null)
     setShowNotifications(false)
-    if (notif.tipo === 'material') {
+
+    // Smart routing based on notification type
+    const tipo = notif.tipo as string
+    if (tipo === 'material') {
       handleTabChange('pdfs')
-    } else if (notif.tipo === 'aula' || notif.tipo === 'transmissao') {
+    } else if (tipo === 'aula' || tipo === 'transmissao') {
       handleTabChange('online-classes')
+    } else if (tipo === 'nova_inscricao' || tipo === 'promovido_admin') {
+      // Admin notifications → painel admin
+      router.push('/admin')
+    } else if (
+      tipo === 'inscricao_aceite' ||
+      tipo === 'inscricao_recebida' ||
+      tipo === 'inscricao_em_analise' ||
+      tipo === 'inscricao_processada' ||
+      tipo === 'inscricao_pendente_pagamento'
+    ) {
+      // Enrollment status notifications → Meus Cursos
+      handleTabChange('courses')
+    } else if (tipo === 'inscricao_rejeitada') {
+      // Rejected → suggest exploring other courses
+      handleTabChange('explore')
+    } else if (tipo === 'cargo_revogado') {
+      // Role revoked → dashboard principal
+      handleTabChange('courses')
     }
+  }
+
+  const handleMarkAllRead = async () => {
+    if (markingAll || markingId !== null) return
+    setMarkingAll(true)
+    await markAllRead()
+    toast.success('Todas as notificações foram marcadas como lidas!')
+    setMarkingAll(false)
   }
 
   // Loading states
@@ -311,7 +370,9 @@ function DashboardPageContent() {
         }
 
         // 2. Buscar todos os cursos do catálogo do Hygraph para obter os detalhes
-        const allCatalogCourses = await getCourses() || [];
+        // Usa a API route servidor para garantir que o token de autenticação está disponível
+        const coursesRes = await fetch('/api/courses')
+        const allCatalogCourses: Course[] = coursesRes.ok ? await coursesRes.json() : [];
 
         let coursesWithDetails: (ActiveProgram | null)[] = [];
 
@@ -438,7 +499,8 @@ function DashboardPageContent() {
           }
         }
 
-        const allCatalogCourses = await getCourses() || []
+        const coursesRes2 = await fetch('/api/courses')
+        const allCatalogCourses: Course[] = coursesRes2.ok ? await coursesRes2.json() : []
 
         const mapped = matriculas.map(m => {
           const profile = m.perfil_id ? profilesMap[m.perfil_id] : null
@@ -476,7 +538,8 @@ function DashboardPageContent() {
   useEffect(() => {
     async function loadCourses() {
       try {
-        const courses = await getCourses()
+        const res = await fetch('/api/courses')
+        const courses: Course[] = res.ok ? await res.json() : []
         setExploreCourses(courses)
         if (courses && courses.length > 0) {
           setSelectedCourseId(courses[0].id)
@@ -576,7 +639,8 @@ function DashboardPageContent() {
         }
 
         if (databasePDFs && databasePDFs.length > 0) {
-          const allCatalogCourses = await getCourses() || []
+          const coursesRes3 = await fetch('/api/courses')
+          const allCatalogCourses: Course[] = coursesRes3.ok ? await coursesRes3.json() : []
           const mappedPDFs: PDFMaterial[] = databasePDFs.map((pdf: any) => {
             const matchedCourse = allCatalogCourses.find(c => c.id === pdf.curso_id)
             return {
@@ -782,61 +846,67 @@ function DashboardPageContent() {
 
   // Handle PDF deletion from storage and database
   const handleDeletePdf = async (id: string, fileUrl?: string, title?: string) => {
-    const confirmDelete = window.confirm(`Tem a certeza que deseja eliminar o material "${title || 'este PDF'}"?`)
-    if (!confirmDelete) return
+    setPdfConfirmModal({ open: true, action: 'delete', pdfId: id, pdfTitle: title || 'este PDF', fileUrl })
+  }
 
-    // Guard: only hit Supabase when the id is a real UUID (prevents type-mismatch crashes on mock data)
-    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)
+  const executePdfAction = async () => {
+    const { action, pdfId, pdfTitle, fileUrl } = pdfConfirmModal
+    setIsPdfActionLoading(true)
 
-    if (isUUID) {
-      // 1. Delete file from Supabase Storage (best-effort, non-blocking)
-      if (fileUrl) {
-        try {
-          const urlParts = fileUrl.split('/')
-          const storageFileName = urlParts[urlParts.length - 1]
-          const { error: storageError } = await supabase.storage
-            .from('materiais')
-            .remove([storageFileName])
-          if (storageError) {
-            console.warn('[delete-pdf] Storage deletion warning:', storageError)
-          }
-        } catch (storageException) {
-          console.warn('[delete-pdf] Storage deletion exception:', storageException)
-        }
-      }
-
-      // 2. Delete row from the database
-      try {
-        const { error: dbError } = await supabase
-          .from('materiais_pdf')
-          .delete()
-          .eq('id', id)
-        if (dbError) {
-          console.warn('[delete-pdf] Database DELETE warning (continuing with local delete):', dbError)
-        }
-      } catch (dbException) {
-        console.warn('[delete-pdf] Database DELETE exception (continuing with local delete):', dbException)
-      }
+    if (action === 'hide') {
+      const updated = [...hiddenPdfIds, pdfId]
+      setHiddenPdfIds(updated)
+      localStorage.setItem('prime_academy_hidden_pdfs', JSON.stringify(updated))
+      toast.success('Material pedagógico removido da sua vista.')
     } else {
-      // Mock / non-UUID id — remove only from local state (no DB round-trip needed)
-      console.log('[delete-pdf] Non-UUID id detected — removing from local state only.')
-    }
+      // delete action
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(pdfId)
 
-    // Always remove from local state and localStorage regardless of DB result
-    setPdfMaterials(prev => prev.filter(pdf => pdf.id !== id))
-    try {
-      const saved = localStorage.getItem('prime_academy_pdfs')
-      if (saved) {
-        localStorage.setItem(
-          'prime_academy_pdfs',
-          JSON.stringify(JSON.parse(saved).filter((pdf: { id: string }) => pdf.id !== id))
-        )
+      if (isUUID) {
+        if (fileUrl) {
+          try {
+            const urlParts = fileUrl.split('/')
+            const storageFileName = urlParts[urlParts.length - 1]
+            const { error: storageError } = await supabase.storage
+              .from('materiais')
+              .remove([storageFileName])
+            if (storageError) {
+              console.warn('[delete-pdf] Storage deletion warning:', storageError)
+            }
+          } catch (storageException) {
+            console.warn('[delete-pdf] Storage deletion exception:', storageException)
+          }
+        }
+        try {
+          const { error: dbError } = await supabase
+            .from('materiais_pdf')
+            .delete()
+            .eq('id', pdfId)
+          if (dbError) {
+            console.warn('[delete-pdf] Database DELETE warning:', dbError)
+          }
+        } catch (dbException) {
+          console.warn('[delete-pdf] Database DELETE exception:', dbException)
+        }
       }
-    } catch (e) {
-      console.warn('[delete-pdf] Failed to update localStorage:', e)
+
+      setPdfMaterials(prev => prev.filter(pdf => pdf.id !== pdfId))
+      try {
+        const saved = localStorage.getItem('prime_academy_pdfs')
+        if (saved) {
+          localStorage.setItem(
+            'prime_academy_pdfs',
+            JSON.stringify(JSON.parse(saved).filter((pdf: { id: string }) => pdf.id !== pdfId))
+          )
+        }
+      } catch (e) {
+        console.warn('[delete-pdf] Failed to update localStorage:', e)
+      }
+      toast.success(`"${pdfTitle}" eliminado com sucesso!`)
     }
 
-    toast.success('Material pedagógico eliminado com sucesso!')
+    setIsPdfActionLoading(false)
+    setPdfConfirmModal({ open: false, action: 'hide', pdfId: '', pdfTitle: '' })
   }
 
   // Handle save settings — always works (localStorage-first), Supabase in background
@@ -951,7 +1021,7 @@ function DashboardPageContent() {
     },
     ...(isInstructor ? [{
       id: 'students' as const,
-      label: 'Lista de Alunos',
+      label: 'Lista de Formandos',
       icon: Users,
     }] : []),
     {
@@ -977,6 +1047,88 @@ function DashboardPageContent() {
         className="hidden" 
         onChange={handleAvatarChange} 
       />
+
+      {/* PDF Confirm Modal (delete / hide) */}
+      <AnimatePresence>
+        {pdfConfirmModal.open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white border border-slate-200 rounded-2xl p-7 max-w-sm w-full shadow-2xl"
+            >
+              {/* Header */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${pdfConfirmModal.action === 'delete' ? 'bg-red-50' : 'bg-amber-50'}`}>
+                  <Trash2 className={`w-5 h-5 ${pdfConfirmModal.action === 'delete' ? 'text-red-500' : 'text-amber-500'}`} />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-[#312455]">
+                    {pdfConfirmModal.action === 'delete' ? 'Eliminar material' : 'Remover da vista'}
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-0.5">Esta ação será aplicada imediatamente.</p>
+                </div>
+              </div>
+
+              {/* Body */}
+              <p className="text-sm text-slate-600 leading-relaxed mb-6">
+                {pdfConfirmModal.action === 'delete' ? (
+                  <>
+                    Tem a certeza que deseja <strong className="text-red-600">eliminar permanentemente</strong> o material{' '}
+                    <strong className="text-[#312455]">"{pdfConfirmModal.pdfTitle}"</strong>?
+                    O ficheiro será removido do servidor e não poderá ser recuperado.
+                  </>
+                ) : (
+                  <>
+                    Deseja ocultar{' '}
+                    <strong className="text-[#312455]">"{pdfConfirmModal.pdfTitle}"</strong>{' '}
+                    da sua biblioteca? Pode contactar o administrador para o restaurar.
+                  </>
+                )}
+              </p>
+
+              {/* Buttons */}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPdfConfirmModal({ open: false, action: 'hide', pdfId: '', pdfTitle: '' })}
+                  disabled={isPdfActionLoading}
+                  className="flex-1 h-10 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={executePdfAction}
+                  disabled={isPdfActionLoading}
+                  className={`flex-1 h-10 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed transition-colors cursor-pointer ${
+                    pdfConfirmModal.action === 'delete'
+                      ? 'bg-red-600 hover:bg-red-700'
+                      : 'bg-[#312455] hover:bg-[#3d2d6b]'
+                  }`}
+                >
+                  {isPdfActionLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      A processar...
+                    </>
+                  ) : pdfConfirmModal.action === 'delete' ? (
+                    'Eliminar'
+                  ) : (
+                    'Ocultar'
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* 1. SIDEBAR DESKTOP */}
       <aside className="hidden lg:flex flex-col w-64 bg-[#312455] text-white fixed h-screen z-30 shadow-none border-none rounded-r-[2.5rem]">
@@ -1007,7 +1159,7 @@ function DashboardPageContent() {
           <h2 className="font-extrabold text-sm tracking-tight text-white line-clamp-1">{displayName || user.name}</h2>
           <p className="text-[10px] text-white/50 font-semibold truncate max-w-full mt-0.5">{user.email}</p>
           <Badge className="mt-2 bg-[#8a66a8]/20 hover:bg-[#8a66a8]/35 text-[#c1a7d6] border border-[#8a66a8]/30 uppercase text-[8px] font-extrabold tracking-widest px-2.5 py-0.5 rounded-full">
-            {isInstructor ? 'Administrador' : 'Estudante'}
+            {isInstructor ? 'Administrador' : 'Formando'}
           </Badge>
         </div>
 
@@ -1136,7 +1288,7 @@ function DashboardPageContent() {
                 <h2 className="font-extrabold text-sm tracking-tight text-white line-clamp-1">{displayName || user.name}</h2>
                 <p className="text-[10px] text-white/50 font-semibold truncate max-w-full mt-0.5">{user.email}</p>
                 <Badge className="mt-2 bg-[#8a66a8]/20 text-[#c1a7d6] border border-[#8a66a8]/30 uppercase text-[8px] font-extrabold tracking-widest px-2.5 py-0.5 rounded-full">
-                  {isInstructor ? 'Administrador' : 'Estudante'}
+                  {isInstructor ? 'Administrador' : 'Formando'}
                 </Badge>
               </div>
 
@@ -1217,155 +1369,385 @@ function DashboardPageContent() {
       </AnimatePresence>
 
       {/* 3. MAIN WORKSPACE */}
-      <div className="flex-1 flex flex-col lg:pl-64 min-h-screen">
+      <div className="flex-1 flex flex-col lg:pl-64 min-h-screen min-w-0 overflow-x-hidden">
         
-        {/* Workspace Top Navbar */}
-        <header className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-100 h-16 flex items-center justify-between px-6 z-20 shadow-sm rounded-bl-[2rem]">
-          {/* Left side: hamburger + date */}
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => setSidebarOpen(true)}
-              className="lg:hidden text-slate-700 hover:bg-slate-100/50 rounded-lg"
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-            
-            {/* Date display — left side, replacing breadcrumbs */}
-            <div className="flex items-center gap-2 text-slate-500 text-xs font-medium bg-slate-100/80 px-3.5 py-1.5 rounded-full border border-slate-200/50 shadow-sm">
-              <Calendar className="h-3.5 w-3.5 text-[#8a66a8]" />
-              <span className="text-[#312455] font-semibold">{currentDate}</span>
-            </div>
-          </div>
-
-          {/* Right: Notification Bell + Avatar */}
-          <div className="flex items-center gap-4 relative">
-            <div className="relative">
+        {/* Workspace Fixed Mobile Header + Metrics */}
+        <div className="fixed top-0 left-0 w-full z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 p-4 md:relative md:top-auto md:left-auto md:w-auto md:z-0 md:bg-transparent md:backdrop-blur-none md:border-b-0 md:p-6 flex flex-col gap-4">
+          
+          <header className="flex items-center justify-between z-20">
+            {/* Left side: hamburger + date */}
+            <div className="flex items-center gap-4">
               <Button 
                 variant="ghost" 
                 size="icon" 
-                onClick={() => setShowNotifications(!showNotifications)}
-                className={`relative text-slate-500 hover:text-[#312455] hover:bg-slate-100 rounded-full transition-all ${
-                  showNotifications ? 'bg-slate-100 text-[#312455]' : ''
-                }`}
-                title="Notificações"
+                onClick={() => setSidebarOpen(true)}
+                className="lg:hidden text-slate-700 hover:bg-slate-100/50 rounded-lg"
               >
-                <Bell className="h-5 w-5" />
-                <AnimatePresence>
-                  {unreadCount > 0 && (
-                    <motion.span 
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0, opacity: 0 }}
-                      transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-                      className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center px-1.5 ring-2 ring-white leading-none shadow-sm shadow-red-950/20"
-                    >
-                      {unreadCount}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
+                <Menu className="h-5 w-5" />
               </Button>
+              
+              {/* Date display — left side */}
+              <div className="flex items-center gap-2 text-slate-500 text-xs font-medium bg-slate-100/80 px-3.5 py-1.5 rounded-full border border-slate-200/50 shadow-sm">
+                <Calendar className="h-3.5 w-3.5 text-[#8a66a8]" />
+                <span className="text-[#312455] font-semibold">{currentDate}</span>
+              </div>
+            </div>
 
-              {/* Elegant Notifications Popup */}
-              <AnimatePresence>
-                {showNotifications && (
-                  <>
-                    {/* Backdrop overlay for closing */}
-                    <div 
-                      className="fixed inset-0 z-40 cursor-default" 
-                      onClick={() => setShowNotifications(false)}
-                    />
-                    
-                    {/* Popup Container */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 12, scale: 0.96 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 12, scale: 0.96 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-slate-100 rounded-[2rem] shadow-xl z-50 overflow-hidden"
-                    >
-                      <div className="p-4 bg-[#312455] text-white flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Bell className="h-4 w-4 text-[#c1a7d6]" />
-                          <h3 className="font-extrabold text-xs tracking-tight">Notificações</h3>
-                        </div>
-                        <span className="bg-white/20 text-[9px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full">
-                          {unreadCount} Novas
-                        </span>
-                      </div>
+            {/* Right: Notification Bell + Avatar */}
+            <div className="flex items-center gap-4 relative">
+              <div className="relative">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className={`relative text-slate-500 hover:text-[#312455] hover:bg-slate-100 rounded-full transition-all ${
+                    showNotifications ? 'bg-slate-100 text-[#312455]' : ''
+                  }`}
+                  title="Notificações"
+                >
+                  <Bell className="h-5 w-5" />
+                  <AnimatePresence>
+                    {unreadCount > 0 && (
+                      <motion.span 
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0, opacity: 0 }}
+                        transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                        className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center px-1.5 ring-2 ring-white leading-none shadow-sm shadow-red-950/20"
+                      >
+                        {unreadCount}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </Button>
+
+                {/* Elegant Notifications Popup */}
+                <AnimatePresence>
+                  {showNotifications && (
+                    <>
+                      {/* Backdrop overlay for closing */}
+                      <div 
+                        className="fixed inset-0 z-40 cursor-default" 
+                        onClick={() => setShowNotifications(false)}
+                      />
                       
-                      <div className="divide-y divide-slate-100 max-h-72 overflow-y-auto">
-                        {notifications.length === 0 ? (
-                          <div className="p-6 text-center text-slate-400 text-xs">
-                            Sem notificações de momento.
+                      {/* Popup Container */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 12, scale: 0.96 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 12, scale: 0.96 }}
+                        transition={{ duration: 0.18, ease: 'easeOut' }}
+                        className="
+                          fixed z-50 overflow-hidden
+                          bg-white border border-slate-100 shadow-2xl
+                          rounded-[2rem]
+                          top-[4.5rem] right-4 left-4
+                          sm:absolute sm:top-full sm:left-auto sm:right-0 sm:mt-2
+                          sm:w-[360px]
+                        "
+                      >
+                        {/* Cabeçalho */}
+                        <div className="flex items-center justify-between px-5 py-4 bg-[#312455]">
+                          <div className="flex items-center gap-2">
+                            <Bell className="w-4 h-4 text-white/70" />
+                            <span className="text-white text-sm font-extrabold tracking-tight">Notificações</span>
+                            {unreadCount > 0 && (
+                              <span className="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                {unreadCount} nova{unreadCount !== 1 ? 's' : ''}
+                              </span>
+                            )}
                           </div>
-                        ) : (
-                          notifications.map((notif) => (
-                            <div 
-                              key={notif.id} 
-                              onClick={() => handleNotificationClick(notif)}
-                              className={`p-4 text-left transition-colors duration-200 cursor-pointer hover:bg-slate-50 flex gap-3 ${
-                                !notif.lida ? 'bg-[#f8fafc]/40' : ''
-                              }`}
-                            >
-                              <div className="mt-0.5">
-                                <div className={`w-2 h-2 rounded-full ${!notif.lida ? 'bg-[#8a66a8]' : 'bg-transparent'}`} />
-                              </div>
-                              <div className="flex-1 space-y-0.5">
-                                <p className="font-black text-xs text-[#312455]">{notif.titulo}</p>
-                                <p className="text-[10px] text-slate-500 font-medium leading-relaxed">{notif.descricao}</p>
-                                {notif.time && (
-                                  <span className="text-[9px] text-[#8a66a8] font-bold block pt-1">{notif.time}</span>
-                                )}
-                              </div>
-                            </div>
-                          ))
-                        )}
-                      </div>
-
-                      {notifications.some(n => !n.lida) && (
-                        <div className="p-3 bg-slate-50 border-t border-slate-100 text-center">
-                          <button 
-                            onClick={async () => {
-                              await markAllRead()
-                              toast.success('Todas as notificações foram marcadas como lidas!')
-                            }}
-                            className="text-[10px] font-extrabold text-[#312455] hover:text-[#8a66a8] uppercase tracking-wider transition-colors cursor-pointer"
+                          <button
+                            type="button"
+                            onClick={() => setShowNotifications(false)}
+                            className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors cursor-pointer"
+                            aria-label="Fechar notificações"
                           >
-                            Marcar todas como lidas
+                            <X className="w-3.5 h-3.5" />
                           </button>
                         </div>
-                      )}
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
-            </div>
+                        
+                        {/* Lista de notificações */}
+                        <div className="divide-y divide-slate-100 max-h-[55vh] sm:max-h-72 overflow-y-auto">
+                          {notifications.length === 0 ? (
+                            <div className="py-10 text-center">
+                              <Bell className="w-8 h-8 mx-auto text-slate-200 mb-2" />
+                              <p className="text-xs text-slate-400 font-bold">Sem notificações de momento.</p>
+                            </div>
+                          ) : (
+                            notifications.map((notif) => {
+                              const isMarking = markingId === notif.id
+                              const isDisabled = markingId !== null || markingAll
+                              return (
+                                <button
+                                  key={notif.id}
+                                  type="button"
+                                  onClick={() => handleNotificationClick(notif)}
+                                  disabled={isDisabled}
+                                  className={`w-full px-5 py-4 text-left transition-colors flex items-start gap-3 group
+                                    ${!notif.lida ? 'bg-[#312455]/[0.03]' : 'bg-white'}
+                                    ${isDisabled ? 'cursor-not-allowed opacity-60' : 'hover:bg-slate-50 cursor-pointer'}
+                                  `}
+                                >
+                                  {/* Indicador não lido */}
+                                  <span
+                                    className={`mt-1.5 w-2 h-2 rounded-full shrink-0 transition-all ${
+                                      !notif.lida ? 'bg-[#8a66a8]' : 'bg-transparent'
+                                    }`}
+                                  />
+                                  <div className="flex-1 min-w-0">
+                                    <p className={`text-xs font-bold leading-snug ${
+                                      !notif.lida ? 'text-[#312455]' : 'text-slate-600'
+                                    }`}>
+                                      {notif.titulo}
+                                    </p>
+                                    <p className="text-[11px] text-slate-500 mt-0.5 leading-snug line-clamp-2 font-medium">
+                                      {notif.descricao}
+                                    </p>
+                                    {notif.time && (
+                                      <p className="text-[10px] text-slate-400 mt-1.5 font-medium">{notif.time}</p>
+                                    )}
+                                  </div>
+                                  {/* Spinner de loading */}
+                                  {isMarking && (
+                                    <Loader2 className="w-3.5 h-3.5 text-[#8a66a8] animate-spin shrink-0 mt-0.5" />
+                                  )}
+                                </button>
+                              )
+                            })
+                          )}
+                        </div>
 
-            <div 
-              onClick={() => handleTabChange('settings')}
-              className="h-9 w-9 rounded-full bg-[#312455] text-white flex items-center justify-center text-xs font-bold border border-slate-200 shadow-sm cursor-pointer hover:ring-2 hover:ring-[#8a66a8] transition-all overflow-hidden"
-              title="Ir para Definições"
-            >
-              {avatarUrl ? (
-                <img src={avatarUrl} className="w-full h-full object-cover" alt="Avatar" />
+                        {/* Rodapé */}
+                        {notifications.some((n) => !n.lida) && (
+                          <div className="px-5 py-3 border-t border-slate-100 bg-slate-50/60">
+                            <button
+                              type="button"
+                              onClick={handleMarkAllRead}
+                              disabled={markingAll || markingId !== null}
+                              className="w-full flex items-center justify-center gap-1.5 text-[11px] font-bold text-[#8a66a8] hover:text-[#312455] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer py-1 transition-colors"
+                            >
+                              {markingAll ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                              ) : (
+                                <CheckCheck className="w-3 h-3" />
+                              )}
+                              {markingAll ? 'A marcar...' : 'Marcar todas como lidas'}
+                            </button>
+                          </div>
+                        )}
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <div 
+                onClick={() => handleTabChange('settings')}
+                className="h-9 w-9 rounded-full bg-[#312455] text-white flex items-center justify-center text-xs font-bold border border-slate-200 shadow-sm cursor-pointer hover:ring-2 hover:ring-[#8a66a8] transition-all overflow-hidden"
+                title="Ir para Definições"
+              >
+                {avatarUrl ? (
+                  <img src={avatarUrl} className="w-full h-full object-cover" alt="Avatar" />
+                ) : (
+                  (displayName || user.name).charAt(0).toUpperCase()
+                )}
+              </div>
+            </div>
+          </header>
+          
+          {/* C. Interactive Statistics Row */}
+          {activeTab === 'courses' && (
+            <div className="grid grid-cols-3 gap-2 md:gap-6">
+              {isInstructor ? (
+                <>
+                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white/70 backdrop-blur-sm overflow-hidden group">
+                    <CardContent className="flex flex-col items-center justify-center text-center gap-0.5 py-2.5 px-2 md:p-6">
+                      <div className="text-xl font-bold text-slate-900 leading-none">2</div>
+                      <div className="flex items-center gap-1 text-[9px] font-semibold tracking-wider text-slate-400 uppercase">
+                        <BookOpen className="w-3 h-3 hidden sm:block" />
+                        <span className="hidden sm:inline">Cursos</span>
+                        <span className="sm:hidden">Cursos</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white/70 backdrop-blur-sm overflow-hidden group">
+                    <CardContent className="flex flex-col items-center justify-center text-center gap-0.5 py-2.5 px-2 md:p-6">
+                      <div className="text-xl font-bold text-slate-900 leading-none">{students.length}</div>
+                      <div className="flex items-center gap-1 text-[9px] font-semibold tracking-wider text-slate-400 uppercase">
+                        <Users className="w-3 h-3 hidden sm:block" />
+                        <span className="hidden sm:inline">Alunos</span>
+                        <span className="sm:hidden">Alunos</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white/70 backdrop-blur-sm overflow-hidden group">
+                    <CardContent className="flex flex-col items-center justify-center text-center gap-0.5 py-2.5 px-2 md:p-6">
+                      <div className="text-xl font-bold text-slate-900 leading-none">{pdfMaterials.length}</div>
+                      <div className="flex items-center gap-1 text-[9px] font-semibold tracking-wider text-slate-400 uppercase">
+                        <FileText className="w-3 h-3 hidden sm:block" />
+                        <span className="hidden sm:inline">Arquivos</span>
+                        <span className="sm:hidden">Arquivos</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </>
               ) : (
-                (displayName || user.name).charAt(0).toUpperCase()
+                <>
+                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white/70 backdrop-blur-sm overflow-hidden group">
+                    <CardContent className="flex flex-col items-center justify-center text-center gap-0.5 py-2.5 px-2 md:p-6">
+                      <div className="text-xl font-bold text-slate-900 leading-none">{activeCourses.length}</div>
+                      <div className="flex items-center gap-1 text-[9px] font-semibold tracking-wider text-slate-400 uppercase">
+                        <BookOpen className="w-3 h-3 hidden sm:block" />
+                        <span className="hidden sm:inline">Cursos</span>
+                        <span className="sm:hidden">Cursos</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white/70 backdrop-blur-sm overflow-hidden group">
+                    <CardContent className="flex flex-col items-center justify-center text-center gap-0.5 py-2.5 px-2 md:p-6">
+                      <div className="text-xl font-bold text-slate-900 leading-none">
+                        {activeCourses.reduce((acc, c) => acc + c.completedLessons, 0)}
+                      </div>
+                      <div className="flex items-center gap-1 text-[9px] font-semibold tracking-wider text-slate-400 uppercase">
+                        <Clock className="w-3 h-3 hidden sm:block" />
+                        <span className="hidden sm:inline">Aulas</span>
+                        <span className="sm:hidden">Aulas</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white/70 backdrop-blur-sm overflow-hidden group">
+                    <CardContent className="flex flex-col items-center justify-center text-center gap-0.5 py-2.5 px-2 md:p-6">
+                      <div className="text-xl font-bold text-slate-900 leading-none">{pdfMaterials.length}</div>
+                      <div className="flex items-center gap-1 text-[9px] font-semibold tracking-wider text-slate-400 uppercase">
+                        <FileText className="w-3 h-3 hidden sm:block" />
+                        <span className="hidden sm:inline">PDFs</span>
+                        <span className="sm:hidden">PDFs</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </>
               )}
             </div>
-          </div>
-        </header>
+          )}
 
-        <main className="flex-1 flex flex-col gap-6 p-6 overflow-y-auto">
+          {/* D. Online Classes Header Section - Fixed on mobile */}
+          {activeTab === 'online-classes' && (
+            <div className="md:hidden flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-6">
+                <div className="flex gap-4 text-xs font-semibold">
+                  <button
+                    onClick={() => {
+                      setOnlineClassesActiveTab('live')
+                      setShowScheduleForm(false)
+                    }}
+                    className={`relative py-1.5 transition-colors cursor-pointer ${
+                      onlineClassesActiveTab === 'live' ? 'text-[#312455] font-black' : 'text-slate-400 hover:text-slate-600'
+                    }`}
+                  >
+                    Online
+                    {onlineClassesActiveTab === 'live' && (
+                      <motion.div
+                        layoutId="tab-underline"
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#312455]"
+                      />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setOnlineClassesActiveTab('presencial')
+                      setShowScheduleForm(false)
+                    }}
+                    className={`relative py-1.5 transition-colors cursor-pointer ${
+                      onlineClassesActiveTab === 'presencial' ? 'text-[#312455] font-black' : 'text-slate-400 hover:text-slate-600'
+                    }`}
+                  >
+                    Presencial
+                    {onlineClassesActiveTab === 'presencial' && (
+                      <motion.div
+                        layoutId="tab-underline"
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#312455]"
+                      />
+                    )}
+                  </button>
+                </div>
+              </div>
 
-        {/* A. Dynamic Banner */}
+              {isInstructor && (
+                <Button
+                  onClick={() => setShowScheduleForm(!showScheduleForm)}
+                  variant="ghost"
+                  className="text-xs font-bold text-slate-500 hover:text-[#312455] flex items-center gap-1 cursor-pointer h-8 px-2.5 rounded-lg border border-slate-200/50 hover:bg-slate-50 transition-all"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  {showScheduleForm ? 'Cancelar' : 'Agendar Aula'}
+                </Button>
+              )}
+            </div>
+          )}
+
+          {/* E. Explore Courses Header Section - Fixed on mobile */}
+          {activeTab === 'explore' && (
+            <div className="md:hidden flex flex-col gap-4 border-b border-slate-100 pb-4">
+              {/* Header */}
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h2 className="text-base font-black text-[#312455]">Catálogo de Formações</h2>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Descubra novos programas e expanda as suas competências.</p>
+                </div>
+                <Badge className="bg-[#8a66a8]/10 text-[#8a66a8] border-none font-bold text-[9px] py-1 px-2.5 rounded-full whitespace-nowrap flex-shrink-0">
+                  {exploreCourses.length}
+                </Badge>
+              </div>
+
+              {/* Search Input */}
+              <div className="relative flex-1">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                <Input
+                  placeholder="Pesquisar..."
+                  value={exploreSearch}
+                  onChange={(e) => handleExploreSearchChange(e.target.value)}
+                  className="pl-10 rounded-2xl h-10 text-xs border-slate-200 bg-white shadow-sm focus-visible:ring-[#8a66a8] transition-all duration-200"
+                />
+              </div>
+
+              {/* Category Filter Buttons */}
+              <div className="flex gap-2 flex-wrap">
+                {exploreCategories.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => handleExploreCategoryChange(cat)}
+                    disabled={isFiltering}
+                    className={`relative px-3 py-2 rounded-xl text-[9px] font-bold transition-all duration-200 border flex items-center gap-1 whitespace-nowrap leading-tight ${(
+                      exploreCategory === cat || loadingCategory === cat
+                        ? 'bg-[#312455] text-white border-[#312455] shadow-md'
+                        : 'bg-white text-slate-600 border-slate-200 hover:border-[#8a66a8] hover:text-[#8a66a8]'
+                    )} disabled:opacity-80 disabled:cursor-default`}
+                  >
+                    {loadingCategory === cat ? (
+                      <Loader2 className="h-3 w-3 animate-spin flex-shrink-0" />
+                    ) : null}
+                    <span>{getCategoryLabel(cat)}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <main className="flex-1 flex flex-col gap-6 p-6 overflow-y-auto pt-[160px] md:pt-6">
+
+          {/* A. Dynamic Banner (Only Desktop) */}
           {activeTab === 'courses' && (
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#312455] via-[#4a347c] to-[#312455] p-8 text-white shadow-lg"
+              className="hidden md:flex relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#312455] via-[#4a347c] to-[#312455] p-8 text-white shadow-lg"
             >
               {/* Visual background lights */}
               <div className="absolute right-0 top-0 w-80 h-80 bg-[#8a66a8]/25 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
@@ -1391,122 +1773,6 @@ function DashboardPageContent() {
             </motion.div>
           )}
 
-          {/* C. Interactive Statistics Row */}
-          {activeTab === 'courses' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {isInstructor ? (
-                <>
-                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white overflow-hidden group">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                      <CardTitle className="text-xs font-bold text-slate-500 uppercase tracking-wider">Cursos Lecionados</CardTitle>
-                      <div className="bg-[#312455]/5 p-2 rounded-xl text-[#312455] group-hover:bg-[#312455] group-hover:text-white transition-all duration-300">
-                        <BookOpen className="h-4.5 w-4.5" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-2">
-                      <div className="text-3xl font-black text-[#312455]">2</div>
-                      <p className="text-[10px] text-slate-400 mt-1 font-medium">Turmas ativas este semestre</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white overflow-hidden group">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                      <CardTitle className="text-xs font-bold text-slate-500 uppercase tracking-wider">Alunos Ativos</CardTitle>
-                      <div className="bg-[#8a66a8]/5 p-2 rounded-xl text-[#8a66a8] group-hover:bg-[#8a66a8] group-hover:text-white transition-all duration-300">
-                        <Users className="h-4.5 w-4.5" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-2">
-                      <div className="text-3xl font-black text-[#312455]">{students.length}</div>
-                      <p className="text-[10px] text-slate-400 mt-1 font-medium">Estudantes sob supervisão</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white overflow-hidden group">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                      <CardTitle className="text-xs font-bold text-slate-500 uppercase tracking-wider">Arquivos Publicados</CardTitle>
-                      <div className="bg-[#8a66a8]/5 p-2 rounded-xl text-[#8a66a8] group-hover:bg-[#8a66a8] group-hover:text-white transition-all duration-300">
-                        <FileText className="h-4.5 w-4.5" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-2">
-                      <div className="text-3xl font-black text-[#312455]">{pdfMaterials.length}</div>
-                      <p className="text-[10px] text-slate-400 mt-1 font-medium">Manuais pedagógicos em PDF</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white overflow-hidden group">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                      <CardTitle className="text-xs font-bold text-slate-500 uppercase tracking-wider">Horas Lecionadas</CardTitle>
-                      <div className="bg-[#312455]/5 p-2 rounded-xl text-[#312455] group-hover:bg-[#312455] group-hover:text-white transition-all duration-300">
-                        <Clock className="h-4.5 w-4.5" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-2">
-                      <div className="text-3xl font-black text-[#312455]">85h</div>
-                      <p className="text-[10px] text-slate-400 mt-1 font-medium">Tempo letivo acumulado</p>
-                    </CardContent>
-                  </Card>
-                </>
-              ) : (
-                <>
-                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white overflow-hidden group">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                      <CardTitle className="text-xs font-bold text-slate-500 uppercase tracking-wider">Cursos Inscritos</CardTitle>
-                      <div className="bg-[#312455]/5 p-2 rounded-xl text-[#312455] group-hover:bg-[#312455] group-hover:text-white transition-all duration-300">
-                        <BookOpen className="h-4.5 w-4.5" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-2">
-                      <div className="text-3xl font-black text-[#312455]">{activeCourses.length}</div>
-                      <p className="text-[10px] text-slate-400 mt-1 font-medium">Programas de especialização</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white overflow-hidden group">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                      <CardTitle className="text-xs font-bold text-slate-500 uppercase tracking-wider">Aulas Concluídas</CardTitle>
-                      <div className="bg-[#8a66a8]/5 p-2 rounded-xl text-[#8a66a8] group-hover:bg-[#8a66a8] group-hover:text-white transition-all duration-300">
-                        <Clock className="h-4.5 w-4.5" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-2">
-                      <div className="text-3xl font-black text-[#312455]">
-                        {activeCourses.reduce((acc, c) => acc + c.completedLessons, 0)}
-                      </div>
-                      <p className="text-[10px] text-slate-400 mt-1 font-medium">Aulas assistidas até hoje</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white overflow-hidden group">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                      <CardTitle className="text-xs font-bold text-slate-500 uppercase tracking-wider">PDFs Disponíveis</CardTitle>
-                      <div className="bg-[#8a66a8]/5 p-2 rounded-xl text-[#8a66a8] group-hover:bg-[#8a66a8] group-hover:text-white transition-all duration-300">
-                        <FileText className="h-4.5 w-4.5" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-2">
-                      <div className="text-3xl font-black text-[#312455]">{pdfMaterials.length}</div>
-                      <p className="text-[10px] text-slate-400 mt-1 font-medium">Materiais didáticos ativos</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white overflow-hidden group">
-                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                      <CardTitle className="text-xs font-bold text-slate-500 uppercase tracking-wider">Certificados</CardTitle>
-                      <div className="bg-[#312455]/5 p-2 rounded-xl text-[#312455] group-hover:bg-[#312455] group-hover:text-white transition-all duration-300">
-                        <Award className="h-4.5 w-4.5" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-2">
-                      <div className="text-3xl font-black text-[#312455]">0</div>
-                      <p className="text-[10px] text-slate-400 mt-1 font-medium">Diplomas oficiais homologados</p>
-                    </CardContent>
-                  </Card>
-                </>
-              )}
-            </div>
-          )}
 
           {/* D. Tab Content Panel */}
           <AnimatePresence mode="wait">
@@ -1554,7 +1820,7 @@ function DashboardPageContent() {
                     <Card key={course.id} className="overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 rounded-3xl bg-white flex flex-col group">
                       <div className="relative h-48 w-full overflow-hidden">
                         {course.image ? (
-                          <Image
+                          <SafeImage
                             src={course.image}
                             alt={course.name}
                             fill
@@ -1568,8 +1834,8 @@ function DashboardPageContent() {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                         
                         <div className="absolute bottom-4 left-4 right-4">
-                          <Badge className="bg-[#8a66a8] text-white border-none uppercase text-[9px] font-bold tracking-widest px-3 py-1 rounded-full">
-                            {course.category}
+                          <Badge className="bg-[#8a66a8] text-white border-none text-[9px] font-bold px-3 py-1 rounded-full">
+                            {getCategoryLabel(course.category)}
                           </Badge>
                         </div>
                       </div>
@@ -1629,6 +1895,10 @@ function DashboardPageContent() {
                     name: c.name,
                     online: c.online
                   }))}
+                  activeTab={onlineClassesActiveTab}
+                  setActiveTab={setOnlineClassesActiveTab}
+                  showScheduleForm={showScheduleForm}
+                  setShowScheduleForm={setShowScheduleForm}
                 />
               </motion.div>
             )}
@@ -1660,94 +1930,7 @@ function DashboardPageContent() {
                   </Badge>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4">
-                  {(isInstructor 
-                    ? pdfMaterials 
-                    : pdfMaterials.filter(pdf => !hiddenPdfIds.includes(pdf.id) && activeCourses.some(ac => ac.catalogId === pdf.courseId || ac.id === pdf.courseId))
-                  ).length === 0 ? (
-                    <div className="text-center py-12">
-                      <p className="text-xs font-semibold text-slate-400 tracking-wide animate-pulse">
-                        Nenhum material PDF disponível de momento.
-                      </p>
-                    </div>
-                  ) : (
-                    (isInstructor 
-                      ? pdfMaterials 
-                      : pdfMaterials.filter(pdf => !hiddenPdfIds.includes(pdf.id) && activeCourses.some(ac => ac.catalogId === pdf.courseId || ac.id === pdf.courseId))
-                    ).map((pdf) => (
-                      <Card key={pdf.id} className="border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 rounded-2xl bg-white overflow-hidden group">
-                        <CardContent className="p-5">
-                          <div className="flex items-start gap-4">
-                            <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0 group-hover:bg-red-100 transition-colors duration-300">
-                              <FileText className="h-6 w-6 text-red-500" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between gap-2">
-                                <h3 className="font-black text-[#312455] text-sm truncate">{pdf.title}</h3>
-                                <Badge className="bg-[#8a66a8]/10 text-[#8a66a8] border-none text-[9px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full flex-shrink-0">
-                                  {pdf.courseName}
-                                </Badge>
-                              </div>
-                              <p className="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">{pdf.description}</p>
-                              <div className="flex items-center gap-4 mt-3">
-                                <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
-                                  <Calendar className="h-3 w-3 text-slate-400" />
-                                  {pdf.uploadedAt}
-                                </span>
-                                <span className="text-[10px] text-slate-400 font-mono">{pdf.fileName}</span>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-1.5 flex-shrink-0">
-                              <Button 
-                                variant="ghost"
-                                size="icon"
-                                className="flex-shrink-0 text-[#8a66a8] hover:bg-[#8a66a8]/10 rounded-xl transition-all"
-                                asChild={!!pdf.fileUrl}
-                                onClick={() => {
-                                  if (!pdf.fileUrl) {
-                                    toast.success(`A iniciar download de "${pdf.fileName}"...`)
-                                  }
-                                }}
-                              >
-                                {pdf.fileUrl ? (
-                                  <a href={pdf.fileUrl} target="_blank" rel="noopener noreferrer" download={pdf.fileName}>
-                                    <Download className="h-4.5 w-4.5" />
-                                  </a>
-                                ) : (
-                                  <Download className="h-4.5 w-4.5" />
-                                )}
-                              </Button>
-
-                              {isInstructor ? (
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all cursor-pointer"
-                                  onClick={() => handleDeletePdf(pdf.id, pdf.fileUrl, pdf.title)}
-                                  title="Eliminar Material"
-                                >
-                                  <Trash2 className="h-4.5 w-4.5" />
-                                </Button>
-                              ) : (
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="text-slate-300 hover:text-[#8a66a8] hover:bg-[#8a66a8]/10 rounded-xl transition-all cursor-pointer"
-                                  onClick={() => handleHidePdf(pdf.id)}
-                                  title="Remover da Vista"
-                                >
-                                  <Trash2 className="h-4.5 w-4.5" />
-                                </Button>
-                              )}
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))
-                  )}
-                </div>
-
-                {/* Instructor Upload Form */}
+                {/* Instructor Upload Form - Moved to top */}
                 {isInstructor && (
                   <Card className="border border-[#8a66a8]/20 shadow-sm rounded-2xl bg-gradient-to-br from-white to-[#8a66a8]/5 overflow-hidden">
                     <CardHeader className="pb-4">
@@ -1832,6 +2015,98 @@ function DashboardPageContent() {
                     </CardContent>
                   </Card>
                 )}
+
+                <div className="grid grid-cols-1 gap-4">
+                  {(isInstructor 
+                    ? pdfMaterials 
+                    : pdfMaterials.filter(pdf => !hiddenPdfIds.includes(pdf.id) && activeCourses.some(ac => ac.catalogId === pdf.courseId || ac.id === pdf.courseId))
+                  ).length === 0 ? (
+                    <div className="text-center py-12">
+                      <p className="text-xs font-semibold text-slate-400 tracking-wide animate-pulse">
+                        Nenhum material PDF disponível de momento.
+                      </p>
+                    </div>
+                  ) : (
+                    (isInstructor 
+                      ? pdfMaterials 
+                      : pdfMaterials.filter(pdf => !hiddenPdfIds.includes(pdf.id) && activeCourses.some(ac => ac.catalogId === pdf.courseId || ac.id === pdf.courseId))
+                    ).map((pdf) => (
+                      <Card key={pdf.id} className="border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 rounded-2xl bg-white overflow-hidden group">
+                        <CardContent className="p-4 sm:p-5">
+                          <div className="flex items-start gap-3 sm:gap-4">
+                            {/* Ícone */}
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0 group-hover:bg-red-100 transition-colors duration-300">
+                              <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-red-500" />
+                            </div>
+
+                            {/* Conteúdo principal */}
+                            <div className="flex-1 min-w-0">
+                              {/* Título */}
+                              <h3 className="font-black text-[#312455] text-sm leading-snug break-words">{pdf.title}</h3>
+                              {/* Badge do curso — sempre abaixo do título */}
+                              <Badge className="mt-1 bg-[#8a66a8]/10 text-[#8a66a8] border-none text-[9px] font-bold uppercase tracking-wide px-2.5 py-0.5 rounded-full whitespace-normal leading-tight inline-flex">
+                                {pdf.courseName}
+                              </Badge>
+                              <p className="text-xs text-slate-500 mt-2 leading-relaxed line-clamp-2">{pdf.description}</p>
+                              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2.5">
+                                <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
+                                  <Calendar className="h-3 w-3 text-slate-400" />
+                                  {pdf.uploadedAt}
+                                </span>
+                                <span className="text-[10px] text-slate-400 font-mono truncate max-w-[120px] sm:max-w-[200px]">{pdf.fileName}</span>
+                              </div>
+                            </div>
+
+                            {/* Acções */}
+                            <div className="flex flex-col sm:flex-row items-center gap-1 flex-shrink-0 self-start">
+                              <Button 
+                                variant="ghost"
+                                size="icon"
+                                className="flex-shrink-0 text-[#8a66a8] hover:bg-[#8a66a8]/10 rounded-xl transition-all"
+                                asChild={!!pdf.fileUrl}
+                                onClick={() => {
+                                  if (!pdf.fileUrl) {
+                                    toast.success(`A iniciar download de "${pdf.fileName}"...`)
+                                  }
+                                }}
+                              >
+                                {pdf.fileUrl ? (
+                                  <a href={pdf.fileUrl} target="_blank" rel="noopener noreferrer" download={pdf.fileName}>
+                                    <Download className="h-4 w-4" />
+                                  </a>
+                                ) : (
+                                  <Download className="h-4 w-4" />
+                                )}
+                              </Button>
+
+                              {isInstructor ? (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all cursor-pointer"
+                                  onClick={() => handleDeletePdf(pdf.id, pdf.fileUrl, pdf.title)}
+                                  title="Eliminar Material"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-slate-300 hover:text-[#8a66a8] hover:bg-[#8a66a8]/10 rounded-xl transition-all cursor-pointer"
+                                  onClick={() => handleHidePdf(pdf.id, pdf.title)}
+                                  title="Remover da Vista"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </div>
               </motion.div>
             )}
 
@@ -1855,7 +2130,56 @@ function DashboardPageContent() {
                   </Badge>
                 </div>
 
-                <Card className="border border-slate-100 shadow-sm rounded-2xl overflow-hidden bg-white">
+                {/* Visualização em Lista para Mobile */}
+                <div className="grid grid-cols-1 gap-4 md:hidden">
+                  {students.length === 0 ? (
+                    <div className="bg-white border border-slate-100 rounded-2xl p-8 text-center text-slate-400 text-sm">
+                      Sem alunos vinculados de momento.
+                    </div>
+                  ) : (
+                    students.map((student) => (
+                      <Card key={student.id} className="p-5 border border-slate-100 shadow-sm rounded-2xl bg-white space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-[#8a66a8]/10 text-[#8a66a8] font-bold flex items-center justify-center text-xs shadow-sm">
+                            {student.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-extrabold text-slate-800 text-sm truncate">{student.name}</p>
+                            <p className="text-xs text-slate-400 font-semibold truncate mt-0.5">{student.email}</p>
+                          </div>
+                          <span className={`text-[9px] font-bold uppercase tracking-wider py-1 px-2.5 rounded-full border shrink-0 ${
+                            student.status === 'Concluído'
+                              ? 'bg-green-50 text-green-600 border-green-500/20'
+                              : 'bg-amber-50 text-amber-600 border-amber-500/20'
+                          }`}>
+                            {student.status}
+                          </span>
+                        </div>
+                        
+                        <div className="flex flex-col gap-2 pt-3 border-t border-slate-50">
+                          <div className="flex justify-between items-center text-[10px] font-semibold text-slate-500">
+                            <span>Curso Vinculado</span>
+                            <span className="font-bold text-[#312455]">{student.progress}%</span>
+                          </div>
+                          <div className="flex flex-col gap-2">
+                            <Badge className="bg-[#312455]/5 text-[#312455] border-none text-[9px] font-extrabold tracking-wide uppercase px-2.5 py-1 rounded-md w-fit max-w-full whitespace-normal break-words text-left justify-start">
+                              {student.course}
+                            </Badge>
+                            <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                              <div 
+                                className="h-full bg-gradient-to-r from-[#312455] to-[#8a66a8] rounded-full"
+                                style={{ width: `${student.progress}%` }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+                    ))
+                  )}
+                </div>
+
+                {/* Visualização em Tabela para Desktop */}
+                <Card className="hidden md:block border border-slate-100 shadow-sm rounded-2xl overflow-hidden bg-white">
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-xs">
                       <thead>
@@ -1919,10 +2243,10 @@ function DashboardPageContent() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.3 }}
-                className="space-y-6"
+                className="space-y-6 pt-[320px] md:pt-0"
               >
-                {/* Header */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                {/* Header — Desktop only */}
+                <div className="hidden md:flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <h2 className="text-xl font-black text-[#312455]">Catálogo de Formações</h2>
                     <p className="text-xs text-slate-500">Descubra novos programas e expanda as suas competências profissionais.</p>
@@ -1932,8 +2256,8 @@ function DashboardPageContent() {
                   </Badge>
                 </div>
 
-                {/* Search + Filters */}
-                <div className="flex flex-col sm:flex-row gap-3">
+                {/* Search + Filters — Desktop only */}
+                <div className="hidden md:flex flex-col sm:flex-row gap-3">
                   <div className="relative flex-1">
                     <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
                     <Input
@@ -1950,16 +2274,16 @@ function DashboardPageContent() {
                         key={cat}
                         onClick={() => handleExploreCategoryChange(cat)}
                         disabled={isFiltering}
-                        className={`relative px-4 py-2 rounded-2xl text-xs font-bold transition-all duration-200 border flex items-center gap-1.5 ${
+                        className={`relative px-4 py-2.5 rounded-2xl text-xs font-bold transition-all duration-200 border flex items-center gap-1.5 max-w-[120px] sm:max-w-none text-center sm:text-left whitespace-normal justify-center sm:justify-start leading-tight ${
                           (exploreCategory === cat || loadingCategory === cat)
                             ? 'bg-[#312455] text-white border-[#312455] shadow-md'
                             : 'bg-white text-slate-600 border-slate-200 hover:border-[#8a66a8] hover:text-[#8a66a8]'
                         } disabled:opacity-80 disabled:cursor-default`}
                       >
                         {loadingCategory === cat ? (
-                          <Loader2 className="h-3 w-3 animate-spin" />
+                          <Loader2 className="h-3 w-3 animate-spin flex-shrink-0" />
                         ) : null}
-                        {cat}
+                        <span>{getCategoryLabel(cat)}</span>
                       </button>
                     ))}
                   </div>
@@ -2020,7 +2344,7 @@ function DashboardPageContent() {
                         >
                           <Card className="overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 rounded-3xl bg-white flex flex-col group h-full">
                             <div className="relative h-40 w-full overflow-hidden">
-                              <Image
+                              <SafeImage
                                 src={course.image}
                                 alt={course.name}
                                 fill
@@ -2029,8 +2353,8 @@ function DashboardPageContent() {
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                               <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                                <Badge className="bg-[#8a66a8] text-white border-none uppercase text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded-full">
-                                  {course.category}
+                                <Badge className="bg-[#8a66a8] text-white border-none text-[9px] font-bold px-2.5 py-0.5 rounded-full">
+                                  {getCategoryLabel(course.category)}
                                 </Badge>
                                 <Badge className="bg-emerald-500/90 text-white border-none uppercase text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded-full">
                                   Presencial / Online
@@ -2184,6 +2508,7 @@ function DashboardPageContent() {
                             onChange={(e) => setSettingsName(e.target.value)}
                             placeholder="O seu nome completo"
                             className="rounded-xl h-10 text-sm border-slate-200 focus-visible:ring-[#8a66a8]"
+                            disabled={isSavingSettings}
                           />
                         </div>
                         <div className="space-y-1.5">
@@ -2211,8 +2536,9 @@ function DashboardPageContent() {
                             <Globe className="h-3.5 w-3.5 text-[#8a66a8]" />Idioma
                           </Label>
                           <select
-                            className="w-full h-10 rounded-xl border border-slate-200 bg-white text-sm text-[#312455] px-3 focus:outline-none focus:ring-2 focus:ring-[#8a66a8] transition-all"
+                            className="w-full h-10 rounded-xl border border-slate-200 bg-white text-sm text-[#312455] px-3 focus:outline-none focus:ring-2 focus:ring-[#8a66a8] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             defaultValue="pt-AO"
+                            disabled={isSavingSettings}
                           >
                             <option value="pt-AO">Português (Angola)</option>
                             <option value="pt-PT">Português (Portugal)</option>
@@ -2245,11 +2571,13 @@ function DashboardPageContent() {
                             onChange={(e) => setCurrentPassword(e.target.value)}
                             placeholder="••••••••"
                             className="rounded-xl h-10 text-sm border-slate-200 focus-visible:ring-[#8a66a8] pr-10"
+                            disabled={isSavingSettings}
                           />
                           <button
                             type="button"
                             onClick={() => setShowCurrentPw(v => !v)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#8a66a8] transition-colors"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#8a66a8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={isSavingSettings}
                           >
                             {showCurrentPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                           </button>
@@ -2265,11 +2593,13 @@ function DashboardPageContent() {
                               onChange={(e) => setNewPassword(e.target.value)}
                               placeholder="Mínimo 6 caracteres"
                               className="rounded-xl h-10 text-sm border-slate-200 focus-visible:ring-[#8a66a8] pr-10"
+                              disabled={isSavingSettings}
                             />
                             <button
                               type="button"
                               onClick={() => setShowNewPw(v => !v)}
-                              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#8a66a8] transition-colors"
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#8a66a8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              disabled={isSavingSettings}
                             >
                               {showNewPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                             </button>
@@ -2285,6 +2615,7 @@ function DashboardPageContent() {
                             className={`rounded-xl h-10 text-sm border-slate-200 focus-visible:ring-[#8a66a8] ${
                               confirmPassword && confirmPassword !== newPassword ? 'border-red-300 focus-visible:ring-red-400' : ''
                             }`}
+                            disabled={isSavingSettings}
                           />
                           {confirmPassword && confirmPassword !== newPassword && (
                             <p className="text-[10px] text-red-500 font-semibold">As senhas não coincidem</p>
@@ -2299,13 +2630,14 @@ function DashboardPageContent() {
                     <Button
                       type="button"
                       variant="ghost"
+                      disabled={isSavingSettings}
                       onClick={() => {
                         setSettingsName(user.name)
                         setCurrentPassword('')
                         setNewPassword('')
                         setConfirmPassword('')
                       }}
-                      className="rounded-2xl h-11 px-6 text-sm font-bold text-slate-500 hover:bg-slate-100"
+                      className="rounded-2xl h-11 px-6 text-sm font-bold text-slate-500 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Cancelar
                     </Button>

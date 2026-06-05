@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
+import { SafeImage } from '@/components/ui/safe-image'
 import Link from 'next/link'
 import { Clock, BookOpen, ChevronRight, CheckCircle2, Award, ArrowLeft, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -12,6 +12,21 @@ import { getCoursePriceDisplay } from '@/lib/format-price'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/auth-context'
 import { toast } from 'sonner'
+
+function getCategoryLabel(category: string): string {
+  switch (category) {
+    case 'GESTAOADMINISTRATIVADIGITAL':
+      return 'Gestão Administrativa Digital'
+    case 'LIDERANCAECOMUNICACAO':
+      return 'Liderança e Comunicação'
+    case 'SECRETARIADOESTRATEGICO':
+      return 'Secretariado Estratégico'
+    case 'TECNOLOGIASINOVADORAS':
+      return 'Tecnologias Inovadoras'
+    default:
+      return category
+  }
+}
 
 
 interface CourseDetailBodyProps {
@@ -102,22 +117,37 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
 
   const mainContent = (
     <div className="space-y-8">
-      {/* Renderiza o dashboard breadcrumb se estiver no dashboard */}
-      {isDashboard && dashboardBreadcrumb}
-      
       <div>
-        {isDashboard && (
-          <div className="flex flex-wrap items-center gap-2 mb-4">
-            <Badge className="bg-[#8a66a8] text-white font-semibold text-xs py-1 px-2.5 rounded-full border-none">
-              {course.category}
-            </Badge>
-            <Badge variant="outline" className="border-[#312455]/20 text-[#312455] rounded-full">
-              {course.online ? 'Online' : 'Presencial'}
-            </Badge>
-          </div>
-        )}
-        
-        <p className={isDashboard ? 'text-slate-600 text-base leading-relaxed text-pretty' : 'text-slate-600 text-lg leading-relaxed text-pretty'}>
+        <div className="flex flex-wrap items-center gap-2 mb-4">
+          <Badge
+            className={
+              isDashboard
+                ? 'bg-[#8a66a8] text-white font-semibold text-xs py-1 px-2.5 rounded-full border-none'
+                : 'bg-accent text-accent-foreground font-semibold text-xs py-1 px-2.5 rounded-full border border-white/20'
+            }
+          >
+            {getCategoryLabel(course.category)}
+          </Badge>
+          <Badge variant="secondary" className={isDashboard ? 'rounded-full' : ''}>
+            Nível {course.level}
+          </Badge>
+        </div>
+        <h1
+          className={
+            isDashboard
+              ? 'text-2xl md:text-3xl font-black text-[#312455] mb-4 leading-tight'
+              : 'text-3xl md:text-4xl font-extrabold text-primary mb-4 leading-tight'
+          }
+        >
+          {course.name}
+        </h1>
+        <p
+          className={
+            isDashboard
+              ? 'text-slate-600 text-base leading-relaxed text-pretty'
+              : 'text-muted-foreground text-lg leading-relaxed text-pretty'
+          }
+        >
           {course.description}
         </p>
       </div>
@@ -194,9 +224,8 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
       }`}
     >
       <div className="relative aspect-[16/10]">
-        {/* Sanitização da URL — garante URL válida antes de passar ao Next.js Image */}
-        <Image
-          src={course.image?.startsWith('http') ? course.image : '/placeholder.jpg'}
+        <SafeImage
+          src={course.image}
           alt={course.name}
           fill
           unoptimized
@@ -249,8 +278,15 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
 
         <div className={isDashboard ? 'pt-2' : 'pt-4 border-t border-border'}>
           {isEnrolled === null ? (
-            <Button disabled className="w-full h-12 rounded-2xl">
-              <Loader2 className="h-4 w-4 animate-spin" />
+            <Button
+              disabled
+              className={
+                isDashboard
+                  ? 'w-full bg-[#312455]/70 text-white/70 rounded-2xl h-12 text-sm font-bold cursor-not-allowed'
+                  : 'w-full bg-primary/70 text-primary-foreground/70 rounded-xl h-12 text-sm font-semibold cursor-not-allowed'
+              }
+            >
+              Inscrever-se Agora
             </Button>
           ) : isEnrolled ? (
             <Button
@@ -299,8 +335,8 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
       }
     >
       <div className="space-y-8 pb-8">
-        {mainContent}
         {investmentCard}
+        {mainContent}
       </div>
     </div>
   )

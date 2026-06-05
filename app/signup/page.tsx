@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Eye, EyeOff, Mail, Lock, User as UserIcon, GraduationCap, Loader2, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -20,6 +20,7 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
 
   // Redirect if already logged in
   useEffect(() => {
@@ -57,7 +58,7 @@ export default function SignupPage() {
     const result = await signup(name, email, password, 'aluno')
     
     if (result.success) {
-      router.push('/dashboard')
+      setShowSuccessModal(true)
     } else {
       setError(result.error || 'Erro ao criar conta. Verifique os seus dados.')
     }
@@ -281,6 +282,54 @@ export default function SignupPage() {
           </form>
         </motion.div>
       </div>
+
+      <AnimatePresence>
+        {showSuccessModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => {
+                setShowSuccessModal(false)
+                router.push('/login')
+              }}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+            />
+            
+            {/* Modal Content */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-md bg-white border border-slate-100 rounded-[2.5rem] p-8 sm:p-10 shadow-2xl z-10 text-center"
+            >
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-50 border border-emerald-100 rounded-full mb-6 text-emerald-500">
+                <CheckCircle2 className="w-8 h-8" />
+              </div>
+              
+              <h2 className="text-2xl font-black text-[#312455] mb-4 tracking-tight">
+                Verifique o seu e-mail
+              </h2>
+              
+              <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-8">
+                Enviámos um link de ativação para o endereço <strong className="text-slate-900">{email}</strong>. Por favor, consulte a sua caixa de entrada e confirme a sua conta para poder aceder à plataforma.
+              </p>
+              
+              <Button
+                onClick={() => {
+                  setShowSuccessModal(false)
+                  router.push('/login')
+                }}
+                className="w-full h-12 bg-[#312455] hover:bg-[#402f6e] text-white rounded-2xl text-base font-semibold shadow-lg shadow-purple-950/15 hover:shadow-xl transition-all duration-300"
+              >
+                Ir para o Login
+              </Button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

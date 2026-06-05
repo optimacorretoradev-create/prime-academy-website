@@ -19,7 +19,7 @@ export interface GalleryImage {
   title: string
   categoria: string
   destaque: boolean
-  image: string
+  imageUrl: string
   createdAt: string
 }
 
@@ -119,7 +119,7 @@ function mapGalleryImage(item: any): GalleryImage {
     title: item.caption || item.title || '',
     categoria: item.category || item.categoria || 'Geral',
     destaque: Boolean(item.destaque),
-    image: item.imageUrl?.url || (item.imageUrl?.handle && `https://media.graphassets.com/${item.imageUrl.handle}`) || '/placeholder.jpg',
+    imageUrl: item.imageUrl?.url || (item.imageUrl?.handle && `https://media.graphassets.com/${item.imageUrl.handle}`) || '/placeholder.jpg',
     createdAt: item.createdAt || ''
   }
 }

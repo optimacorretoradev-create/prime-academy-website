@@ -31,6 +31,11 @@ export function Header() {
   const { user, logout, isLoading } = useAuth()
   const pathname = usePathname()
 
+  const handleLogout = () => {
+    logout()
+    setIsOpen(false)
+  }
+
   useEffect(() => {
     // Definir estado inicial com base na posição do scroll
     setScrolled(window.scrollY > 20)

@@ -141,9 +141,29 @@ export function EnrollmentCheckoutForm({
     setTimeout(() => setCopiedField(null), 2000)
   }
 
-  const buildWhatsAppMessage = (courseName: string, email: string): string => {
-    const message = `Olá! Acabei de realizar a minha inscrição no curso *${courseName}*. O meu e-mail é *${email}* e aqui está o meu comprovativo de pagamento.`
+  const buildWhatsAppMessage = (
+    courseName: string,
+    email: string,
+    nome: string,
+    modalidade: 'online' | 'presencial'
+  ): string => {
+    const modalidadeLabel = modalidade === 'presencial' ? 'Presencial' : 'Online'
+    const message =
+      `Olá, Prime Academy! 👋\n\n` +
+      `O meu nome é *${nome}* e acabei de realizar a minha inscrição no curso:\n` +
+      `📚 *${courseName}* — Modalidade: *${modalidadeLabel}*\n\n` +
+      `O meu e-mail de registo é: *${email}*\n\n` +
+      `Envio em anexo o comprovativo de pagamento para validação. Fico a aguardar a confirmação. Obrigado! 🙏`
     return encodeURIComponent(message)
+  }
+
+  const buildWhatsAppUrl = (): string => {
+    const phone = whatsappNumber.replace(/[^0-9]/g, '')
+    const courseName = selectedCourse?.name ?? 'um curso da Prime Academy'
+    const nome = userProfile?.nome ?? 'Candidato'
+    const email = userProfile?.email ?? ''
+    const modalidade = formData.modalidade
+    return `https://api.whatsapp.com/send?phone=${phone}&text=${buildWhatsAppMessage(courseName, email, nome, modalidade)}`
   }
 
   const uploadComprovatvoToStorage = async (file: File, inscricaoId: string): Promise<string> => {
@@ -252,25 +272,37 @@ export function EnrollmentCheckoutForm({
       }
 
       try {
-        await createNotificationViaApi({
-          perfilId: userAuthId ?? '',
-          tipo: 'inscricao_pendente_pagamento',
-          titulo: 'Aviso de Pagamento Pendente',
-          descricao: `O utilizador ${userProfile.nome} iniciou o processo de inscrição no curso "${matchedCourse.name}" (${formData.modalidade === 'presencial' ? 'Presencial' : 'Online'}). Comprovativo de pagamento enviado.`,
-          metadata: {
-            aluno_nome: userProfile.nome,
-            aluno_email: userProfile.email,
-            curso_nome: matchedCourse.name,
-            curso_id: formData.course,
-            modalidade: formData.modalidade,
-            comprovativo_url: comprovativoUrl,
-            inscricao_id: inscricaoResult.inscricao?.id,
-          },
-        })
-      } catch (notificationErr) {
-        console.warn('[checkout] Aviso: Notificação de admins não enviada, continuando...', notificationErr)
+        const { data: admins } = await supabase
+          .from('perfis')
+          .select('id')
+          .eq('cargo', 'admin')
+
+        if (admins && admins.length > 0) {
+          await Promise.allSettled(
+            admins.map((admin: { id: string }) =>
+              createNotificationViaApi({
+                perfilId: admin.id,
+                tipo: 'nova_inscricao',
+                titulo: 'Nova Inscrição Recebida',
+                descricao: `${userProfile.nome} inscreveu-se no curso "${matchedCourse.name}" (${formData.modalidade === 'presencial' ? 'Presencial' : 'Online'}). Comprovativo de pagamento enviado.`,
+                metadata: {
+                  aluno_nome: userProfile.nome,
+                  aluno_email: userProfile.email,
+                  curso_nome: matchedCourse.name,
+                  curso_id: formData.course,
+                  modalidade: formData.modalidade,
+                  comprovativo_url: comprovativoUrl,
+                  inscricao_id: inscricaoResult.inscricao?.id,
+                },
+              })
+            )
+          )
+        }
+      } catch (adminNotifErr) {
+        console.warn('[checkout] Notificação dos admins falhou (continuando):', adminNotifErr)
       }
 
+      // 2. Notificar o formando com inscricao_em_analise
       try {
         const { data: authData } = await supabase.auth.getUser()
         if (authData?.user?.id) {
@@ -278,7 +310,7 @@ export function EnrollmentCheckoutForm({
             perfilId: authData.user.id,
             tipo: 'inscricao_em_analise',
             titulo: 'Inscrição Enviada',
-            descricao: `A sua inscrição no curso "${matchedCourse.name}" foi recebida e está sendo analisada. A equipa entrará em contacto em breve.`,
+            descricao: `A sua inscrição no curso "${matchedCourse.name}" foi recebida e está a ser analisada. A equipa entrará em contacto em breve.`,
             metadata: {
               curso_nome: matchedCourse.name,
               curso_id: formData.course,
@@ -287,21 +319,21 @@ export function EnrollmentCheckoutForm({
           })
         }
       } catch (userNotifErr) {
-        console.warn('[checkout] Aviso: Notificação do utilizador não enviada, continuando...', userNotifErr)
+        console.warn('[checkout] Notificação do formando não enviada (continuando):', userNotifErr)
       }
 
       setIsSuccess(true)
 
+      // Open WhatsApp immediately with pre-filled message
+      const whatsappUrl = buildWhatsAppUrl()
+      window.open(whatsappUrl, '_blank')
+
       toast({
         title: '✓ Inscrição confirmada!',
-        description: 'Redirecionando para WhatsApp para enviar o comprovativo...',
+        description: 'A redirecionar para o WhatsApp para enviar o comprovativo...',
       })
 
-      const whatsappMessage = buildWhatsAppMessage(matchedCourse.name, userProfile.email)
-      const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappNumber.replace(/[^0-9]/g, '')}&text=${whatsappMessage}`
-
       setTimeout(() => {
-        window.open(whatsappUrl, '_blank')
         router.push('/dashboard')
       }, 2000)
     } catch (err) {
@@ -674,7 +706,7 @@ export function EnrollmentCheckoutForm({
           </Button>
 
           <p className="text-center text-[10px] text-muted-foreground">
-            A sua inscrição será processada após o pagamento ser validado
+            Ao confirmar, abriremos o WhatsApp para enviar o seu comprovativo
           </p>
         </form>
         </motion.div>

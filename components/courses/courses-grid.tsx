@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
-import Image from 'next/image'
+import { SafeImage } from '@/components/ui/safe-image'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BookOpen, Clock, Play, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -160,22 +160,14 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
 
                     {/* Imagem de capa */}
                     <div className="relative h-44 overflow-hidden bg-slate-200">
-                      {/* Sanitização da URL — garante que o Turbopack não recebe strings inválidas */}
-                      {(() => {
-                        const validSrc = course.image?.startsWith('http')
-                          ? course.image
-                          : '/placeholder.jpg'
-                        return (
-                          <Image
-                            src={validSrc}
-                            alt={course.name}
-                            fill
-                            unoptimized
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                          />
-                        )
-                      })()}
+                      <SafeImage
+                        src={course.image}
+                        alt={course.name}
+                        fill
+                        unoptimized
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                     </div>
 
@@ -205,7 +197,7 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
                         </span>
                         <span className="flex items-center gap-1">
                           <BookOpen className="w-3 h-3 text-[#312455]" />
-                          {course.lessons} Aulas
+                          12 Aulas
                         </span>
                         <span className="bg-[#8a66a8]/8 text-[#8a66a8] font-bold px-2 py-0.5 rounded-md text-[10px]">
                           {course.level}
