@@ -54,10 +54,10 @@ export function HeroSection() {
   }, [])
 
   const slidePositions = [
-    'center', // hero1
-    '25%',    // hero2
-    '25%',    // hero3
-    'center'  // hero4
+    'object-center',                  // hero1
+    'object-center md:object-[25%]',  // hero2
+    'object-center md:object-[25%]',  // hero3
+    'object-center'                   // hero4
   ]
 
   return (
@@ -77,8 +77,7 @@ export function HeroSection() {
               src={slides[currentSlide].image}
               alt="Prime Academy Background"
               fill
-              className="object-cover"
-              style={{ objectPosition: slidePositions[currentSlide] }}
+              className={`object-cover ${slidePositions[currentSlide]}`}
               priority
             />
           </motion.div>
