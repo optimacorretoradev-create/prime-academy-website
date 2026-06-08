@@ -18,6 +18,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { useAuth } from '@/contexts/auth-context'
 import { useNotifications } from '@/contexts/notifications-context'
+import { useScrollDirection } from '@/hooks/use-scroll-direction'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
@@ -262,6 +263,7 @@ function DashboardPageContent() {
     router.replace(href, { scroll: false })
     setTimeout(() => {
       setActiveTab(tabId)
+      setShowExploreHeader(true)
       setIsTabChanging(false)
     }, 450)
   }
@@ -324,6 +326,24 @@ function DashboardPageContent() {
   const [activeCourses, setActiveCourses] = useState<ActiveProgram[]>([])
   const [students, setStudents] = useState<{ id: string; name: string; email: string; course: string; progress: number; status: string }[]>([])
   const [isLoadingStudents, setIsLoadingStudents] = useState(false)
+  const [showExploreHeader, setShowExploreHeader] = useState(true)
+  const [isHeaderUserClosed, setIsHeaderUserClosed] = useState(false)
+  const isHeaderVisible = useScrollDirection()
+
+  useEffect(() => {
+    setIsHeaderUserClosed(false)
+  }, [activeTab])
+
+  useEffect(() => {
+    if (isHeaderVisible) {
+      if (!isHeaderUserClosed) {
+        setShowExploreHeader(true)
+      }
+    } else {
+      setShowExploreHeader(false)
+      setIsHeaderUserClosed(false)
+    }
+  }, [isHeaderVisible, isHeaderUserClosed])
 
   useEffect(() => {
     async function loadActiveCourses() {
@@ -1684,40 +1704,52 @@ function DashboardPageContent() {
           )}
 
           {/* E. Explore Courses Header Section - Fixed on mobile */}
-          {activeTab === 'explore' && (
-            <div className="md:hidden flex flex-col gap-4 border-b border-slate-100 pb-4">
+          {activeTab === 'explore' && showExploreHeader && (
+            <div className={`md:hidden flex flex-col gap-2 border-b border-slate-100 pb-2 fixed top-0 left-0 right-0 z-40 bg-[#f8fafc]/95 backdrop-blur-sm px-4 pt-3 transition-transform duration-300 ease-in-out ${
+              isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
+            }`}>
+              <button
+                onClick={() => {
+                  setShowExploreHeader(false)
+                  setIsHeaderUserClosed(true)
+                }}
+                className="absolute top-1 right-2 p-1 text-slate-400 hover:text-[#312455] rounded-full transition-colors"
+                aria-label="Fechar cabeçalho"
+              >
+                <X className="h-4 w-4" />
+              </button>
               {/* Header */}
-              <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start justify-between gap-3 pr-6">
                 <div>
-                  <h2 className="text-base font-black text-[#312455]">Catálogo de Formações</h2>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Descubra novos programas e expanda as suas competências.</p>
+                  <h2 className="text-sm font-black text-[#312455]">Catálogo</h2>
+                  <p className="text-[9px] text-slate-500">Explorar formações.</p>
                 </div>
-                <Badge className="bg-[#8a66a8]/10 text-[#8a66a8] border-none font-bold text-[9px] py-1 px-2.5 rounded-full whitespace-nowrap flex-shrink-0">
+                <Badge className="bg-[#8a66a8]/10 text-[#8a66a8] border-none font-bold text-[9px] py-0.5 px-2 rounded-full whitespace-nowrap flex-shrink-0">
                   {exploreCourses.length}
                 </Badge>
               </div>
 
               {/* Search Input */}
               <div className="relative flex-1">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
                 <Input
                   placeholder="Pesquisar..."
                   value={exploreSearch}
                   onChange={(e) => handleExploreSearchChange(e.target.value)}
-                  className="pl-10 rounded-2xl h-10 text-xs border-slate-200 bg-white shadow-sm focus-visible:ring-[#8a66a8] transition-all duration-200"
+                  className="pl-8 rounded-xl h-8 text-[11px] border-slate-200 bg-white shadow-sm focus-visible:ring-[#8a66a8] transition-all duration-200"
                 />
               </div>
 
               {/* Category Filter Buttons */}
-              <div className="flex gap-2 flex-wrap">
+              <div className="flex gap-1.5 flex-wrap pb-1">
                 {exploreCategories.map(cat => (
                   <button
                     key={cat}
                     onClick={() => handleExploreCategoryChange(cat)}
                     disabled={isFiltering}
-                    className={`relative px-3 py-2 rounded-xl text-[9px] font-bold transition-all duration-200 border flex items-center gap-1 whitespace-nowrap leading-tight ${(
+                    className={`relative px-2.5 py-1.5 rounded-lg text-[9px] font-bold transition-all duration-200 border flex items-center gap-1 whitespace-nowrap leading-tight ${(
                       exploreCategory === cat || loadingCategory === cat
-                        ? 'bg-[#312455] text-white border-[#312455] shadow-md'
+                        ? 'bg-[#312455] text-white border-[#312455] shadow-sm'
                         : 'bg-white text-slate-600 border-slate-200 hover:border-[#8a66a8] hover:text-[#8a66a8]'
                     )} disabled:opacity-80 disabled:cursor-default`}
                   >
@@ -1732,7 +1764,7 @@ function DashboardPageContent() {
           )}
         </div>
 
-        <main className="flex-1 flex flex-col gap-6 p-6 overflow-y-auto pt-[160px] md:pt-6">
+        <main className={`flex-1 flex flex-col justify-start gap-6 p-6 overflow-y-auto transition-all duration-300 ${activeTab === 'explore' && showExploreHeader ? 'pt-[140px]' : 'pt-6'} md:pt-6`}>
 
           {/* A. Dynamic Banner (Only Desktop) */}
           {activeTab === 'courses' && (
@@ -2236,7 +2268,7 @@ function DashboardPageContent() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.3 }}
-                className="space-y-6 pt-[320px] md:pt-0"
+                className="space-y-6 pt-4 md:pt-0"
               >
                 {/* Header — Desktop only */}
                 <div className="hidden md:flex flex-col md:flex-row md:items-center justify-between gap-4">

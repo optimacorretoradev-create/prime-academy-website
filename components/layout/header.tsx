@@ -7,6 +7,7 @@ import { Menu, X, GraduationCap, User, LogOut, LayoutDashboard, ChevronDown } fr
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '@/contexts/auth-context'
+import { useScrollDirection } from '@/hooks/use-scroll-direction'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +29,7 @@ const navLinks = [
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const isHeaderVisible = useScrollDirection()
   const { user, logout, isLoading } = useAuth()
   const pathname = usePathname()
 
@@ -66,7 +68,9 @@ export function Header() {
   const isTransparent = !scrolled
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${
+    <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-transform duration-300 ease-in-out ${
+      isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
+    } ${
       isTransparent 
         ? 'bg-transparent py-4 border-b border-white/10' 
         : 'bg-[#312455]/95 border-b border-[#312455]/20 py-4 shadow-md'
@@ -74,8 +78,8 @@ export function Header() {
       <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between min-h-[50px] md:h-20 relative">
           
-          {/* Mobile Logo (Visible only on mobile) */}
-          <Link href="/" className="md:hidden shrink-0">
+          {/* Mobile Logo (Visible only on mobile and tablet) */}
+          <Link href="/" className="lg:hidden shrink-0">
              <Image 
                 src="/logo.svg" 
                 alt="Prime Academy Logo" 
@@ -87,7 +91,7 @@ export function Header() {
           </Link>
 
           {/* Left Side: Logo with white filter */}
-          <Link href="/" className="hidden md:flex items-center group shrink-0">
+          <Link href="/" className="hidden lg:flex items-center group shrink-0">
             <div className="transition-transform group-hover:scale-105">
               <Image 
                 src="/logo.svg" 
@@ -102,7 +106,7 @@ export function Header() {
           </Link>
 
           {/* Center Side: Desktop Navigation (white links with improved contrast & hover) */}
-          <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+          <nav className="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
             {navLinks.map((link) => {
               const isActive = pathname === link.href
               return (
@@ -129,7 +133,7 @@ export function Header() {
           {/* Right Side: Auth & Mobile Toggle */}
           <div className="flex items-center gap-2 ml-auto">
             {/* Desktop Auth Buttons */}
-            <div className="hidden md:flex items-center">
+            <div className="hidden lg:flex items-center">
               {!isLoading && user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -190,7 +194,7 @@ export function Header() {
 
             {/* Mobile Menu Button (White text) */}
             <button
-              className="md:hidden p-2 rounded-full text-white hover:bg-white/10 transition-colors cursor-pointer"
+              className="lg:hidden p-2 rounded-full text-white hover:bg-white/10 transition-colors cursor-pointer"
               onClick={() => setIsOpen(!isOpen)}
               aria-label={isOpen ? 'Fechar menu' : 'Abrir menu'}
             >
@@ -209,16 +213,16 @@ export function Header() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="md:hidden fixed inset-0 z-[55] bg-black/50 backdrop-blur-sm"
+              className="lg:hidden fixed inset-0 z-[55] bg-black/40 backdrop-blur-sm"
               onClick={() => setIsOpen(false)}
             />
-            {/* Drawer */}
+            {/* Drawer (Glassmorphism Premium) */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="md:hidden fixed inset-0 z-[60] w-full bg-white/5 backdrop-blur-[1px] p-6 flex flex-col pt-24 shadow-2xl"
+              className="lg:hidden fixed inset-0 z-[60] w-full h-screen bg-[#13072e]/70 backdrop-blur-3xl backdrop-brightness-75 p-6 flex flex-col pt-24"
             >
               {/* Close button at the top */}
               <button
@@ -246,7 +250,7 @@ export function Header() {
                     >
                       <Link
                         href={link.href}
-                        className={`px-4 py-4 text-lg font-semibold rounded-xl transition-all flex items-center justify-between ${
+                        className={`px-4 py-4 text-lg font-semibold rounded-xl transition-all flex items-center justify-between drop-shadow-sm ${
                           isActive ? 'bg-white/10 text-white' : 'text-white/80 hover:bg-white/5 hover:text-white hover:translate-x-2'
                         }`}
                         onClick={() => setIsOpen(false)}
