@@ -9,7 +9,7 @@ export function StatsStrip() {
       title: 'Profissionais Capacitados'
     },
     {
-      number: '2,018',
+      number: '2018',
       title: 'Início do Projeto'
     },
     {
