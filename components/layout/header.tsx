@@ -213,16 +213,16 @@ export function Header() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="lg:hidden fixed inset-0 z-[55] bg-[#2D1B4E]/70 backdrop-blur-2xl backdrop-brightness-75"
+              className="lg:hidden fixed inset-0 z-[55] bg-black/40 backdrop-blur-sm"
               onClick={() => setIsOpen(false)}
             />
-            {/* Drawer */}
+            {/* Drawer (Glassmorphism Premium) */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="lg:hidden fixed inset-0 z-[60] w-full bg-gradient-to-b from-[#2D1B4E]/90 via-[#2D1B4E]/70 to-transparent backdrop-blur-2xl backdrop-brightness-90 p-6 flex flex-col pt-24 shadow-2xl"
+              className="lg:hidden fixed inset-0 z-[60] w-full h-screen bg-[#13072e]/70 backdrop-blur-3xl backdrop-brightness-75 p-6 flex flex-col pt-24"
             >
               {/* Close button at the top */}
               <button
@@ -269,7 +269,7 @@ export function Header() {
                 >
                   {!isLoading && user ? (
                     <>
-                      <div className="px-4 py-2 flex items-center gap-3 drop-shadow-sm">
+                      <div className="px-4 py-2 flex items-center gap-3">
                         <div className="w-12 h-12 rounded-full bg-[#8a66a8] flex items-center justify-center text-xl font-bold text-white">
                           {user.name.charAt(0).toUpperCase()}
                         </div>
@@ -280,7 +280,7 @@ export function Header() {
                       </div>
                       <Link
                         href="/dashboard"
-                        className="flex items-center gap-2 px-4 py-3 text-lg font-semibold text-white/80 rounded-xl transition-all hover:bg-white/5 hover:text-white hover:translate-x-2 drop-shadow-sm"
+                        className="flex items-center gap-2 px-4 py-3 text-lg font-semibold text-white/80 rounded-xl transition-all hover:bg-white/5 hover:text-white hover:translate-x-2"
                         onClick={() => setIsOpen(false)}
                       >
                         <LayoutDashboard className="h-5 w-5 text-[#8a66a8]" />
@@ -288,7 +288,7 @@ export function Header() {
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="flex items-center gap-2 w-full px-4 py-3 text-lg font-semibold text-white/80 rounded-xl transition-all hover:bg-white/5 hover:text-white hover:translate-x-2 text-left cursor-pointer drop-shadow-sm"
+                        className="flex items-center gap-2 w-full px-4 py-3 text-lg font-semibold text-white/80 rounded-xl transition-all hover:bg-white/5 hover:text-white hover:translate-x-2 text-left cursor-pointer"
                       >
                         <LogOut className="h-5 w-5 text-red-400" />
                         Sair
@@ -299,7 +299,7 @@ export function Header() {
                       <Button
                         asChild
                         variant="ghost"
-                        className="w-full justify-start text-white/90 text-lg hover:bg-white/5 rounded-xl hover:text-white cursor-pointer py-6 drop-shadow-sm"
+                        className="w-full justify-start text-white/90 text-lg hover:bg-white/5 rounded-xl hover:text-white cursor-pointer py-6"
                       >
                         <Link href="/login" onClick={() => setIsOpen(false)}>
                           <User className="mr-2 h-5 w-5 text-[#8a66a8]" />
@@ -308,7 +308,7 @@ export function Header() {
                       </Button>
                       <Button
                         asChild
-                        className="w-full bg-[#8a66a8] text-white hover:bg-[#8a66a8]/90 rounded-full font-bold cursor-pointer transition-all py-6 text-lg hover:scale-[1.02] drop-shadow-sm"
+                        className="w-full bg-[#8a66a8] text-white hover:bg-[#8a66a8]/90 rounded-full font-bold cursor-pointer transition-all py-6 text-lg hover:scale-[1.02]"
                       >
                         <Link href="/signup" onClick={() => setIsOpen(false)}>
                           Criar Conta Gratuita
