@@ -47,6 +47,12 @@ const token = process.env.HYGRAPH_API_TOKEN || process.env.HYGRAPH_PROD_AUTH_TOK
 
 /**
  * Generic fetcher for Hygraph GraphQL API with caching and error handling
+ * 
+ * NOTA DE CACHE COM WEBHOOKS:
+ * - Quando webhooks do Hygraph estão configurados → Deploy Hooks da Vercel
+ * - A Vercel reconstrói o projeto automaticamente quando conteúdo é publicado
+ * - Por isso, o tempo de revalidação pode ser AUMENTADO para melhor performance
+ * - O webhook força o rebuild, não o cache time
  */
 async function hygraphFetch<T>(query: string, variables?: Record<string, any>): Promise<T | null> {
   if (!endpoint) {
@@ -54,7 +60,7 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
   }
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    'gcms-stage': 'PUBLISHED',
+    'gcms-stage': 'PUBLISHED', // ✅ Apenas conteúdo publicado em produção
   }
   if (token) {
     const formattedToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`
@@ -65,7 +71,12 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
     method: 'POST',
     headers,
     body: JSON.stringify({ query, variables }),
-    next: { revalidate: 3600 }
+    next: { 
+      // Cache strategy with Vercel Deploy Hooks:
+      // - Dev/Preview: 1 hora (webhook força rebuild se precisar)
+      // - Production: Webhook reconstrói automaticamente
+      revalidate: 3600 // 1 hour - webhook handles production updates
+    }
   })
 
   if (!response.ok) {
