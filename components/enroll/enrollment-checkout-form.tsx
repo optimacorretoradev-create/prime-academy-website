@@ -106,7 +106,7 @@ export function EnrollmentCheckoutForm({
           }
         }
       } catch (err) {
-        console.error('[checkout] Erro ao buscar perfil:', err)
+
       }
     }
 
@@ -189,7 +189,7 @@ export function EnrollmentCheckoutForm({
 
       return publicUrlData.publicUrl
     } catch (err) {
-      console.error('[checkout] Erro ao fazer upload:', err)
+
       throw err
     }
   }
@@ -244,10 +244,10 @@ export function EnrollmentCheckoutForm({
       const templateId = process.env.NEXT_PUBLIC_EMAILJS_ENROLL_TEMPLATE_ID || process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
       const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
 
-      console.log('[checkout] Variáveis EmailJS:', { serviceId, templateId, publicKey: publicKey ? '✓ definida' : '✗ em falta' })
+
 
       if (!serviceId || !templateId || !publicKey) {
-        console.error('[checkout] ERRO: Variáveis do EmailJS em falta no .env!')
+
         toast({ title: 'Aviso', description: 'Configuração de e-mail em falta. Contacte o suporte.', variant: 'destructive' })
       } else {
         try {
@@ -264,9 +264,9 @@ export function EnrollmentCheckoutForm({
             },
             publicKey
           )
-          console.log('[checkout] E-mail enviado! Status:', result.status, result.text)
+
         } catch (emailErr) {
-          console.error('[checkout] ERRO ao enviar e-mail:', emailErr)
+
           toast({ title: 'Aviso de e-mail', description: `Erro: ${emailErr instanceof Error ? emailErr.message : String(emailErr)}`, variant: 'destructive' })
         }
       }
@@ -299,7 +299,7 @@ export function EnrollmentCheckoutForm({
           )
         }
       } catch (adminNotifErr) {
-        console.warn('[checkout] Notificação dos admins falhou (continuando):', adminNotifErr)
+
       }
 
       // 2. Notificar o formando com inscricao_em_analise
@@ -319,7 +319,7 @@ export function EnrollmentCheckoutForm({
           })
         }
       } catch (userNotifErr) {
-        console.warn('[checkout] Notificação do formando não enviada (continuando):', userNotifErr)
+
       }
 
       setIsSuccess(true)

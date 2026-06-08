@@ -77,7 +77,7 @@ export function EnrollForm({ courses }: EnrollFormProps) {
     }
 
     try {
-      console.log('[EnrollForm] A enviar email via EmailJS...', { serviceId, templateId })
+
       const result = await emailjs.send(
         serviceId,
         templateId,
@@ -91,7 +91,7 @@ export function EnrollForm({ courses }: EnrollFormProps) {
         },
         publicKey
       )
-      console.log('[EnrollForm] EmailJS resposta:', result.status, result.text)
+
 
       const matchedCourse = courses.find((c) => c.name === formData.course)
       await createInscricao({
@@ -107,7 +107,7 @@ export function EnrollForm({ courses }: EnrollFormProps) {
       setIsSuccess(true)
       setFormData({ name: '', email: '', phone: '', course: '', message: '' })
     } catch (err) {
-      console.error('[EnrollForm] Erro EmailJS:', err)
+
       setError(err instanceof Error ? err.message : 'Erro ao enviar inscrição')
     } finally {
       setIsSubmitting(false)

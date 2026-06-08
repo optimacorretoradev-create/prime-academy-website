@@ -18,7 +18,7 @@ const slides = [
     title: "Excelência e Prestígio",
     subtitle: "Capacitação de Alto Nível para o Mercado",
     description: "Elevamos o padrão do desenvolvimento profissional. Soluções de formação estratégica para organizações públicas e privadas comprometidas com o sucesso.",
-    image: "/images/hero/hero2.jpeg"
+    image: "/images/hero/hero5 (1).jpeg"
   },
   {
     title: "Liderança Inovadora",
@@ -30,7 +30,7 @@ const slides = [
     title: "Parceiro de Sucesso",
     subtitle: "Formação Executiva de Elite",
     description: "O parceiro ideal para empresas que procuram excelência. Certificação reconhecida, metodologia prática e mentoria especializada para um desenvolvimento de topo.",
-    image: "/images/hero/hero4.jpeg"
+    image: "/images/hero/hero5 (2).jpeg"
   }
 ]
 
@@ -92,10 +92,10 @@ export function HeroSection() {
       </div>
 
       {/* Left Typography Container - positioned cleanly over the fading gradient without cutting the image */}
-      <div className="relative z-20 w-full md:w-[50%] flex flex-col justify-center px-6 sm:px-12 md:pl-16 lg:pl-24 md:pr-8 py-20 md:py-32 transition-all duration-500">
+      <div className="relative z-20 w-full md:w-[50%] flex flex-col justify-end items-start px-6 sm:px-12 md:pl-16 lg:pl-24 md:pr-8 pb-6 md:pb-8 transition-all duration-500 flex-1 space-y-4 md:space-y-6 lg:space-y-8">
         
         {/* Trust Badges - Moved to the very top for mobile */}
-        <div className="flex flex-wrap items-center gap-3 mb-6">
+        <div className="hidden md:flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full text-white text-xs border border-white/10">
             <Star className="h-3.5 w-3.5 text-secondary fill-secondary" />
             <span className="font-semibold">+10.353 Profissionais Capacitados</span>
@@ -106,7 +106,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="max-w-xl text-left my-auto min-h-[350px] md:min-h-[450px] flex flex-col justify-center">
+        <div className="max-w-xl text-left flex flex-col justify-start">
           {/* Dynamic Content Transitions */}
           <AnimatePresence mode="wait">
             <motion.div
@@ -115,29 +115,29 @@ export function HeroSection() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
-              className="h-[280px] md:h-[280px] overflow-hidden"
+              className="overflow-hidden"
             >
               {/* Dynamic Main Headline */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-tight uppercase">
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white leading-tight tracking-tight uppercase">
                 {slides[currentSlide].title}
-                <span className="block text-secondary mt-3 text-lg sm:text-2xl lg:text-3xl font-semibold normal-case tracking-normal text-white/90">
+                <span className="block text-secondary mt-3 text-lg sm:text-xl md:text-2xl font-semibold normal-case tracking-normal text-white/90">
                   {slides[currentSlide].subtitle}
                 </span>
               </h1>
 
               {/* Dynamic Subtitle */}
-              <p className="text-base sm:text-lg text-white/80 mb-8 max-w-lg font-light leading-relaxed text-pretty">
+              <p className="text-base sm:text-lg text-white/80 max-w-lg font-light leading-relaxed text-pretty">
                 {slides[currentSlide].description}
               </p>
             </motion.div>
           </AnimatePresence>
 
           {/* CTAs */}
-          <div className="flex flex-row items-center gap-4">
+          <div className="flex flex-row items-center gap-4 relative z-10 mt-4 md:mt-10 lg:mt-12">
             <Button
               asChild
               size="lg"
-              className="bg-secondary text-white hover:bg-secondary/90 rounded-full shadow-lg hover:shadow-xl transition-all text-sm sm:text-base px-8 py-5 sm:py-6 font-semibold"
+              className="bg-secondary text-white hover:bg-secondary/90 rounded-full shadow-lg hover:shadow-xl transition-all text-sm md:text-base px-5 py-2.5 md:px-8 md:py-5 font-semibold"
             >
               <Link href="/enroll">Inscreva-se Já</Link>
             </Button>
@@ -145,7 +145,7 @@ export function HeroSection() {
               asChild
               size="lg"
               variant="outline"
-              className="border-secondary/60 text-secondary hover:bg-secondary hover:text-white rounded-full text-sm sm:text-base px-8 py-5 sm:py-6 font-semibold transition-all"
+              className="border-secondary/60 text-secondary hover:bg-secondary hover:text-white rounded-full text-sm md:text-base px-5 py-2.5 md:px-8 md:py-5 font-semibold transition-all"
             >
               <Link href="/courses">Ver Cursos</Link>
             </Button>
@@ -153,8 +153,8 @@ export function HeroSection() {
         </div>
 
         {/* Partners Infinite Horizontal Scroll Carousel (Below CTAs, inside slanted panel) */}
-        <div className="max-w-xl w-full border-t border-white/10 pt-6 mt-8 shrink-0">
-          <p className="text-white/40 text-[10px] sm:text-xs uppercase tracking-widest mb-4 font-semibold">
+        <div className="max-w-xl w-full border-t border-white/10 pt-3 shrink-0">
+          <p className="text-white/40 text-[10px] sm:text-xs uppercase tracking-widest mb-2 font-semibold">
             Confiança e Prestígio com Grandes Marcas
           </p>
 
@@ -210,7 +210,7 @@ export function HeroSection() {
       </div>
 
       {/* Sleek Dynamic Slide Pagination Dots */}
-      <div className="absolute bottom-10 right-12 md:right-24 z-20 flex gap-2.5 items-center bg-black/35 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/10 shadow-xl">
+      <div className="hidden sm:flex absolute bottom-10 right-12 md:right-24 z-20 gap-2.5 items-center bg-black/35 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/10 shadow-xl">
         {slides.map((_, index) => (
           <button
             key={index}

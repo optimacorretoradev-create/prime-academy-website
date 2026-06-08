@@ -11,6 +11,7 @@ export function ConditionalChrome({ children }: { children: React.ReactNode }) {
   const isEnrollPage = pathname?.startsWith('/enroll')
   const isAdminArea = pathname?.startsWith('/admin')
   const showPublicChrome = !isDashboardArea && !isEnrollPage && !isAdminArea
+  const showWhatsApp = showPublicChrome && pathname !== '/'
 
   return (
     <>
@@ -23,7 +24,7 @@ export function ConditionalChrome({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       {showPublicChrome && <Footer />}
-      {showPublicChrome && <WhatsAppButton />}
+      {showWhatsApp && <WhatsAppButton />}
     </>
   )
 }

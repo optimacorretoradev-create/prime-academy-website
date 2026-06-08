@@ -68,11 +68,11 @@ export function Header() {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${
       isTransparent 
-        ? 'bg-transparent py-5 border-b border-white/10' 
-        : 'bg-[#312455]/95 border-b border-[#312455]/20 py-3.5 shadow-md'
+        ? 'bg-transparent py-4 border-b border-white/10' 
+        : 'bg-[#312455]/95 border-b border-[#312455]/20 py-4 shadow-md'
     }`}>
       <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
-        <div className="flex items-center justify-between min-h-[60px] md:min-h-0 md:h-12 relative">
+        <div className="flex items-center justify-between min-h-[50px] md:h-20 relative">
           
           {/* Mobile Logo (Visible only on mobile) */}
           <Link href="/" className="md:hidden shrink-0">
@@ -81,21 +81,20 @@ export function Header() {
                 alt="Prime Academy Logo" 
                 width={207}
                 height={56} 
-                className="w-auto h-14" 
+                className="h-30 w-auto object-contain" 
                 style={{ filter: 'brightness(0) invert(1)' }}
-                priority 
               />
           </Link>
 
           {/* Left Side: Logo with white filter */}
-          <Link href="/" className="hidden md:flex items-center gap-2 group shrink-0">
-            <div className="transition-transform group-hover:scale-105 md:-translate-y-2">
+          <Link href="/" className="hidden md:flex items-center group shrink-0">
+            <div className="transition-transform group-hover:scale-105">
               <Image 
                 src="/logo.svg" 
                 alt="Prime Academy Logo" 
                 width={200} 
                 height={54} 
-                className="w-[200px] h-auto md:w-auto md:h-58 transition-all" 
+                className="w-auto h-45 md:h-60 transition-all" 
                 style={{ filter: 'brightness(0) invert(1)' }}
                 priority 
               />

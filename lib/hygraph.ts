@@ -70,7 +70,7 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
 
   if (!response.ok) {
     const errorText = await response.text()
-    console.error(`[Hygraph] API returned status ${response.status}. Body:`, errorText)
+
     throw new Error(`Hygraph API returned status ${response.status}: ${errorText}`)
   }
 
@@ -78,7 +78,7 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
 
   if (json.errors) {
     if (json.data) {
-      console.warn('[Hygraph] Erros parciais na query:', JSON.stringify(json.errors))
+
     } else {
       throw new Error(`Hygraph GraphQL errors: ${JSON.stringify(json.errors)}`)
     }
@@ -175,7 +175,7 @@ export async function getCourses(): Promise<Course[]> {
     const data = await hygraphFetch<{ cursos: any[] }>(GET_CURSOS)
     return data?.cursos?.map(mapCourse) ?? []
   } catch (error) {
-    console.error('[Hygraph] Erro ao obter cursos:', error)
+
     return []
   }
 }
@@ -186,7 +186,7 @@ export async function getCourseBySlug(id: string): Promise<Course | null> {
     const data = await hygraphFetch<{ curso: any }>(GET_COURSE_BY_SLUG, { id })
     return data?.curso ? mapCourse(data.curso) : null
   } catch (error) {
-    console.error(`[Hygraph] Erro ao obter curso "${id}":`, error)
+
     return null
   }
 }
@@ -220,7 +220,7 @@ export async function getGalleryImages(): Promise<GalleryImage[]> {
     const data = await hygraphFetch<{ galleryImages: any[] }>(GET_GALLERY_IMAGES)
     return data?.galleryImages?.length ? sortByDestaque(data.galleryImages.map(mapGalleryImage)) : []
   } catch (error) {
-    console.error('[Gallery] Erro ao obter imagens:', error)
+
     return []
   }
 }

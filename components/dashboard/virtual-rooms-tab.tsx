@@ -303,7 +303,7 @@ export function VirtualRoomsTab({ isInstructor, availableCourses, activeTab: ext
         try {
           return JSON.parse(saved)
         } catch (e) {
-          console.error('Erro ao ler localStorage:', e)
+
         }
       }
     }
@@ -322,7 +322,7 @@ export function VirtualRoomsTab({ isInstructor, availableCourses, activeTab: ext
           setCatalogCourses(all.map(c => ({ id: c.id, name: c.name })))
         }
       } catch (err) {
-        console.warn('[virtual-rooms] Failed to fetch Hygraph courses:', err)
+
       }
     }
     if (isInstructor) {
@@ -339,7 +339,7 @@ export function VirtualRoomsTab({ isInstructor, availableCourses, activeTab: ext
         .order('date', { ascending: true })
 
       if (error) {
-        console.warn('[virtual-rooms] Table public.aulas_online read failed or not created yet:', error)
+
         return
       }
 
@@ -363,7 +363,7 @@ export function VirtualRoomsTab({ isInstructor, availableCourses, activeTab: ext
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(mapped))
       }
     } catch (err) {
-      console.error('[virtual-rooms] Exception while fetching classes from database:', err)
+
     }
   }
 
@@ -471,17 +471,17 @@ export function VirtualRoomsTab({ isInstructor, availableCourses, activeTab: ext
               .insert(notifs)
             
             if (notifInsertError) {
-              console.warn('[virtual-rooms] Failed to insert notifications:', notifInsertError)
+
             }
           }
         } catch (notifErr) {
-          console.warn('[virtual-rooms] Notification broadcast exception:', notifErr)
+
         }
       } else if (error) {
-        console.warn('[virtual-rooms] Failed database INSERT, keeping local fallback:', error)
+
       }
     } catch (err) {
-      console.warn('[virtual-rooms] Exception during database INSERT, keeping local fallback:', err)
+
     }
 
     const updated = [newClass, ...classes]
@@ -514,10 +514,10 @@ export function VirtualRoomsTab({ isInstructor, availableCourses, activeTab: ext
         .eq('id', id)
 
       if (error) {
-        console.warn('[virtual-rooms] Database DELETE failed, doing local-only delete:', error)
+
       }
     } catch (err) {
-      console.warn('[virtual-rooms] Exception during database DELETE:', err)
+
     }
 
     const updated = classes.filter(c => c.id !== id)
