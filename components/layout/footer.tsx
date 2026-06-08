@@ -137,15 +137,12 @@ export function Footer() {
               >
                 <Facebook className="h-4 w-4" />
               </a>
-              <a 
-                href="https://instagram.com/primeacademy" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-white/10 hover:bg-[#8a66a8] text-white p-2 rounded-lg transition-all duration-300"
+              <div 
+                className="bg-white/10 text-white p-2 rounded-lg transition-all duration-300 opacity-50 cursor-not-allowed"
                 aria-label="Instagram"
               >
                 <Instagram className="h-4 w-4" />
-              </a>
+              </div>
               <a 
                 href="https://wa.me/244921394946" 
                 target="_blank" 

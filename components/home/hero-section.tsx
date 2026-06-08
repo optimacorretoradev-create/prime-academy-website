@@ -18,7 +18,7 @@ const slides = [
     title: "Excelência e Prestígio",
     subtitle: "Capacitação de Alto Nível para o Mercado",
     description: "Elevamos o padrão do desenvolvimento profissional. Soluções de formação estratégica para organizações públicas e privadas comprometidas com o sucesso.",
-    image: "/images/hero/hero2.jpeg"
+    image: "/images/hero/hero5 (1).jpeg"
   },
   {
     title: "Liderança Inovadora",
@@ -30,7 +30,7 @@ const slides = [
     title: "Parceiro de Sucesso",
     subtitle: "Formação Executiva de Elite",
     description: "O parceiro ideal para empresas que procuram excelência. Certificação reconhecida, metodologia prática e mentoria especializada para um desenvolvimento de topo.",
-    image: "/images/hero/hero4.jpeg"
+    image: "/images/hero/hero5 (2).jpeg"
   }
 ]
 
