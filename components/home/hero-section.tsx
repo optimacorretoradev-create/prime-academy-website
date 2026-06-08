@@ -54,10 +54,10 @@ export function HeroSection() {
   }, [])
 
   const slidePositions = [
-    'object-center',                  // hero1
-    'object-center md:object-[25%]',  // hero2
+    'object-top',                     // hero1
+    'object-center md:object-[25%]',  // hero5 (1)
     'object-center md:object-[25%]',  // hero3
-    'object-center'                   // hero4
+    'object-center'                   // hero5 (2)
   ]
 
   return (
@@ -84,10 +84,7 @@ export function HeroSection() {
         </AnimatePresence>
         {/* Smooth brand gradient vignette - deep brand purple `#312455` concentrated on the left for text readability, fading quickly to reveal the full image on the right */}
         <div 
-          className="absolute inset-0 z-10" 
-          style={{
-            background: 'linear-gradient(to right, #312455 0%, rgba(49, 36, 85, 0.95) 20%, rgba(49, 36, 85, 0.6) 38%, rgba(49, 36, 85, 0.15) 55%, transparent 75%)'
-          }}
+          className="absolute inset-0 z-10 bg-gradient-to-r from-[#312455]/90 via-[#312455]/60 to-transparent" 
         />
       </div>
 
