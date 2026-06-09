@@ -71,12 +71,7 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
     method: 'POST',
     headers,
     body: JSON.stringify({ query, variables }),
-    next: { 
-      // Cache strategy with Vercel Deploy Hooks:
-      // - Dev/Preview: 1 minute (test update)
-      // - Production: Webhook reconstrói automaticamente
-      revalidate: 60 // 1 minute - temporary test for update delay
-    }
+    cache: 'no-store'
   })
 
   if (!response.ok) {
