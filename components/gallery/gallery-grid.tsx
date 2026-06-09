@@ -19,7 +19,7 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
   
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 8 // Shows 8 compact items at a time to prevent long scroll
+  const itemsPerPage = 10 // Shows 10 compact items at a time to ensure symmetry with grid-cols-5
 
   // ── Ordenação robusta no cliente: destaque:true sempre no índice 0 ──────────
   // Garante posicionamento correto independentemente da ordem retornada pela API.

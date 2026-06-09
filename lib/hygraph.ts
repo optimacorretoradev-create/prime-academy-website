@@ -204,7 +204,7 @@ export async function getCourseBySlug(id: string): Promise<Course | null> {
 
 const GET_GALLERY_IMAGES = `
   query GetGalleryImages {
-    galleryImages {
+    galleryImages(first: 100) {
       id
       imageUrl { url handle }
       caption
