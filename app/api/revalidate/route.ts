@@ -18,6 +18,10 @@ import { NextRequest, NextResponse } from 'next/server'
 const REVALIDATION_TOKEN = process.env.REVALIDATION_SECRET_TOKEN || 'dev-token'
 
 export async function POST(request: NextRequest) {
+  console.log("🔥 API /api/revalidate RECEBEU REQUISIÇÃO", {
+    time: new Date().toISOString(),
+    url: request.url
+  })
   try {
     // Check authentication token if in production
     const token = request.nextUrl.searchParams.get('token')
