@@ -229,6 +229,7 @@ export async function getGalleryImages(): Promise<GalleryImage[]> {
   if (!endpoint) return []
   try {
     const data = await hygraphFetch<{ galleryImages: any[] }>(GET_GALLERY_IMAGES)
+    console.log("🔥 DADOS BRUTOS DA GALERIA:", JSON.stringify(data?.galleryImages, null, 2))
     return data?.galleryImages?.length ? sortByDestaque(data.galleryImages.map(mapGalleryImage)) : []
   } catch (error) {
 
