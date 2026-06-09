@@ -20,6 +20,7 @@ const OFFICIAL_CATEGORIES = [
   'TECNOLOGIAS INOVADORAS',
 ] as const
 
+
 export default async function CoursesPage() {
   // Cursos reais vindos do Hygraph — nenhum dado mockado permitido aqui
   const courses = await getCourses()

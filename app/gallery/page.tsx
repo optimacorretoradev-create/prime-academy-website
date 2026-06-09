@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   description: 'Veja fotos das nossas formaturas, aulas práticas e workshops. Conheça o ambiente de aprendizagem da Prime Academy.',
 }
 
+
 export default async function GalleryPage() {
   const images = await getGalleryImages()
 

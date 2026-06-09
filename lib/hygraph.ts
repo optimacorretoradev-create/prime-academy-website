@@ -67,16 +67,16 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
     headers['Authorization'] = formattedToken
   }
 
+  console.log("🔥 HYGRAPH FETCH EXECUTADO", {
+    time: new Date().toISOString(),
+    endpoint
+  })
+
   const response = await fetch(endpoint, {
     method: 'POST',
     headers,
     body: JSON.stringify({ query, variables }),
-    next: { 
-      // Cache strategy with Vercel Deploy Hooks:
-      // - Dev/Preview: 1 minute (test update)
-      // - Production: Webhook reconstrói automaticamente
-      revalidate: 60 // 1 minute - temporary test for update delay
-    }
+    cache: 'no-store'
   })
 
   if (!response.ok) {
@@ -229,6 +229,7 @@ export async function getGalleryImages(): Promise<GalleryImage[]> {
   if (!endpoint) return []
   try {
     const data = await hygraphFetch<{ galleryImages: any[] }>(GET_GALLERY_IMAGES)
+    console.log("🔥 DADOS BRUTOS DA GALERIA:", JSON.stringify(data?.galleryImages, null, 2))
     return data?.galleryImages?.length ? sortByDestaque(data.galleryImages.map(mapGalleryImage)) : []
   } catch (error) {
 
