@@ -67,6 +67,11 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
     headers['Authorization'] = formattedToken
   }
 
+  console.log("🔥 HYGRAPH FETCH EXECUTADO", {
+    time: new Date().toISOString(),
+    endpoint
+  })
+
   const response = await fetch(endpoint, {
     method: 'POST',
     headers,
