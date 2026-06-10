@@ -135,44 +135,7 @@ export function Header() {
             {/* Desktop Auth Buttons */}
             <div className="hidden lg:flex items-center">
               {!isLoading && user ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="ml-2 gap-2 text-white hover:bg-white/10 rounded-xl cursor-pointer hover:scale-105 transition-all"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-[#8a66a8] flex items-center justify-center text-sm font-bold text-white shadow-xs">
-                        {user.name.charAt(0).toUpperCase()}
-                      </div>
-                      <span className="hidden lg:inline font-bold">{user.name.split(' ')[0]}</span>
-                      <ChevronDown className="h-4 w-4 opacity-70" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <div className="px-2 py-2">
-                      <p className="font-medium text-[#312455]">{user.name}</p>
-                      <p className="text-sm text-muted-foreground">{user.email}</p>
-                    </div>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard" className="cursor-pointer">
-                        <LayoutDashboard className="mr-2 h-4 w-4 text-[#8a66a8]" />
-                        Meu Painel
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard" className="cursor-pointer">
-                        <User className="mr-2 h-4 w-4 text-[#8a66a8]" />
-                        Meu Perfil
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Sair
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                {/* Dropdown removed per request */}
               ) : (
                 <>
                   <Button
