@@ -548,7 +548,13 @@ export function VirtualRoomsTab({ isInstructor, availableCourses, activeTab: ext
   })
 
   return (
-    <div className="space-y-3 pt-[160px] md:pt-0">
+    <div className="space-y-6 pt-[160px] md:pt-0">
+      {/* Welcome Header */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-black text-[#312455]">Aulas Agendadas</h2>
+        <p className="text-sm text-slate-500 font-medium">Tens {filteredClasses.length} aulas programadas.</p>
+      </div>
+
       {/* HEADER SECTION - Minimalist top bar (hidden on mobile, visible on desktop) */}
       <div className="hidden md:flex items-center justify-between border-b border-slate-100 pb-4">
         <div className="flex items-center gap-6">
@@ -785,7 +791,7 @@ export function VirtualRoomsTab({ isInstructor, availableCourses, activeTab: ext
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
             {filteredClasses.map((c) => {
               const isLiveNow = c.type === 'live'
@@ -801,166 +807,103 @@ export function VirtualRoomsTab({ isInstructor, availableCourses, activeTab: ext
                   transition={{ duration: 0.25 }}
                   className="h-full"
                 >
-                  {/* Highly polished consultant-style card with deep rounded corners and absolute pure white layout */}
-                  <Card className="relative overflow-hidden border border-slate-100/80 shadow-xs hover:shadow-md transition-all duration-300 rounded-[2rem] bg-white flex flex-col h-full p-6 space-y-5 justify-between">
+                  <Card className="relative overflow-hidden rounded-[2rem] bg-white/80 backdrop-blur-md border border-white/20 shadow-xl flex flex-col h-full group transition-all duration-300">
                     
-                    {/* Top Row: Initials Avatar + stacked title/subtitle */}
-                    <div className="flex gap-4 items-start">
-                      {/* Initials-based avatar using brand gradient — no photos */}
+                    {/* Header: Avatar, Name, Trash (discrete) */}
+                    <div className="p-6 flex items-start gap-4">
                       <div className="w-12 h-12 rounded-full shrink-0 bg-gradient-to-br from-[#312455] to-[#8a66a8] flex items-center justify-center shadow-sm">
                         <span className="text-white text-xs font-black tracking-tight select-none">
                           {getInitials(c.instructor)}
                         </span>
                       </div>
-
-                      {/* Stacked title / instructor name */}
-                      <div className="space-y-0.5 flex-1 min-w-0">
-                        <h3 className="font-extrabold text-[#312455] text-xs leading-snug tracking-tight line-clamp-2 pr-4">
-                          {c.title}
-                        </h3>
-                        <p className="text-[10px] text-slate-400 font-semibold truncate">
-                          {c.instructor}
-                        </p>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-extrabold text-slate-900 text-sm leading-snug line-clamp-2">{c.title}</h3>
+                        <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">{c.instructor}</p>
                       </div>
-
-                      {/* Instructor Action - Top Right Trash Button with 2-step confirmation */}
+                      
+                      {/* Discrete trash button */}
                       {isInstructor && (
-                        <div className="absolute top-5 right-5 flex items-center gap-1.5 z-10">
-                          <AnimatePresence>
-                            {deleteConfirmId === c.id ? (
-                              <motion.div
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.8 }}
-                                className="flex items-center gap-1 bg-red-50 border border-red-200/50 rounded-lg p-1 shadow-xs"
-                              >
-                                <span className="text-[9px] text-red-600 font-extrabold px-1">Eliminar?</span>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    handleDeleteClass(c.id)
-                                    setDeleteConfirmId(null)
-                                  }}
-                                  className="text-[9px] bg-red-600 hover:bg-red-700 text-white font-black px-1.5 py-0.5 rounded cursor-pointer transition-colors"
-                                >
-                                  Sim
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => setDeleteConfirmId(null)}
-                                  className="text-[9px] bg-slate-200 hover:bg-slate-300 text-slate-700 font-black px-1.5 py-0.5 rounded cursor-pointer transition-colors"
-                                >
-                                  Não
-                                </button>
-                              </motion.div>
-                            ) : (
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          {deleteConfirmId === c.id ? (
+                            <div className="flex items-center gap-1 bg-red-50 border border-red-200/50 rounded-lg p-1 shadow-xs">
+                              <span className="text-[9px] text-red-600 font-extrabold px-1">Eliminar?</span>
                               <button
                                 type="button"
-                                onClick={() => setDeleteConfirmId(c.id)}
-                                className="text-slate-300 hover:text-red-500 transition-colors p-1 hover:bg-slate-50 rounded-lg cursor-pointer"
-                                title="Eliminar Aula"
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </button>
-                            )}
-                          </AnimatePresence>
+                                onClick={() => { handleDeleteClass(c.id); setDeleteConfirmId(null) }}
+                                className="text-[9px] bg-red-600 text-white font-black px-1.5 py-0.5 rounded cursor-pointer"
+                              >Sim</button>
+                              <button
+                                type="button"
+                                onClick={() => setDeleteConfirmId(null)}
+                                className="text-[9px] bg-slate-200 text-slate-700 font-black px-1.5 py-0.5 rounded cursor-pointer"
+                              >Não</button>
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setDeleteConfirmId(c.id)}
+                              className="text-slate-400 hover:text-red-500 p-1 cursor-pointer"
+                              title="Eliminar Aula"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>
 
-                    {/* Section 1: rating-like badge + Location Pin */}
-                    <div className="flex items-center gap-3">
-                      {/* Brand-colored status badge */}
-                      {isLiveNow ? (
-                        <Badge className="bg-red-500 text-white font-extrabold text-[8px] tracking-widest uppercase border-none px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                          <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-                          ONLINE
-                        </Badge>
-                      ) : (
-                        <Badge className="bg-amber-500 text-white font-bold text-[8px] tracking-widest uppercase border-none px-2.5 py-0.5 rounded-full flex items-center gap-0.5">
-                          PRESENCIAL
-                        </Badge>
-                      )}
-
-                      {/* Location details (pin + text) - simplified, generic Virtual Room naming */}
-                      <div className="flex items-center gap-1 text-[10px] text-slate-400 font-bold truncate">
-                        {isPresencial ? (
-                          <>
-                            <MapPin className="h-3 w-3 text-amber-500 shrink-0" />
-                            <span className="truncate">{c.room}, {c.address}</span>
-                          </>
+                    {/* Content: Course, Duration, Status (with pulsing dot) */}
+                    <div className="px-6 pb-2 space-y-3">
+                      <div className="flex items-center gap-2">
+                        {isLiveNow ? (
+                          <Badge className="bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 font-bold text-[10px] uppercase tracking-wide px-3 py-1 rounded-full flex items-center gap-1.5 relative">
+                            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping absolute" />
+                            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                            Online
+                          </Badge>
                         ) : (
-                          <>
-                            <Monitor className="h-3 w-3 text-[#8a66a8] shrink-0" />
-                            <span>Sala Virtual</span>
-                          </>
+                          <Badge className="bg-amber-500/10 text-amber-600 border border-amber-500/20 font-bold text-[10px] uppercase tracking-wide px-3 py-1 rounded-full">
+                            Presencial
+                          </Badge>
                         )}
                       </div>
-                    </div>
-
-                    {/* Section 2: Info lines */}
-                    <div className="space-y-1 text-[10px] text-slate-500 font-medium pt-1 border-t border-slate-50">
-                      <div className="flex items-center gap-1.5">
-                        <BookOpen className="h-3.5 w-3.5 text-[#8a66a8]/70" />
-                        <span>Curso: <strong className="text-[#312455] font-bold">{c.courseName}</strong></span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <Clock className="h-3.5 w-3.5 text-[#8a66a8]/70" />
-                        <span>{c.duration || (isPresencial ? '2h de aula' : '1h 30m de aula')}</span>
+                      <div className="text-[12px] text-slate-600 font-semibold">
+                        {c.courseName} | {c.duration || '60 min'}
                       </div>
                     </div>
 
-                    {/* Section 3: Pills / Tags - just 'Online' or 'Presencial', no others */}
-                    <div className="flex gap-1.5 flex-wrap">
-                      {c.tags.map((tag, idx) => (
-                        <span
-                          key={idx}
-                          className="px-2.5 py-0.8 rounded-full text-[9px] font-bold bg-slate-50 text-slate-500 border border-slate-200/30 tracking-wide"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Footer Row (Split) */}
-                    <div className="flex items-center justify-between pt-3 border-t border-slate-100/80 gap-3">
-                      {/* Left: Schedule stack — date formatted in Portuguese */}
+                    {/* Schedule Highlight */}
+                    <div className="mx-6 my-4 bg-purple-50 rounded-2xl p-4 flex items-center justify-between">
                       <div className="flex flex-col">
-                        <span className="text-xs font-black text-[#312455] tracking-tight leading-none mb-1">
-                          {c.time}
-                        </span>
-                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-none">
-                          {formatDate(c.date)}
-                        </span>
+                        <span className="text-purple-900 font-bold text-lg leading-none">{c.time}</span>
+                        <span className="text-purple-700 text-xs font-semibold uppercase tracking-wider mt-1">{formatDate(c.date)}</span>
                       </div>
+                    </div>
 
-                      {/* Right: Rounded Brand Action button - no icons at all, simplified copy */}
+                    {/* Footer: Action button gradient */}
+                    <div className="p-6 pt-0 mt-auto">
                       {isInstructor ? (
                         <Button
-                          asChild
-                          className="bg-[#312455] hover:bg-[#8a66a8] text-white rounded-2xl h-9.5 text-[10px] font-black uppercase tracking-wider px-5 shadow-xs cursor-pointer transition-all duration-300"
+                          onClick={() => {
+                            if (c.type === 'presencial') {
+                              toast.info('Funcionalidade de gestão de presenças em breve.')
+                            } else if (c.meetingUrl) {
+                              window.open(c.meetingUrl, '_blank')
+                            }
+                          }}
+                          className="w-full bg-gradient-to-r from-[#312455] to-[#8a66a8] hover:from-[#4a347c] hover:to-[#9f7bbd] text-white rounded-2xl h-12 font-bold text-sm shadow-md shadow-purple-950/20"
                         >
-                          <a href={c.meetingUrl || '#'} target="_blank" rel="noopener noreferrer">
-                            Iniciar Aula
-                          </a>
+                          {c.type === 'presencial' ? 'GERIR PRESENÇAS' : 'INICIAR AULA'}
                         </Button>
                       ) : (
                         <>
                           {isLiveNow ? (
-                            <Button
-                              asChild
-                              className="bg-[#312455] hover:bg-[#8a66a8] text-white rounded-2xl h-9.5 text-[10px] font-black uppercase tracking-wider px-5 shadow-xs cursor-pointer transition-all duration-300"
-                            >
-                              <a href={c.meetingUrl} target="_blank" rel="noopener noreferrer">
-                                Assistir Aula
-                              </a>
+                            <Button asChild className="w-full bg-gradient-to-r from-[#312455] to-[#8a66a8] hover:from-[#4a347c] hover:to-[#9f7bbd] text-white rounded-2xl h-12 font-bold text-sm shadow-md shadow-purple-950/20">
+                              <a href={c.meetingUrl} target="_blank" rel="noopener noreferrer">ASSISTIR AULA</a>
                             </Button>
                           ) : (
-                            <Button
-                              onClick={() => setSelectedMapClass(c)}
-                              className="bg-[#312455] hover:bg-[#8a66a8] text-white rounded-2xl h-9.5 text-[10px] font-black uppercase tracking-wider px-5 shadow-xs cursor-pointer transition-all duration-300"
-                            >
-                              Ver Direções
+                            <Button onClick={() => setSelectedMapClass(c)} className="w-full bg-gradient-to-r from-[#312455] to-[#8a66a8] hover:from-[#4a347c] hover:to-[#9f7bbd] text-white rounded-2xl h-12 font-bold text-sm shadow-md shadow-purple-950/20">
+                              VER DIREÇÕES
                             </Button>
                           )}
                         </>

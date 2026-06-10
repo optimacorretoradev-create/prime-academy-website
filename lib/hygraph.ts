@@ -67,10 +67,7 @@ async function hygraphFetch<T>(query: string, variables?: Record<string, any>): 
     headers['Authorization'] = formattedToken
   }
 
-  console.log("🔥 HYGRAPH FETCH EXECUTADO", {
-    time: new Date().toISOString(),
-    endpoint
-  })
+
 
   const response = await fetch(endpoint, {
     method: 'POST',
@@ -229,7 +226,6 @@ export async function getGalleryImages(): Promise<GalleryImage[]> {
   if (!endpoint) return []
   try {
     const data = await hygraphFetch<{ galleryImages: any[] }>(GET_GALLERY_IMAGES)
-    console.log("🔥 DADOS BRUTOS DA GALERIA:", JSON.stringify(data?.galleryImages, null, 2))
     return data?.galleryImages?.length ? sortByDestaque(data.galleryImages.map(mapGalleryImage)) : []
   } catch (error) {
 

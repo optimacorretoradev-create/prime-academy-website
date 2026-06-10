@@ -89,9 +89,6 @@ export async function POST(request: NextRequest) {
 
 
     } else {
-      console.warn(
-        'EmailJS environment variables are not configured. Simulating success in development.'
-      )
       // Simulate network delay
       await new Promise((resolve) => setTimeout(resolve, 1000))
     }

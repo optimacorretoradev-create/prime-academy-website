@@ -51,7 +51,6 @@ export async function PATCH(
     return NextResponse.json({ ok: true })
   } catch (e: any) {
     const detailedError = e && typeof e === 'object' ? JSON.stringify(e, Object.getOwnPropertyNames(e)) : String(e);
-    console.error("[PATCH Enrollment Error]:", detailedError);
     
     return NextResponse.json({ error: detailedError }, { status: 500 });
   }
