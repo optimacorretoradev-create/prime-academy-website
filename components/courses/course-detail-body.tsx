@@ -89,14 +89,6 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
       <div className="relative z-10 container mx-auto px-4">
         {/* Conteúdo da Hero */}
         <div className="mt-2 pt-6">
-          <div className="flex flex-wrap items-center gap-3 mb-6">
-            <span className="bg-[#8a66a8] text-white font-bold text-xs tracking-wider uppercase py-2 px-5 rounded-full shadow-lg">
-              {course.category}
-            </span>
-            <span className="bg-white/10 backdrop-blur-sm text-white/90 font-semibold text-xs tracking-wider uppercase py-2 px-5 rounded-full border border-white/10">
-              {course.online ? 'Online' : 'Presencial'}
-            </span>
-          </div>
           <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight max-w-3xl">
             {course.name}
           </h1>
