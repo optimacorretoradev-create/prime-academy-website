@@ -201,7 +201,7 @@ export function ContactForm() {
           </>
         ) : (
           <>
-            <span>Enviar Mensagem</span>
+            <span>Enviar pedido</span>
             <span className="ml-1.5">&gt;</span>
           </>
         )}

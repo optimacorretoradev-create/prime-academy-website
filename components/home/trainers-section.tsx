@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 
@@ -39,6 +40,21 @@ export function TrainersSection() {
       name: "Eduardo Chiloya",
       role: "Tecnologias Inovadoras & IA",
       image: "/images/trainers/EduardoChiloya.jpeg"
+    },
+    {
+      name: "Regina Mestre",
+      role: "Secretariado Executivo & Gestão",
+      image: "/images/trainers/Regina Mestre.jpeg"
+    },
+    {
+      name: "Silvestre Jorge Pascoal",
+      role: "Tecnologias Inovadoras & IA",
+      image: "/images/trainers/Silvestre Jorge Pascoal.jpeg"
+    },
+    {
+      name: "Fábio Sebastião",
+      role: "Comunicação & Análise Financeira",
+      image: "/images/trainers/Fábio Sebastião.jpeg"
     }
   ]
 
@@ -68,6 +84,18 @@ export function TrainersSection() {
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#312455] tracking-tight uppercase leading-tight max-w-3xl mx-auto">
             FORMADORES DE EXCELÊNCIA <span className="text-[#8a66a8]">NACIONAIS E INTERNACIONAIS</span>
           </h2>
+          <p className="mt-4 text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
+            Todos os nossos formadores têm um percurso profissional comprovado nas áreas que ministram. Na Prime Academy, experiência real é requisito — não excepção.
+          </p>
+          <Link
+            href="/about#corpo-docente"
+            className="inline-flex items-center gap-2 bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-6 py-3 rounded-full transition-colors shadow-md hover:shadow-lg mt-6"
+          >
+            Ver todos os formadores
+            <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
         </motion.div>
       </div>
 

@@ -65,7 +65,7 @@ export function AdminUserDetailPanel({
         </div>
         <h2 className="text-base sm:text-xl font-black text-[#312455]">{perfil.nome}</h2>
         <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">
-          {perfil.cargo === 'admin' ? 'Administrador Prime Academy' : 'Aluno Prime Academy'}
+          {perfil.cargo === 'admin' ? 'Administrador Prime Academy' : 'Formando Prime Academy'}
         </p>
       </div>
 
@@ -87,7 +87,7 @@ export function AdminUserDetailPanel({
           <dl className="grid grid-cols-2 gap-x-4 gap-y-2 sm:gap-y-3 text-xs sm:text-sm">
             <div>
               <dt className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Cargo</dt>
-              <dd className="font-semibold text-[#312455] mt-0.5 capitalize">{perfil.cargo}</dd>
+              <dd className="font-semibold text-[#312455] mt-0.5 capitalize">{perfil.cargo === 'aluno' ? 'formando' : perfil.cargo}</dd>
             </div>
             <div>
               <dt className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Estado</dt>

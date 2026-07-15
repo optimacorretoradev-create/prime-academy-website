@@ -41,7 +41,7 @@ export function LoginRightPanel() {
               </div>
               <div>
                 <h4 className="font-bold text-white text-sm">Formação Executiva Flexível</h4>
-                <p className="text-slate-300 text-xs mt-0.5">Mais de 50 cursos estruturados 100% online.</p>
+                <p className="text-slate-300 text-xs mt-0.5">Cursos estruturados em formato híbrido.</p>
               </div>
             </div>
             <div className="flex items-center gap-4 bg-white/[0.04] border border-white/[0.08] p-4 rounded-[1.25rem] backdrop-blur-md hover:bg-white/[0.08] hover:border-white/10 transition-all duration-300">
@@ -50,7 +50,7 @@ export function LoginRightPanel() {
               </div>
               <div>
                 <h4 className="font-bold text-white text-sm">Certificação Reconhecida</h4>
-                <p className="text-slate-300 text-xs mt-0.5">Adicione valor curricular com diplomas certificados.</p>
+                <p className="text-slate-300 text-xs mt-0.5">Reconhecimento nacional e internacional.</p>
               </div>
             </div>
             <div className="flex items-center gap-4 bg-white/[0.04] border border-white/[0.08] p-4 rounded-[1.25rem] backdrop-blur-md hover:bg-white/[0.08] hover:border-white/10 transition-all duration-300">

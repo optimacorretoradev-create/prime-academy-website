@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 import { Loader2, CheckCircle } from 'lucide-react'
@@ -24,6 +25,7 @@ export function PreEnrollmentModal({ course, isOpen, onClose }: PreEnrollmentMod
     telefone: '',
     empresa: '',
     modalidade: 'online',
+    notas: '',
   })
 
   if (!course) return null
@@ -54,7 +56,7 @@ export function PreEnrollmentModal({ course, isOpen, onClose }: PreEnrollmentMod
           email: formData.email,
           phone: formData.telefone,
           course: course.name,
-          message: `Modalidade: ${formData.modalidade}${formData.empresa ? `\nEmpresa: ${formData.empresa}` : ''}`,
+          message: `Modalidade: ${formData.modalidade}${formData.empresa ? `\nEmpresa: ${formData.empresa}` : ''}${formData.notas ? `\n\nNotas:\n${formData.notas}` : ''}`,
         },
         publicKey
       )
@@ -63,7 +65,7 @@ export function PreEnrollmentModal({ course, isOpen, onClose }: PreEnrollmentMod
         description: `Entraremos em contacto brevemente sobre a modalidade ${formData.modalidade}.`
       })
       onClose()
-      setFormData({ nome: '', email: '', telefone: '', empresa: '', modalidade: 'online' })
+      setFormData({ nome: '', email: '', telefone: '', empresa: '', modalidade: 'online', notas: '' })
     } catch (err) {
       toast.error('Erro ao enviar', {
         description: 'Ocorreu um erro ao enviar a sua pré-inscrição. Tente novamente mais tarde.'
@@ -175,6 +177,17 @@ export function PreEnrollmentModal({ course, isOpen, onClose }: PreEnrollmentMod
                 value={formData.empresa}
                 onChange={(e) => setFormData({...formData, empresa: e.target.value})}
                 className="bg-slate-50 border-slate-200 rounded-xl h-11 focus:ring-2 focus:ring-[#312455]/20 focus:border-[#312455]"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="notas" className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Notas ou Observações (Opcional)</Label>
+              <Textarea
+                id="notas"
+                placeholder="Ex: Prefiro turma da manhã, formação in company, etc."
+                value={formData.notas}
+                onChange={(e) => setFormData({...formData, notas: e.target.value})}
+                className="bg-slate-50 border-slate-200 rounded-xl min-h-[80px] focus:ring-2 focus:ring-[#312455]/20 focus:border-[#312455] resize-none"
               />
             </div>
           </div>
