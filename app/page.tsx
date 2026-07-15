@@ -2,6 +2,10 @@ import { HeroSection } from '@/components/home/hero-section'
 import { HowItWorksSection } from '@/components/home/how-it-works-section'
 import { WhyPrimeSection } from '@/components/home/why-prime-section'
 import { StatsStrip } from '@/components/home/stats-strip'
+import { AboutSection } from '@/components/home/about-section'
+import { ChallengesSection } from '@/components/home/challenges-section'
+import { OfertaFormativa } from '@/components/home/oferta-formativa'
+import { DiferentesSection } from '@/components/home/diferentes-section'
 import { FeaturesSection } from '@/components/home/features-section'
 import { PillarsSection } from '@/components/home/pillars-section'
 import { CoursesSection } from '@/components/home/courses-section'
@@ -15,6 +19,10 @@ export default function HomePage() {
     <>
       <HeroSection />
       <StatsStrip />
+      <AboutSection />
+      <ChallengesSection />
+      <OfertaFormativa />
+      <DiferentesSection />
       <PillarsSection />
       <WhyPrimeSection />
       <CoursesSection />

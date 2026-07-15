@@ -19,10 +19,9 @@ import {
 import { usePathname } from 'next/navigation'
 
 const navLinks = [
-  { href: '/', label: 'Início' },
-  { href: '/about', label: 'Sobre' },
-  { href: '/courses', label: 'Cursos' },
-  { href: '/gallery', label: 'Galeria' },
+  { href: '/about', label: 'Sobre a Prime' },
+  { href: '/courses', label: 'Formação' },
+  { href: '/gallery', label: 'Galeria de Projectos' },
   { href: '/contact', label: 'Contacto' },
 ]
 
@@ -68,13 +67,22 @@ export function Header() {
   const isTransparent = !scrolled
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-transform duration-300 ease-in-out ${
-      isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
-    } ${
-      isTransparent 
-        ? 'bg-transparent py-4 border-b border-white/10' 
-        : 'bg-[#312455]/95 border-b border-[#312455]/20 py-4 shadow-md'
-    }`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 w-full bg-[#312455] border-b border-[#312455]/20 py-4 shadow-md transition-transform duration-300 ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+      {/* Desktop Logo (Far Left Edge) */}
+      <Link href="/" className="hidden lg:flex items-center group shrink-0 absolute left-6 xl:left-10 inset-y-0 z-20">
+        <div className="transition-transform group-hover:scale-105">
+          <Image 
+            src="/logo.svg" 
+            alt="Prime Academy Logo" 
+            width={200} 
+            height={54} 
+            className="w-auto h-45 md:h-60 transition-all" 
+            style={{ filter: 'brightness(0) invert(1)' }}
+            priority 
+          />
+        </div>
+      </Link>
+
       <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between min-h-[50px] md:h-20 relative">
           
@@ -88,21 +96,6 @@ export function Header() {
                 className="h-30 w-auto object-contain" 
                 style={{ filter: 'brightness(0) invert(1)' }}
               />
-          </Link>
-
-          {/* Left Side: Logo with white filter */}
-          <Link href="/" className="hidden lg:flex items-center group shrink-0">
-            <div className="transition-transform group-hover:scale-105">
-              <Image 
-                src="/logo.svg" 
-                alt="Prime Academy Logo" 
-                width={200} 
-                height={54} 
-                className="w-auto h-45 md:h-60 transition-all" 
-                style={{ filter: 'brightness(0) invert(1)' }}
-                priority 
-              />
-            </div>
           </Link>
 
           {/* Center Side: Desktop Navigation (white links with improved contrast & hover) */}
@@ -135,7 +128,12 @@ export function Header() {
             {/* Desktop Auth Buttons */}
             <div className="hidden lg:flex items-center">
               {!isLoading && user ? (
-                {/* Dropdown removed per request */}
+                <Button
+                  asChild
+                  className="bg-[#8a66a8] text-white hover:bg-[#8a66a8]/90 rounded-full shadow-md ml-2 font-bold px-5 text-sm cursor-pointer border border-[#8a66a8]/20 hover:scale-105 transition-all"
+                >
+                  <Link href="/dashboard">Meu Painel</Link>
+                </Button>
               ) : (
                 <>
                   <Button

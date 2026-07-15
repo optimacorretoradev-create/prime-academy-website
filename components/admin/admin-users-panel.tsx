@@ -266,7 +266,7 @@ export function AdminUsersPanel({
                           ? isSelected ? 'bg-white/20 text-white' : 'bg-red-50 text-red-600 border border-red-250/30'
                           : isSelected ? 'bg-white/20 text-white' : 'bg-blue-50 text-blue-600 border border-blue-250/30'
                       }`}>
-                        {perfil.cargo === 'aluno' ? 'Formando' : perfil.cargo}
+                        {perfil.cargo === 'aluno' ? 'formando' : perfil.cargo}
                       </span>
                       <span className={`text-[9px] font-mono ${isSelected ? 'text-white/60' : 'text-slate-400'}`}>
                         {perfil.id.slice(0, 8).toUpperCase()}
@@ -359,7 +359,7 @@ export function AdminUsersPanel({
                           isSelected ? 'text-white/90' : 'text-slate-600'
                         }`}
                       >
-                        {perfil.cargo === 'aluno' ? 'Formando' : perfil.cargo}
+                        {perfil.cargo === 'aluno' ? 'formando' : perfil.cargo}
                       </td>
                       <td
                         className={`p-3 text-xs hidden lg:table-cell ${

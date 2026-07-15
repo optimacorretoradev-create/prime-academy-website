@@ -5,7 +5,7 @@ import { SafeImage } from '@/components/ui/safe-image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { BookOpen, Clock, Play, Search } from 'lucide-react'
+import { BookOpen, Clock, Play, Search, BadgeCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { Course } from '@/lib/hygraph'
 import { getTrainerForCourse } from '@/lib/course-trainers'
@@ -81,7 +81,7 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
     <div className="min-h-screen bg-slate-50">
 
       {/* ── HERO (Restaurado para cor original, com barra de pesquisa glassmorphic integrada) ── */}
-      <section className="relative pt-32 pb-24 md:pt-40 md:pb-32 overflow-hidden bg-[#312455]">
+      <section className="relative pt-28 pb-12 lg:pt-40 lg:pb-24 overflow-hidden bg-[#312455]">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1920&q=80)' }}
@@ -91,19 +91,27 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-[#8a66a8]/5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 
         <div className="container mx-auto px-4 text-center relative z-10 max-w-5xl">
+          <motion.span
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="text-white/60 font-bold text-xs uppercase tracking-widest block mb-3"
+          >
+            FORMAÇÃO, PROGRAMAS, EVENTOS, CONSULTORIA
+          </motion.span>
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6"
+            className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight mb-4 max-w-3xl mx-auto"
           >
-            Nossos Cursos
+            Um mar de oportunidades à sua espera
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-white/90 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed mb-10 text-pretty"
+            className="text-slate-300 max-w-2xl mx-auto text-base md:text-lg font-light leading-relaxed mt-4 mb-10 text-pretty"
           >
             Descubra a formação ideal para impulsionar a sua carreira. Oferecemos cursos práticos
             com certificação reconhecida pelo mercado angolano.
@@ -169,6 +177,11 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                      {/* Badge Certificação Flutuante */}
+                      <div className="absolute top-3 left-3 z-10 flex items-center gap-1 bg-emerald-600 text-white font-bold px-2.5 py-1 rounded-md text-[10px] shadow-lg">
+                        <BadgeCheck className="w-3 h-3" />
+                        Certificação
+                      </div>
                     </div>
 
                     {/* Preço */}

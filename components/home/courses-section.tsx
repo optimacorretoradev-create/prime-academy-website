@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowRight, Clock, Award, MapPin } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { Badge } from '@/components/ui/badge'
 
 const categories = [
   {
@@ -37,9 +36,9 @@ export function CoursesSection() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div className="space-y-4">
-            <Badge className="bg-[#312455] text-white border-none px-4 py-1.5 uppercase tracking-widest text-[10px] font-bold rounded-full">
+            <span className="text-[11px] sm:text-xs font-bold text-[#8a66a8] uppercase tracking-[0.2em]">
               FORMAÇÃO DE EXCELÊNCIA
-            </Badge>
+            </span>
             <h2 className="text-3xl md:text-5xl font-extrabold text-[#312455] tracking-tight uppercase">
               CURSOS EM DESTAQUE
             </h2>

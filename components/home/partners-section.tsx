@@ -31,13 +31,13 @@ export function PartnersSection() {
         <div className="text-center mb-10 space-y-2">
           <ScrollReveal delay={0.05} direction="up" distance={15}>
             <h2 className="text-xl md:text-2xl font-extrabold text-primary uppercase tracking-wider">
-              Clientes e Parceiros
+              CLIENTES E PARCEIROS
             </h2>
           </ScrollReveal>
 
           <ScrollReveal delay={0.15} direction="up" distance={15}>
             <p className="text-muted-foreground text-xs font-light">
-              Colaboramos com os líderes do mercado angolano e internacional
+              Empresas públicas e privadas, organismos do Estado e instituições internacionais com equipas formadas pela Prime Academy.
             </p>
           </ScrollReveal>
 

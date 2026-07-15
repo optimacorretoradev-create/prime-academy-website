@@ -176,7 +176,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
           </div>
           <div>
             <p className={`text-xs ${isDashboard ? 'text-slate-500' : 'text-muted-foreground'}`}>Certificação</p>
-            <p className={`font-semibold text-sm ${isDashboard ? 'text-[#312455]' : ''}`}>Reconhecida</p>
+            <p className={`font-semibold text-sm ${isDashboard ? 'text-[#312455]' : ''}`}>Reconhecimento Nacional e Internacional</p>
           </div>
         </div>
       </div>
