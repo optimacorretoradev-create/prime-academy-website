@@ -323,6 +323,17 @@ export function OfertaFormativa() {
               />
             ))}
           </div>
+
+          {/* CTA Geral — fora do grid de colunas */}
+          <div className="flex justify-center mt-14 pb-10">
+            <Link
+              href="/contact"
+              className="w-full max-w-xs sm:w-auto inline-flex items-center justify-center gap-2 bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-6 py-3 rounded-full transition-colors shadow-md"
+            >
+              Pedir Orçamento
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
 
       </div>

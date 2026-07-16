@@ -1,3 +1,4 @@
+import { getCourses } from '@/lib/hygraph'
 import { HeroSection } from '@/components/home/hero-section'
 import { HowItWorksSection } from '@/components/home/how-it-works-section'
 import { WhyPrimeSection } from '@/components/home/why-prime-section'
@@ -14,10 +15,12 @@ import { TestimonialsSection } from '@/components/home/testimonials-section'
 import { PartnersSection } from '@/components/home/partners-section'
 import { CtaSection } from '@/components/home/cta-section'
 
-export default function HomePage() {
+export default async function HomePage() {
+  const courses = await getCourses()
+
   return (
     <>
-      <HeroSection />
+      <HeroSection featuredCourses={courses} />
       <StatsStrip />
       <AboutSection />
       <ChallengesSection />

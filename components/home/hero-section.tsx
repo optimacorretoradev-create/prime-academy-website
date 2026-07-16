@@ -2,10 +2,11 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Star } from 'lucide-react'
+import { Star, BadgeCheck } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import type { Course } from '@/lib/hygraph'
 
 const slides = [
   { image: "/images/hero/hero1.jpeg" },
@@ -13,18 +14,110 @@ const slides = [
   { image: "/images/hero/hero3.jpeg" },
 ]
 
-const featuredCourse = {
-  title: "Secretariado Executivo Digital e Novas Tecnologias",
-  metadata: [
-    { value: "2 Dias / 16 Horas", label: "Carga Horária" },
-    { value: "Avançado", label: "Nível do Programa" },
-    { value: "Presencial", label: "Regime de Aulas" },
-  ],
+// Fallback used only when Hygraph returns no courses
+const FALLBACK_COURSES = [
+  {
+    id: 'f1',
+    title: "Secretariado Executivo Digital e Novas Tecnologias",
+    duration: "2 Dias / 16 Horas",
+    level: "Avançado",
+    regime: "Híbrido",
+  },
+  {
+    id: 'f2',
+    title: "Gestão de Documentos e Arquivos Electrónicos",
+    duration: "2 Dias / 14 Horas",
+    level: "Intermédio",
+    regime: "Híbrido",
+  },
+  {
+    id: 'f3',
+    title: "Oratória, Persuasão e Comunicação de Impacto",
+    duration: "1 Dia / 8 Horas",
+    level: "Executivo",
+    regime: "Híbrido",
+  },
+]
+
+interface FeaturedCardProps {
+  title: string
+  duration: string
+  level: string
+  regime: string
 }
 
-export function HeroSection() {
+function FeaturedCard({ title, duration, level, regime }: FeaturedCardProps) {
+  return (
+    <>
+      {/* Card Header */}
+      <div className="bg-[#312455]/80 px-4 pt-4 pb-3">
+        <span className="text-[10px] tracking-wider bg-white/20 px-2 py-0.5 rounded-full uppercase inline-block font-bold text-white">
+          <Star className="h-3 w-3 inline-block mr-1 fill-secondary text-secondary" />
+          EM DESTAQUE
+        </span>
+        <h3 className="text-base font-bold text-white mt-2 leading-snug">{title}</h3>
+      </div>
+
+      {/* Card Body - Metadata Grid */}
+      <div className="grid grid-cols-2 gap-3 p-4">
+        <div>
+          <p className="text-sm font-semibold text-white">{duration}</p>
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Carga Horária</p>
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-white">{regime}</p>
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Modalidade</p>
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-white">{level}</p>
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Nível do Programa</p>
+        </div>
+        <div className="flex items-start gap-1.5">
+          <BadgeCheck className="h-4 w-4 text-green-400 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-semibold text-white">Incluído</p>
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Certificado</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Card Footer */}
+      <div className="border-t border-white/10 pt-3 flex items-center justify-between gap-2 px-4 pb-4">
+        <div className="flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-pulse" />
+          <span className="text-xs font-semibold text-purple-300">Vagas Limitadas</span>
+        </div>
+        <Link
+          href="/enroll"
+          className="bg-secondary hover:bg-secondary/90 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all"
+        >
+          Inscrever-me
+        </Link>
+      </div>
+    </>
+  )
+}
+
+interface HeroSectionProps {
+  featuredCourses?: Course[]
+}
+
+export function HeroSection({ featuredCourses = [] }: HeroSectionProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [contentToggle, setContentToggle] = useState(true)
+
+  // Derive the featured course from real courses or fallback
+  const coursePool = featuredCourses.length > 0
+    ? featuredCourses.map(c => ({
+        id: c.id,
+        title: c.name,
+        duration: c.duration || '—',
+        level: c.level || '—',
+        regime: c.online ? 'Online' : 'Híbrido',
+      }))
+    : FALLBACK_COURSES
+
+  const activeCourse = coursePool[currentSlide % coursePool.length]
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -33,6 +126,7 @@ export function HeroSection() {
     }, 6000)
     return () => clearInterval(timer)
   }, [])
+
 
   const imageObjectPosition = 'object-cover object-top'
 
@@ -98,7 +192,7 @@ export function HeroSection() {
                   variant="outline"
                   className="border-secondary/60 text-secondary hover:bg-secondary hover:text-white rounded-full text-xs md:text-base px-4 py-2.5 md:px-8 md:py-5 font-semibold transition-all w-fit"
                 >
-                  <Link href="/courses">Explorar o Portfólio</Link>
+                  <Link href="/gallery">Explorar o Portfólio</Link>
                 </Button>
                 <Button
                   asChild
@@ -152,7 +246,7 @@ export function HeroSection() {
                         variant="outline"
                         className="border-secondary/60 text-secondary hover:bg-secondary hover:text-white rounded-full text-xs md:text-base px-4 py-2.5 md:px-8 md:py-5 font-semibold transition-all w-fit"
                       >
-                        <Link href="/courses">Explorar o Portfólio</Link>
+                        <Link href="/gallery">Explorar o Portfólio</Link>
                       </Button>
                       <Button
                         asChild
@@ -174,41 +268,13 @@ export function HeroSection() {
                   className="w-full flex flex-col items-start"
                 >
                   {/* Mobile Featured Card */}
-                  <div className="w-full max-w-[360px] mb-4 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl overflow-hidden flex flex-col flex">
-                    {/* Card Header */}
-                    <div className="bg-[#312455]/80 px-4 pt-4 pb-3">
-                      <span className="text-[10px] tracking-wider bg-white/20 px-2 py-0.5 rounded-full uppercase inline-block font-bold text-white">
-                        <Star className="h-3 w-3 inline-block mr-1 fill-secondary text-secondary" />
-                        EM DESTAQUE
-                      </span>
-                      <h3 className="text-base font-bold text-white mt-2 leading-snug">
-                        {featuredCourse.title}
-                      </h3>
-                    </div>
-
-                    {/* Card Body - Metadata Grid */}
-                    <div className="grid grid-cols-2 gap-3 p-4">
-                      {featuredCourse.metadata.map((item, idx) => (
-                        <div key={idx}>
-                          <p className="text-sm font-semibold text-white">{item.value}</p>
-                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{item.label}</p>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Card Footer */}
-                    <div className="border-t border-white/10 pt-3 flex items-center justify-between gap-2 px-4 pb-4">
-                      <div className="flex items-center gap-1.5">
-                        <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-pulse" />
-                        <span className="text-xs font-semibold text-purple-300">Vagas Limitadas</span>
-                      </div>
-                      <Link
-                        href="/enroll"
-                        className="bg-secondary hover:bg-secondary/90 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all"
-                      >
-                        Inscrever-me
-                      </Link>
-                    </div>
+                  <div className="w-full max-w-[360px] mb-4 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl overflow-hidden flex flex-col">
+                    <FeaturedCard
+                      title={activeCourse.title}
+                      duration={activeCourse.duration}
+                      level={activeCourse.level}
+                      regime={activeCourse.regime}
+                    />
                   </div>
                 </motion.div>
               )}
@@ -221,40 +287,12 @@ export function HeroSection() {
         {/* Right Column - Featured Card */}
         <div className="hidden lg:flex lg:col-span-5 lg:items-end lg:justify-start">
           <div className="w-full max-w-[360px] mb-24 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl overflow-hidden">
-            {/* Card Header */}
-            <div className="bg-[#312455]/80 px-4 pt-4 pb-3">
-              <span className="text-[10px] tracking-wider bg-white/20 px-2 py-0.5 rounded-full uppercase inline-block font-bold text-white">
-                <Star className="h-3 w-3 inline-block mr-1 fill-secondary text-secondary" />
-                EM DESTAQUE
-              </span>
-              <h3 className="text-base font-bold text-white mt-2 leading-snug">
-                {featuredCourse.title}
-              </h3>
-            </div>
-
-            {/* Card Body - Metadata Grid */}
-            <div className="grid grid-cols-2 gap-3 p-4">
-              {featuredCourse.metadata.map((item, idx) => (
-                <div key={idx}>
-                  <p className="text-sm font-semibold text-white">{item.value}</p>
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{item.label}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Card Footer */}
-            <div className="border-t border-white/10 pt-3 flex items-center justify-between gap-2 px-4 pb-4">
-              <div className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-pulse" />
-                <span className="text-xs font-semibold text-purple-300">Vagas Limitadas</span>
-              </div>
-              <Link
-                href="/enroll"
-                className="bg-secondary hover:bg-secondary/90 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all"
-              >
-                Inscrever-me
-              </Link>
-            </div>
+            <FeaturedCard
+              title={activeCourse.title}
+              duration={activeCourse.duration}
+              level={activeCourse.level}
+              regime={activeCourse.regime}
+            />
           </div>
         </div>
       </div>

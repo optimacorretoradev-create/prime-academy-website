@@ -4,15 +4,15 @@ import { ScrollReveal } from '@/components/ui/scroll-reveal'
 
 const partners = [
   { name: 'Governo de Angola', logo: '/images/logos/logo1.png' },
+  { name: 'Polícia Nacional', logo: '/images/logos/logo10.png' },
+  { name: 'CISP', logo: '/images/logos/logo9.png' },
+  { name: 'ENDE', logo: '/images/logos/logo6.png' },
+  { name: 'ENBI', logo: '/images/logos/logo8.png' },
+  { name: 'Porto de Luanda', logo: '/images/logos/logo7.png' },
+  { name: 'ZAP', logo: '/images/logos/logo5.png' },
   { name: 'PRODEL', logo: '/images/logos/logo2.png' },
   { name: 'ARSEG', logo: '/images/logos/logo3.png' },
   { name: 'RECREDIT', logo: '/images/logos/logo4.png' },
-  { name: 'ZAP', logo: '/images/logos/logo5.png' },
-  { name: 'ENDE', logo: '/images/logos/logo6.png' },
-  { name: 'Porto de Luanda', logo: '/images/logos/logo7.png' },
-  { name: 'ENBI', logo: '/images/logos/logo8.png' },
-  { name: 'CISP', logo: '/images/logos/logo9.png' },
-  { name: 'Polícia Nacional', logo: '/images/logos/logo10.png' },
   { name: 'Expo Secretary', logo: '/images/logos/logo11.png' },
   { name: 'Serra Treinamentos', logo: '/images/logos/logo12.png' },
 ]

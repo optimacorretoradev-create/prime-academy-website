@@ -81,7 +81,7 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
     <div className="min-h-screen bg-slate-50">
 
       {/* ── HERO (Restaurado para cor original, com barra de pesquisa glassmorphic integrada) ── */}
-      <section className="relative pt-28 pb-12 lg:pt-40 lg:pb-24 overflow-hidden bg-[#312455]">
+      <section className="relative pt-48 pb-16 lg:pt-40 lg:pb-24 overflow-hidden bg-[#312455]">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1920&q=80)' }}

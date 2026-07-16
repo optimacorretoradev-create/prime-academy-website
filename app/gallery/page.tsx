@@ -29,7 +29,7 @@ export default async function GalleryPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* ── HERO BANNER ── */}
-      <section className="relative pt-28 pb-12 lg:pt-40 lg:pb-24 overflow-hidden bg-[#312455]">
+      <section className="relative pt-48 pb-16 lg:pt-40 lg:pb-24 overflow-hidden bg-[#312455]">
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&q=80)' }}

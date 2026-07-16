@@ -16,7 +16,7 @@ export default async function ContactPage() {
     <div className="min-h-screen bg-background">
 
       {/* Hero */}
-      <section className="relative pt-28 pb-12 lg:pt-40 lg:pb-24 overflow-hidden">
+      <section className="relative pt-48 pb-16 lg:pt-40 lg:pb-24 overflow-hidden bg-[#312455]">
         {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -33,13 +33,13 @@ export default async function ContactPage() {
 
         <div className="container mx-auto px-4 text-center relative z-10">
           <span className="text-white/60 font-bold text-xs uppercase tracking-widest block mb-3">
-            FALE CONNOSCO
+            CONTACTOS
           </span>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-primary-foreground leading-tight mb-4 max-w-3xl mx-auto">
-            A Nossa Equipa à Sua Disposição
+            Dê o Próximo Passo na Sua Carreira Connosco
           </h1>
           <p className="text-slate-300 max-w-2xl mx-auto text-base md:text-lg mt-4 text-pretty">
-            Contacte-nos pelo seu canal de preferência: formulário, WhatsApp ou email.
+            Seja para formação individual, programas corporativos sob medida ou parcerias institucionais, estamos prontos para ajudar a alcançar os seus objetivos.
           </p>
         </div>
       </section>
