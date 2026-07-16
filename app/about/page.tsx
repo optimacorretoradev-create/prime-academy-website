@@ -1,11 +1,43 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   Award, Users, Target, Shield, CheckCircle2, TrendingUp,
   Briefcase, Heart, Cpu, Landmark, GraduationCap,
   BookOpen, BadgeCheck, Gem, Lightbulb, Building2, Globe, HeartHandshake
 } from 'lucide-react'
 import { CtaSection } from '@/components/home/cta-section'
+
+const TEAM_SECTIONS = [
+  {
+    department: "Direção Geral",
+    gridClass: "grid grid-cols-1 md:grid-cols-2 max-w-2xl mx-auto gap-8",
+    members: [
+      { name: "Direção", role: "Diretor Geral", img: "/images/Equipe/dg1.jpeg" },
+      { name: "Santos Egas Moniz", role: "Diretor Geral Adjunto", img: "/images/trainers/SantosEgasMoniz.png" }
+    ]
+  },
+  {
+    department: "Gestão Administrativa",
+    gridClass: "grid grid-cols-2 lg:grid-cols-4 gap-6",
+    members: [
+      { name: "", role: "", img: "/images/Equipe/ga1.jpeg" },
+      { name: "", role: "", img: "/images/Equipe/ga2.jpeg" },
+      { name: "", role: "", img: "/images/Equipe/ga3.jpeg" },
+      { name: "", role: "", img: "/images/Equipe/ga4.jpeg" }
+    ]
+  },
+  {
+    department: "Gestão Técnica",
+    gridClass: "grid grid-cols-2 lg:grid-cols-4 gap-6",
+    members: [
+      { name: "", role: "", img: "/images/Equipe/et2.jpeg" },
+      { name: "", role: "", img: "/images/Equipe/et3.jpeg" },
+      { name: "", role: "", img: "/images/Equipe/et4.jpeg" },
+      { name: "", role: "", img: "/images/Equipe/et1.jpeg" }
+    ]
+  }
+];
 
 export const metadata: Metadata = {
   title: 'Sobre Nós - Prime Academy',
@@ -59,20 +91,20 @@ export default function AboutPage() {
     <div className="min-h-screen bg-white overflow-x-hidden">
 
       {/* ── HERO BANNER (Top) ── */}
-      <section className="relative pt-28 pb-12 lg:pt-40 lg:pb-24 overflow-hidden bg-[#312455]">
+      <section className="relative pt-48 pb-16 lg:pt-48 lg:pb-28 overflow-hidden bg-[#312455]">
         {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1920&q=80)' }}
         />
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#312455]/95 via-[#312455]/90 to-[#312455]/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#312455]/95 via-[#312455]/85 to-[#312455]/75 lg:bg-gradient-to-r lg:from-[#312455]/95 lg:via-[#312455]/90 lg:to-[#312455]/80" />
         {/* Decorative blur elements */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#8a66a8]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-[#8a66a8]/5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
 
-        <div className="container mx-auto px-4 relative z-10 text-center">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight mb-4 max-w-3xl mx-auto">
+        <div className="container mx-auto px-6 relative z-10 text-center">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight mb-4 max-w-3xl mx-auto">
             ESTAMOS JUNTOS
           </h1>
           <p className="text-slate-300 max-w-2xl mx-auto text-base md:text-lg font-light leading-relaxed mt-4 text-pretty">
@@ -80,6 +112,7 @@ export default function AboutPage() {
           </p>
         </div>
       </section>
+
 
       {/* ── SECÇÃO 1 — Colagem de fotos + Apresentação (Fundo Branco, conforme referência) ── */}
       <section className="py-20 md:py-28 bg-white">
@@ -352,7 +385,7 @@ export default function AboutPage() {
       {/* ══════════════════════════════════════════════
           SECÇÃO 4 — Equipa e Formadores
       ══════════════════════════════════════════════ */}
-      <section className="py-20 md:py-28 bg-slate-50">
+      <section id="formadores" className="py-20 md:py-28 bg-slate-50">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-14">
             <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">A EXCELÊNCIA QUE NÃO SE NEGOCEIA</span>
@@ -414,33 +447,40 @@ export default function AboutPage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Equipa Interna */}
-          <div>
+      {/* ── SECÇÃO 4.5 — Equipa Interna (Fundo Branco para contraste) ── */}
+      <section className="py-20 md:py-28 bg-white border-t border-slate-100">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="space-y-16">
             <div className="text-center mb-10">
               <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">EQUIPA INTERNA</span>
-              <h3 className="text-xl md:text-2xl font-black text-[#312455] mt-2 leading-tight">
+              <h2 className="text-2xl md:text-3xl font-black text-[#312455] mt-3">
                 Quem faz acontecer
-              </h3>
+              </h2>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                { name: 'Direcção Geral', role: 'Direcção', bio: 'Liderança estratégica e visão institucional. Responsável pela orientação pedagógica e pelo posicionamento da academia no mercado.' },
-                { name: 'Serviços Administrativos', role: 'Administração', bio: 'Gestão de processos académicos, atendimento a formandos e parceiros. Garantem o funcionamento eficiente de todas as operações.' },
-                { name: 'Protocolo e Eventos', role: 'Protocolo', bio: 'Organização e coordenação de eventos corporativos, cerimónias e actividades institucionais. Asseguram a excelência na representação da marca.' },
-              ].map((membro, i) => (
-                <div key={i} className="group bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center gap-4">
-                  <div className="w-20 h-20 rounded-full bg-[#8a66a8]/10 flex items-center justify-center group-hover:bg-[#312455] transition-colors duration-300">
-                    <Users className="w-9 h-9 text-[#8a66a8] group-hover:text-[#c4a9e0] transition-colors duration-300" />
-                  </div>
-                  <div>
-                    <p className="font-black text-lg text-[#312455] leading-tight">{membro.name}</p>
-                    <p className="text-xs text-[#8a66a8] font-bold mt-1 uppercase tracking-wider">{membro.role}</p>
-                    <p className="text-xs text-slate-500 mt-3 leading-relaxed">{membro.bio}</p>
-                  </div>
+            {TEAM_SECTIONS.map((section, idx) => (
+              <div key={idx} className="my-12">
+                <h3 className="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-widest text-center mt-12 mb-6">{section.department}</h3>
+                <div className={section.gridClass}>
+                  {section.members.map((member, mIdx) => (
+                    <div 
+                      key={mIdx} 
+                      className={`group flex flex-col items-center bg-white p-2.5 md:p-3 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-200/80 transition-all duration-300 ${idx === 0 ? 'max-w-[240px] md:scale-105 mx-auto' : 'max-w-[190px] mx-auto'}`}
+                    >
+                      <div className="w-full aspect-[3/4] rounded-xl overflow-hidden bg-slate-50 relative">
+                        <img
+                          src={member.img}
+                          alt="Membro da Equipa"
+                          className="object-cover object-center w-full h-full group-hover:scale-[1.03] transition-transform duration-500 ease-out"
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -469,7 +509,7 @@ export default function AboutPage() {
                 { year: '2014', title: 'Identificação da Oportunidade', desc: 'Ausência de formação especializada em gestão secretarial.' },
                 { year: '2018', title: 'Início do Projecto', desc: 'Fundação com apoio da Universidade Agostinho Neto em Luanda.' },
                 { year: '2026', title: '+10.353 Profissionais Capacitados', desc: 'Estado, Forças Armadas, Governo e Ensino Superior.' },
-                { year: '2026', title: 'Actualização e Contextualização', desc: 'Contextualização e Publicação do Manual.' },
+                { year: '2026', title: 'Atualização e Contextualização de Profissionais & Lançamento do Manual', desc: 'Contextualização e Publicação do Manual.' },
               ].map((marco, i) => (
                 <div key={i} className="relative flex flex-col items-center text-center">
                   {/* Ponto na linha */}
@@ -518,7 +558,7 @@ export default function AboutPage() {
               { icon: BookOpen, label: 'Formação Contextualizada', sub: 'Com metodologia prática' },
               { icon: Award, label: 'Formadores', sub: 'Com experiência comprovada' },
               { icon: TrendingUp, label: 'Impacto Organizacional', sub: 'E de carreira' },
-              { icon: Target, label: 'Formação Sob Medida', sub: 'Para cada instituição' },
+              { icon: Target, label: 'Formação Sob Medida', sub: 'Para cada formando' },
               { icon: BadgeCheck, label: 'Certificação Reconhecida', sub: 'Validade nacional' },
             ].map((feat, i) => {
               const Icon = feat.icon

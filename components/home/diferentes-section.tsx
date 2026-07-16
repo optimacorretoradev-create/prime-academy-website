@@ -20,7 +20,7 @@ const DIFERENCIAIS = [
   {
     icon: Shield,
     titulo: 'Certificação Reconhecida',
-    descricao: 'Todos os programas da Prime Academy incluem certificado de conclusão, reconhecido pelas instituições parceiras e pelo mercado de trabalho angolano.',
+    descricao: 'Todos os programas da Prime Academy incluem certificado de conclusão, reconhecido por empresas e instituições públicas em Angola e além fronteiras.',
   },
 ]
 

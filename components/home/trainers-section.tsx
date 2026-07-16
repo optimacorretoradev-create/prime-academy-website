@@ -88,7 +88,7 @@ export function TrainersSection() {
             Todos os nossos formadores têm um percurso profissional comprovado nas áreas que ministram. Na Prime Academy, experiência real é requisito — não excepção.
           </p>
           <Link
-            href="/about#corpo-docente"
+            href="/about#formadores"
             className="inline-flex items-center gap-2 bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-6 py-3 rounded-full transition-colors shadow-md hover:shadow-lg mt-6"
           >
             Ver todos os formadores
