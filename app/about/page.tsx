@@ -13,28 +13,28 @@ const TEAM_SECTIONS = [
     department: "Direção Geral",
     gridClass: "grid grid-cols-1 md:grid-cols-2 max-w-2xl mx-auto gap-8",
     members: [
-      { name: "Direção", role: "Diretor Geral", img: "/images/Equipe/dg1.jpeg" },
-      { name: "Santos Egas Moniz", role: "Diretor Geral Adjunto", img: "/images/trainers/SantosEgasMoniz.png" }
+      { name: "Júlia Indira Simões", role: "Directora Geral", img: "/images/Equipe/dg1.jpeg" },
+      { name: "Santos Egas Moniz", role: "Director Pedagógico", img: "/images/trainers/SantosEgasMoniz.png" }
     ]
   },
   {
     department: "Gestão Administrativa",
     gridClass: "grid grid-cols-2 lg:grid-cols-4 gap-6",
     members: [
-      { name: "", role: "", img: "/images/Equipe/ga1.jpeg" },
-      { name: "", role: "", img: "/images/Equipe/ga2.jpeg" },
-      { name: "", role: "", img: "/images/Equipe/ga3.jpeg" },
-      { name: "", role: "", img: "/images/Equipe/ga4.jpeg" }
+      { name: "Analtina Damião", role: "Secretária", img: "/images/Equipe/ga1.jpeg" },
+      { name: "Tito Dange", role: "Responsável de Relações Públicas", img: "/images/Equipe/ga2.jpeg" },
+      { name: "Daniel Kangala", role: "Coordenador de Administração", img: "/images/Equipe/ga3.jpeg" },
+      { name: "Nuno Daniel", role: "Coordenador de Formações", img: "/images/Equipe/ga4.jpeg" }
     ]
   },
   {
     department: "Gestão Técnica",
     gridClass: "grid grid-cols-2 lg:grid-cols-4 gap-6",
     members: [
-      { name: "", role: "", img: "/images/Equipe/et2.jpeg" },
-      { name: "", role: "", img: "/images/Equipe/et3.jpeg" },
-      { name: "", role: "", img: "/images/Equipe/et4.jpeg" },
-      { name: "", role: "", img: "/images/Equipe/et1.jpeg" }
+      { name: "Cristina Alberto", role: "Comercial", img: "/images/Equipe/et2.jpeg" },
+      { name: "Dulce Victor", role: "Gestora de Eventos", img: "/images/Equipe/et3.jpeg" },
+      { name: "Danilson André", role: "Gestor de Redes Sociais", img: "/images/Equipe/et4.jpeg" },
+      { name: "Silvestre Jorge", role: "Coordenador de TIC’s", img: "/images/Equipe/et1.jpeg" }
     ]
   }
 ];
@@ -472,10 +472,22 @@ export default function AboutPage() {
                       <div className="w-full aspect-[3/4] rounded-xl overflow-hidden bg-slate-50 relative">
                         <img
                           src={member.img}
-                          alt="Membro da Equipa"
+                          alt={member.name || 'Membro da Equipa'}
                           className="object-cover object-center w-full h-full group-hover:scale-[1.03] transition-transform duration-500 ease-out"
                         />
                       </div>
+                      {(member.name || member.role) && (
+                        <div className="mt-3 text-center w-full">
+                          {member.name && (
+                            <p className="font-black text-sm text-[#312455] leading-tight">{member.name}</p>
+                          )}
+                          {member.role && (
+                            <p className="text-[11px] md:text-xs font-semibold text-[#8a66a8] mt-1 tracking-wide uppercase">
+                              {member.role}
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
