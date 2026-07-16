@@ -68,6 +68,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
   const backHref = isDashboard ? '/dashboard?tab=explore' : '/courses'
   const backLabel = isDashboard ? 'Explorar Cursos' : 'Cursos'
   const priceDisplay = getCoursePriceDisplay(course.id, course.price)
+  const hasPrice = Boolean(priceDisplay)
 
   // Breadcrumb usado apenas no Dashboard
   const dashboardBreadcrumb = isDashboard ? (
@@ -228,26 +229,28 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
         <div className={`absolute inset-0 ${isDashboard ? 'bg-[#312455]/25' : 'bg-primary/20'}`} />
       </div>
       <CardContent className="p-5 md:p-6 space-y-5">
-        <div
-          className={`rounded-2xl px-4 py-3 border ${
-            isDashboard ? 'bg-[#312455]/5 border-[#312455]/10' : 'bg-primary/5 border-primary/10'
-          }`}
-        >
-          <p
-            className={`text-xs uppercase font-semibold tracking-wider ${
-              isDashboard ? 'text-slate-500' : 'text-muted-foreground'
+        {hasPrice && (
+          <div
+            className={`rounded-2xl px-4 py-3 border ${
+              isDashboard ? 'bg-[#312455]/5 border-[#312455]/10' : 'bg-primary/5 border-primary/10'
             }`}
           >
-            Investimento
-          </p>
-          <p
-            className={`text-2xl md:text-3xl font-extrabold mt-1 ${
-              isDashboard ? 'text-[#312455]' : 'text-primary'
-            }`}
-          >
-            {priceDisplay}
-          </p>
-        </div>
+            <p
+              className={`text-xs uppercase font-semibold tracking-wider ${
+                isDashboard ? 'text-slate-500' : 'text-muted-foreground'
+              }`}
+            >
+              Investimento
+            </p>
+            <p
+              className={`text-2xl md:text-3xl font-extrabold mt-1 ${
+                isDashboard ? 'text-[#312455]' : 'text-primary'
+              }`}
+            >
+              {priceDisplay}
+            </p>
+          </div>
+        )}
 
         <div className="space-y-3">
           {highlights.map((highlight, index) => (

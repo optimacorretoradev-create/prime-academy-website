@@ -32,12 +32,22 @@ export function getCoursePriceAmount(courseId: string): number {
 }
 
 export function getCoursePriceDisplay(courseId: string, storedPrice?: string): string {
-  if (storedPrice && storedPrice !== 'Sob consulta' && /\d/.test(storedPrice)) {
-    const digits = parseInt(storedPrice.replace(/\D/g, ''), 10)
+  const normalizedPrice = storedPrice?.trim()
+
+  if (!normalizedPrice) {
+    return ''
+  }
+
+  if (normalizedPrice.toLowerCase() === 'sob consulta' || normalizedPrice.toLowerCase() === 'consulta') {
+    return ''
+  }
+
+  if (/\d/.test(normalizedPrice)) {
+    const digits = parseInt(normalizedPrice.replace(/\D/g, ''), 10)
     if (!Number.isNaN(digits) && digits > 0) {
       return formatKwanza(digits)
     }
-    return storedPrice
   }
-  return formatKwanza(getCoursePriceAmount(courseId))
+
+  return ''
 }

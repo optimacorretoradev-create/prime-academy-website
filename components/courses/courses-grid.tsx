@@ -185,11 +185,13 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
                     </div>
 
                     {/* Preço */}
-                    <div className="px-4 pt-4 pb-3 flex items-center justify-end border-b border-slate-100">
-                      <span className="text-sm font-black text-[#8a66a8]">
-                        {trainer.price}
-                      </span>
-                    </div>
+                    {trainer.price && (
+                      <div className="px-4 pt-4 pb-3 flex items-center justify-end border-b border-slate-100">
+                        <span className="text-sm font-black text-[#8a66a8]">
+                          {trainer.price}
+                        </span>
+                      </div>
+                    )}
 
                     {/* Conteúdo do Card */}
                     <div className="p-4 flex-1 flex flex-col gap-3">
