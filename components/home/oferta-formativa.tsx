@@ -41,14 +41,14 @@ const OFERTA_FORMATIVA = [
         descricao: 'Sistemas, processos e normas de gestão da informação e arquivo nas organizações modernas.',
         areaIcon: FolderOpen,
         cursos: [
-          'Gestão de Documentos e Arquivos Electrónicos',
+          'Gestão de Documentos e Arquivos Eletrónicos',
           'Gestão Estratégica de Recursos Humanos',
-          'Gestão e Redacção de Documentos Oficiais e Pareceres Técnicos',
+          'Gestão e Redação de Documentos Oficiais e Pareceres Técnicos',
         ],
       },
       {
         titulo: 'Liderança e Comunicação',
-        descricao: 'Comunicação institucional, protocolo, redacção executiva e relações interpessoais de alto nível.',
+        descricao: 'Comunicação institucional, protocolo, redação executiva e relações interpessoais de alto nível.',
         areaIcon: Mic2,
         cursos: [
           'Comunicação Institucional e Corporativa',
@@ -70,7 +70,7 @@ const OFERTA_FORMATIVA = [
       },
       {
         titulo: 'Secretariado Estratégico',
-        descricao: 'Competências de assessoria, protocolo executivo e gestão de gabinetes de alta direcção.',
+        descricao: 'Competências de assessoria, protocolo executivo e gestão de gabinetes de alta direção.',
         areaIcon: Award,
         cursos: [
           'Secretariado para Alta Direcção',
@@ -91,7 +91,7 @@ const OFERTA_FORMATIVA = [
     areas: [
       {
         titulo: 'Agenciamento',
-        descricao: 'Gestão de projectos e parcerias estratégicas para profissionais de alta performance.',
+        descricao: 'Gestão de projetos e parcerias estratégicas para profissionais de alta performance.',
         areaIcon: ClipboardList,
         cursos: [
           'Agenciamento de Formadores e Gestão de Formação Estratégica',
@@ -99,10 +99,10 @@ const OFERTA_FORMATIVA = [
       },
       {
         titulo: 'Atualização',
-        descricao: 'Formação contínua e actualização profissional para acompanhar as exigências do mercado.',
+        descricao: 'Formação contínua e atualização profissional para acompanhar as exigências do mercado.',
         areaIcon: RefreshCw,
         cursos: [
-          'Actualização de Habilidades de Altos Gestores',
+          'Atualização de Habilidades de Altos Gestores',
         ],
       },
       {
@@ -275,7 +275,7 @@ export function OfertaFormativa() {
             4 formas de se tornar melhor no que faz
           </h2>
           <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-            Formação especializada, programas à medida e eventos de alto nível — escolha o formato que melhor serve o seu objectivo profissional.
+            Formação especializada, programas à medida e eventos de alto nível — escolha o formato que melhor serve o seu objetivo profissional.
           </p>
         </div>
 

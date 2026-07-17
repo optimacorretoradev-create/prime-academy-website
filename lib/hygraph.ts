@@ -14,6 +14,15 @@ export interface Course {
   highlights?: string[]
 }
 
+export interface FeaturedBoard {
+  id: string
+  title: string
+  duration: string
+  level: string
+  regime: string
+  vagasLimitadas: boolean
+}
+
 export interface GalleryImage {
   id: string
   title: string
@@ -160,6 +169,19 @@ const GET_CURSOS = `
   }
 `
 
+const GET_QUADRO_EM_DESTAQUE = `
+  query GetQuadroEmDestaque {
+    quadroEmDestaques {
+      id
+      nomeDoCurso
+      duracao
+      nivelDoCurso
+      modalidadeDeAulas
+      vagasLimitadas
+    }
+  }
+`
+
 const GET_COURSE_BY_SLUG = `
   query GetCourseById($id: ID!) {
     curso(where: { id: $id }) {
@@ -177,6 +199,17 @@ const GET_COURSE_BY_SLUG = `
   }
 `
 
+function mapFeaturedBoard(item: any): FeaturedBoard {
+  return {
+    id: item.id,
+    title: item.nomeDoCurso || '',
+    duration: item.duracao || '',
+    level: item.nivelDoCurso || '',
+    regime: item.modalidadeDeAulas || '',
+    vagasLimitadas: Boolean(item.vagasLimitadas),
+  }
+}
+
 export async function getCourses(): Promise<Course[]> {
   if (!endpoint) return []
   try {
@@ -184,6 +217,16 @@ export async function getCourses(): Promise<Course[]> {
     return data?.cursos?.map(mapCourse) ?? []
   } catch (error) {
 
+    return []
+  }
+}
+
+export async function getQuadroEmDestaque(): Promise<FeaturedBoard[]> {
+  if (!endpoint) return []
+  try {
+    const data = await hygraphFetch<{ quadroEmDestaques: any[] }>(GET_QUADRO_EM_DESTAQUE)
+    return data?.quadroEmDestaques?.map(mapFeaturedBoard) ?? []
+  } catch (error) {
     return []
   }
 }

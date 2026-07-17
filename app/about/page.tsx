@@ -13,8 +13,8 @@ const TEAM_SECTIONS = [
     department: "Direção Geral",
     gridClass: "grid grid-cols-1 md:grid-cols-2 max-w-2xl mx-auto gap-8",
     members: [
-      { name: "Júlia Indira Simões", role: "Directora Geral", img: "/images/Equipe/dg1.jpeg" },
-      { name: "Santos Egas Moniz", role: "Director Pedagógico", img: "/images/trainers/SantosEgasMoniz.png" }
+      { name: "Júlia Indira Simões", role: "Diretora Geral", img: "/images/Equipe/dg1.jpeg" },
+      { name: "Santos Egas Moniz", role: "Diretor Pedagógico", img: "/images/trainers/SantosEgasMoniz.png" }
     ]
   },
   {
@@ -64,7 +64,7 @@ export default function AboutPage() {
     { name: 'Santos Egas Moniz', role: 'Gestão e Inovação', bio: 'Especialista em Gestão Empreendedorismo e Inovação, Comunicação Institucional.', avatar: '/images/trainers/SantosEgasMoniz.png' },
     { name: 'Valéria Serra', role: 'Secretariado', bio: 'Especialista em Secretariado para Alta Gestão', avatar: '/images/trainers/ValériaSerra.png' },
     { name: 'Eduardo Chiloya', role: 'Recursos Humanos', bio: 'Especialista em Gestão Estratégica de Recursos Humanos.', avatar: '/images/trainers/EduardoChiloya.jpeg' },
-    { name: 'Jacira Pimental', role: 'Gestão de Projectos', bio: 'Especialista em Gestão de Projectos de Desenvolvimento Institucional.', avatar: '/images/trainers/JaciraPimental.jpeg' },
+    { name: 'Jacira Pimental', role: 'Gestão de Projetos', bio: 'Especialista em Gestão de Projetos de Desenvolvimento Institucional.', avatar: '/images/trainers/JaciraPimental.jpeg' },
     { name: 'Regina Mestre', role: 'Jurista e Advogada', bio: 'Especialista nas Áreas Jurídicas e de Gestão.', avatar: '/images/trainers/Regina Mestre2.jpeg' },
     { name: 'Silvestre Jorge Pascoal', role: 'Tecnologias Inovadoras e IA', bio: 'Especialista em Transformação Digital, Automação de Processos com Inteligência Artificial e Infraestrutura de TI.', avatar: '/images/trainers/Silvestre Jorge Pascoal.jpeg' },
     { name: 'Fábio Sebastião', role: 'Comunicação e Análise Financeira', bio: 'Especialista em Estruturação de Apresentações Estratégicas, Comunicação de Alto Impacto e Análise Financeira.', avatar: '/images/trainers/Fábio Sebastião.jpeg' },
@@ -155,13 +155,13 @@ export default function AboutPage() {
                 Somos a Prime Academy, um centro de formação corporativa avançada, resultado de um projeto iniciado em 2018, que já capacitou mais de <strong className="text-[#312455] font-black">10.353 profissionais</strong>, de norte a sul de Angola.
               </p>
               <p className="text-slate-500 text-sm leading-relaxed">
-                Actuamos no desenvolvimento de competências estratégicas, técnicas e tecnológicas, apoiando organizações e líderes na modernização dos seus modelos de gestão e na adaptação às exigências da era digital.
+                Atuamos no desenvolvimento de competências estratégicas, técnicas e tecnológicas, apoiando organizações e líderes na modernização dos seus modelos de gestão e na adaptação às exigências da era digital.
               </p>
               <p className="text-slate-500 text-sm leading-relaxed">
                 Trabalhamos com profissionais que lideram, decidem e influenciam, contribuindo para a construção de organizações mais eficientes, competitivas e sustentáveis.
               </p>
               <p className="text-slate-500 text-sm leading-relaxed">
-                Em 2026 lançamos o <strong className="text-[#312455] font-black">Manual de Gestão e Redacção de Documentos Oficiais e Pareceres Técnicos</strong> para complementar esta jornada e contribuir na uniformização da apresentação das correspondências oficiais das instituições públicas e privadas de Angola.
+                Em 2026 lançamos o <strong className="text-[#312455] font-black">Manual de Gestão e Redação de Documentos Oficiais e Pareceres Técnicos</strong> para complementar esta jornada e contribuir na uniformização da apresentação das correspondências oficiais das instituições públicas e privadas de Angola.
               </p>
               <p className="text-slate-500 text-sm leading-relaxed">
                 Muito mais está por vir.
@@ -382,6 +382,53 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ── SECÇÃO 4.5 — Equipa Interna (Fundo Branco para contraste) ── */}
+      <section className="py-20 md:py-28 bg-white border-t border-slate-100">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="space-y-16">
+            <div className="text-center mb-10">
+              <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">EQUIPA INTERNA</span>
+              <h2 className="text-2xl md:text-3xl font-black text-[#312455] mt-3">
+                Quem faz acontecer
+              </h2>
+            </div>
+            {TEAM_SECTIONS.map((section, idx) => (
+              <div key={idx} className="my-12">
+                <h3 className="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-widest text-center mt-12 mb-6">{section.department}</h3>
+                <div className={section.gridClass}>
+                  {section.members.map((member, mIdx) => (
+                    <div 
+                      key={mIdx} 
+                      className={`group flex flex-col items-center bg-white p-2.5 md:p-3 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-200/80 transition-all duration-300 ${idx === 0 ? 'max-w-[240px] md:scale-105 mx-auto' : 'max-w-[190px] mx-auto'}`}
+                    >
+                      <div className="w-full aspect-[3/4] rounded-xl overflow-hidden bg-slate-50 relative">
+                        <img
+                          src={member.img}
+                          alt={member.name || 'Membro da Equipa'}
+                          className="object-cover object-center w-full h-full group-hover:scale-[1.03] transition-transform duration-500 ease-out"
+                        />
+                      </div>
+                      {(member.name || member.role) && (
+                        <div className="mt-3 text-center w-full">
+                          {member.name && (
+                            <p className="font-black text-sm text-[#312455] leading-tight">{member.name}</p>
+                          )}
+                          {member.role && (
+                            <p className="text-[11px] md:text-xs font-semibold text-[#8a66a8] mt-1 tracking-wide uppercase">
+                              {member.role}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ══════════════════════════════════════════════
           SECÇÃO 4 — Equipa e Formadores
       ══════════════════════════════════════════════ */}
@@ -450,53 +497,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── SECÇÃO 4.5 — Equipa Interna (Fundo Branco para contraste) ── */}
-      <section className="py-20 md:py-28 bg-white border-t border-slate-100">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="space-y-16">
-            <div className="text-center mb-10">
-              <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">EQUIPA INTERNA</span>
-              <h2 className="text-2xl md:text-3xl font-black text-[#312455] mt-3">
-                Quem faz acontecer
-              </h2>
-            </div>
-            {TEAM_SECTIONS.map((section, idx) => (
-              <div key={idx} className="my-12">
-                <h3 className="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-widest text-center mt-12 mb-6">{section.department}</h3>
-                <div className={section.gridClass}>
-                  {section.members.map((member, mIdx) => (
-                    <div 
-                      key={mIdx} 
-                      className={`group flex flex-col items-center bg-white p-2.5 md:p-3 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-200/80 transition-all duration-300 ${idx === 0 ? 'max-w-[240px] md:scale-105 mx-auto' : 'max-w-[190px] mx-auto'}`}
-                    >
-                      <div className="w-full aspect-[3/4] rounded-xl overflow-hidden bg-slate-50 relative">
-                        <img
-                          src={member.img}
-                          alt={member.name || 'Membro da Equipa'}
-                          className="object-cover object-center w-full h-full group-hover:scale-[1.03] transition-transform duration-500 ease-out"
-                        />
-                      </div>
-                      {(member.name || member.role) && (
-                        <div className="mt-3 text-center w-full">
-                          {member.name && (
-                            <p className="font-black text-sm text-[#312455] leading-tight">{member.name}</p>
-                          )}
-                          {member.role && (
-                            <p className="text-[11px] md:text-xs font-semibold text-[#8a66a8] mt-1 tracking-wide uppercase">
-                              {member.role}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ══════════════════════════════════════════════
           SECÇÃO — Linha do Tempo
       ══════════════════════════════════════════════ */}
@@ -519,7 +519,7 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-4 relative">
               {[
                 { year: '2014', title: 'Identificação da Oportunidade', desc: 'Ausência de formação especializada em gestão secretarial.' },
-                { year: '2018', title: 'Início do Projecto', desc: 'Fundação com apoio da Universidade Agostinho Neto em Luanda.' },
+                { year: '2018', title: 'Início do Projeto', desc: 'Fundação com apoio da Universidade Agostinho Neto em Luanda.' },
                 { year: '2026', title: '+10.353 Profissionais Capacitados', desc: 'Estado, Forças Armadas, Governo e Ensino Superior.' },
                 { year: '2026', title: 'Atualização e Contextualização de Profissionais & Lançamento do Manual', desc: 'Contextualização e Publicação do Manual.' },
               ].map((marco, i) => (
@@ -552,7 +552,7 @@ export default function AboutPage() {
               href="/gallery"
               className="inline-block bg-[#312455] hover:bg-[#8a66a8] text-white font-bold text-sm uppercase tracking-wider px-8 py-3.5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
             >
-              Ir para Galeria de Projectos
+              Ir para Galeria de Projetos
             </Link>
           </div>
         </div>

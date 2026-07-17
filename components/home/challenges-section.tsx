@@ -32,7 +32,7 @@ export function ChallengesSection() {
             O que observamos e queremos elevar
           </h2>
           <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-            Procuramos dar resposta aos desafios na formação e actualização do capital humano de forma diferenciado e contextual.
+            Procuramos dar resposta aos desafios na formação e atualização do capital humano de forma diferenciado e contextual.
           </p>
         </div>
 

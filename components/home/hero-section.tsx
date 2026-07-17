@@ -14,21 +14,32 @@ const slides = [
   { image: "/images/hero/hero3.jpeg" },
 ]
 
+interface FeaturedBoard {
+  id: string
+  title: string
+  duration: string
+  level: string
+  regime: string
+  vagasLimitadas: boolean
+}
+
 // Fallback used only when Hygraph returns no courses
-const FALLBACK_COURSES = [
+const FALLBACK_COURSES: FeaturedBoard[] = [
   {
     id: 'f1',
     title: "Secretariado Executivo Digital e Novas Tecnologias",
     duration: "2 Dias / 16 Horas",
     level: "Avançado",
     regime: "Híbrido",
+    vagasLimitadas: true,
   },
   {
     id: 'f2',
-    title: "Gestão de Documentos e Arquivos Electrónicos",
+    title: "Gestão de Documentos e Arquivos Eletrónicos",
     duration: "2 Dias / 14 Horas",
     level: "Intermédio",
     regime: "Híbrido",
+    vagasLimitadas: true,
   },
   {
     id: 'f3',
@@ -36,6 +47,7 @@ const FALLBACK_COURSES = [
     duration: "1 Dia / 8 Horas",
     level: "Executivo",
     regime: "Híbrido",
+    vagasLimitadas: true,
   },
 ]
 
@@ -44,9 +56,10 @@ interface FeaturedCardProps {
   duration: string
   level: string
   regime: string
+  vagasLimitadas?: boolean
 }
 
-function FeaturedCard({ title, duration, level, regime }: FeaturedCardProps) {
+function FeaturedCard({ title, duration, level, regime, vagasLimitadas = false }: FeaturedCardProps) {
   return (
     <>
       {/* Card Header */}
@@ -83,10 +96,12 @@ function FeaturedCard({ title, duration, level, regime }: FeaturedCardProps) {
 
       {/* Card Footer */}
       <div className="border-t border-white/10 pt-3 flex items-center justify-between gap-2 px-4 pb-4">
-        <div className="flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-pulse" />
-          <span className="text-xs font-semibold text-purple-300">Vagas Limitadas</span>
-        </div>
+        {vagasLimitadas ? (
+          <div className="flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-pulse" />
+            <span className="text-xs font-semibold text-purple-300">Vagas Limitadas</span>
+          </div>
+        ) : <div />}
         <Link
           href="/enroll"
           className="bg-secondary hover:bg-secondary/90 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all"
@@ -98,24 +113,37 @@ function FeaturedCard({ title, duration, level, regime }: FeaturedCardProps) {
   )
 }
 
-interface HeroSectionProps {
-  featuredCourses?: Course[]
+interface FeaturedBoard {
+  id: string
+  title: string
+  duration: string
+  level: string
+  regime: string
+  vagasLimitadas: boolean
 }
 
-export function HeroSection({ featuredCourses = [] }: HeroSectionProps) {
+interface HeroSectionProps {
+  featuredCourses?: Course[]
+  featuredBoards?: FeaturedBoard[]
+}
+
+export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroSectionProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [contentToggle, setContentToggle] = useState(true)
 
-  // Derive the featured course from real courses or fallback
-  const coursePool = featuredCourses.length > 0
-    ? featuredCourses.map(c => ({
-        id: c.id,
-        title: c.name,
-        duration: c.duration || '—',
-        level: c.level || '—',
-        regime: c.online ? 'Online' : 'Híbrido',
-      }))
-    : FALLBACK_COURSES
+  // Derive the featured item from Hygraph featured board, real courses, or fallback
+  const coursePool: FeaturedBoard[] = featuredBoards.length > 0
+    ? featuredBoards
+    : featuredCourses.length > 0
+      ? featuredCourses.map(c => ({
+          id: c.id,
+          title: c.name,
+          duration: c.duration || '—',
+          level: c.level || '—',
+          regime: c.online ? 'Online' : 'Híbrido',
+          vagasLimitadas: true,
+        }))
+      : FALLBACK_COURSES
 
   const activeCourse = coursePool[currentSlide % coursePool.length]
 
@@ -180,7 +208,7 @@ export function HeroSection({ featuredCourses = [] }: HeroSectionProps) {
                   </span>
                 </h1>
                 <p className="text-sm sm:text-base md:text-lg text-white/80 max-w-lg font-light leading-relaxed text-pretty mt-3 lg:mt-4">
-                  Oferecemos formação corporativa especializada em secretariado executivo, gestão administrativa e tecnologias digitais em Angola. Programas práticos, formadores com experiência real — para profissionais activos no alcance dos objetivos organizacionais.
+                  Oferecemos formação corporativa especializada em secretariado executivo, gestão administrativa e tecnologias digitais em Angola. Programas práticos, formadores com experiência real — para profissionais ativos no alcance dos objetivos organizacionais.
                 </p>
               </div>
 
@@ -234,7 +262,7 @@ export function HeroSection({ featuredCourses = [] }: HeroSectionProps) {
                         </span>
                       </h1>
                       <p className="text-sm sm:text-base md:text-lg text-white/80 max-w-lg font-light leading-relaxed text-pretty mt-3">
-                        Oferecemos formação corporativa especializada em secretariado executivo, gestão administrativa e tecnologias digitais em Angola. Programas práticos, formadores com experiência real — para profissionais activos no alcance dos objetivos organizacionais.
+                        Oferecemos formação corporativa especializada em secretariado executivo, gestão administrativa e tecnologias digitais em Angola. Programas práticos, formadores com experiência real — para profissionais ativos no alcance dos objetivos organizacionais.
                       </p>
                     </div>
 
@@ -274,6 +302,7 @@ export function HeroSection({ featuredCourses = [] }: HeroSectionProps) {
                       duration={activeCourse.duration}
                       level={activeCourse.level}
                       regime={activeCourse.regime}
+                      vagasLimitadas={activeCourse.vagasLimitadas}
                     />
                   </div>
                 </motion.div>
@@ -292,6 +321,7 @@ export function HeroSection({ featuredCourses = [] }: HeroSectionProps) {
               duration={activeCourse.duration}
               level={activeCourse.level}
               regime={activeCourse.regime}
+              vagasLimitadas={activeCourse.vagasLimitadas}
             />
           </div>
         </div>
