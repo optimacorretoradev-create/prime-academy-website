@@ -72,30 +72,30 @@ function FeaturedCard({ title, duration, level, regime, vagasLimitadas = false }
       </div>
 
       {/* Card Body - Metadata Grid */}
-      <div className="grid grid-cols-2 gap-3 p-4">
+      <div className="grid grid-cols-2 gap-2 p-3">
         <div>
-          <p className="text-sm font-semibold text-white">{duration}</p>
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Carga Horária</p>
+          <p className="text-xs font-semibold text-white">{duration}</p>
+          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Carga Horária</p>
         </div>
         <div>
-          <p className="text-sm font-semibold text-white">{regime}</p>
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Modalidade</p>
+          <p className="text-xs font-semibold text-white">{regime}</p>
+          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Modalidade</p>
         </div>
         <div>
-          <p className="text-sm font-semibold text-white">{level}</p>
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Nível do Programa</p>
+          <p className="text-xs font-semibold text-white">{level}</p>
+          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Nível do Programa</p>
         </div>
-        <div className="flex items-start gap-1.5">
-          <BadgeCheck className="h-4 w-4 text-green-400 shrink-0 mt-0.5" />
+        <div className="flex items-start gap-1">
+          <BadgeCheck className="h-3 w-3 text-green-400 shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-semibold text-white">Incluído</p>
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Certificado</p>
+            <p className="text-xs font-semibold text-white">Incluído</p>
+            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Certificado</p>
           </div>
         </div>
       </div>
 
       {/* Card Footer */}
-      <div className="border-t border-white/10 pt-3 flex items-center justify-between gap-2 px-4 pb-4">
+      <div className="border-t border-white/10 pt-2 flex items-center justify-between gap-1 px-3 pb-3">
         {vagasLimitadas ? (
           <div className="flex items-center gap-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-pulse" />
@@ -159,7 +159,7 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
   const imageObjectPosition = 'object-cover object-top'
 
   return (
-    <section className="relative pt-20 md:pt-32 pb-12 lg:pt-0 lg:pb-0 mt-[82px] md:mt-[112px] min-h-[calc(100vh-82px)] md:h-[calc(100vh-112px)] md:min-h-[600px] w-full flex items-stretch overflow-hidden">
+    <section className="relative pt-28 md:pt-32 pb-12 lg:pt-0 lg:pb-0 mt-[82px] md:mt-[112px] min-h-[500px] md:h-[calc(100vh-112px)] md:min-h-[600px] w-full flex items-stretch overflow-hidden">
       {/* Background Images Slideshow */}
       <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-primary">
         <AnimatePresence>
@@ -266,24 +266,24 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
                       </p>
                     </div>
 
-                  {/* CTAs */}
-                  <div className="flex flex-col sm:flex-row items-center sm:justify-start gap-3 mt-5 w-full relative z-10">
-                    <Button
-                      asChild
-                      size="lg"
-                      variant="outline"
-                      className="border-secondary/60 text-secondary hover:bg-secondary hover:text-white rounded-full text-xs md:text-base px-4 py-2.5 md:px-8 md:py-5 font-semibold transition-all w-full sm:w-fit"
-                    >
-                      <Link href="/gallery">Explorar o Portfólio</Link>
-                    </Button>
-                    <Button
-                      asChild
-                      size="lg"
-                      className="bg-secondary text-white hover:bg-secondary/90 rounded-full shadow-lg hover:shadow-xl transition-all text-xs md:text-base px-4 py-2.5 md:px-8 md:py-5 font-semibold w-full sm:w-fit"
-                    >
-                      <Link href="/enroll">Inscreve-se Agora</Link>
-                    </Button>
-                  </div>
+                    {/* CTAs */}
+                    <div className="flex flex-row flex-wrap items-center justify-start gap-2 mt-4 w-full relative z-10">
+                      <Button
+                        asChild
+                        size="sm"
+                        variant="outline"
+                        className="border-secondary/60 text-secondary hover:bg-secondary hover:text-white rounded-full text-[10px] md:text-sm px-3 py-2 md:px-8 md:py-5 font-semibold transition-all w-fit"
+                      >
+                        <Link href="/gallery">Explorar o Portfólio</Link>
+                      </Button>
+                      <Button
+                        asChild
+                        size="sm"
+                        className="bg-secondary text-white hover:bg-secondary/90 rounded-full shadow-lg hover:shadow-xl transition-all text-[10px] md:text-sm px-3 py-2 md:px-8 md:py-5 font-semibold w-fit"
+                      >
+                        <Link href="/enroll">Inscreve-se Agora</Link>
+                      </Button>
+                    </div>
                   </div>
                 </motion.div>
               ) : (
