@@ -159,7 +159,7 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
   const imageObjectPosition = 'object-cover object-top'
 
   return (
-    <section className="relative pt-28 md:pt-32 pb-12 lg:pt-0 lg:pb-0 mt-[82px] md:mt-[112px] h-[calc(100vh-82px)] md:h-[calc(100vh-112px)] min-h-[500px] md:min-h-[600px] w-full flex items-stretch overflow-hidden">
+    <section className="relative pt-20 md:pt-32 pb-12 lg:pt-0 lg:pb-0 mt-[82px] md:mt-[112px] min-h-[calc(100vh-82px)] md:h-[calc(100vh-112px)] md:min-h-[600px] w-full flex items-stretch overflow-hidden">
       {/* Background Images Slideshow */}
       <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-primary">
         <AnimatePresence>
@@ -266,24 +266,24 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
                       </p>
                     </div>
 
-                    {/* CTAs */}
-                    <div className="flex flex-row items-center justify-start gap-3 mt-5 w-full relative z-10">
-                      <Button
-                        asChild
-                        size="lg"
-                        variant="outline"
-                        className="border-secondary/60 text-secondary hover:bg-secondary hover:text-white rounded-full text-xs md:text-base px-4 py-2.5 md:px-8 md:py-5 font-semibold transition-all w-fit"
-                      >
-                        <Link href="/gallery">Explorar o Portfólio</Link>
-                      </Button>
-                      <Button
-                        asChild
-                        size="lg"
-                        className="bg-secondary text-white hover:bg-secondary/90 rounded-full shadow-lg hover:shadow-xl transition-all text-xs md:text-base px-4 py-2.5 md:px-8 md:py-5 font-semibold w-fit"
-                      >
-                        <Link href="/enroll">Inscreve-se Agora</Link>
-                      </Button>
-                    </div>
+                  {/* CTAs */}
+                  <div className="flex flex-col sm:flex-row items-center sm:justify-start gap-3 mt-5 w-full relative z-10">
+                    <Button
+                      asChild
+                      size="lg"
+                      variant="outline"
+                      className="border-secondary/60 text-secondary hover:bg-secondary hover:text-white rounded-full text-xs md:text-base px-4 py-2.5 md:px-8 md:py-5 font-semibold transition-all w-full sm:w-fit"
+                    >
+                      <Link href="/gallery">Explorar o Portfólio</Link>
+                    </Button>
+                    <Button
+                      asChild
+                      size="lg"
+                      className="bg-secondary text-white hover:bg-secondary/90 rounded-full shadow-lg hover:shadow-xl transition-all text-xs md:text-base px-4 py-2.5 md:px-8 md:py-5 font-semibold w-full sm:w-fit"
+                    >
+                      <Link href="/enroll">Inscreve-se Agora</Link>
+                    </Button>
+                  </div>
                   </div>
                 </motion.div>
               ) : (

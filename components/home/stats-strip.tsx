@@ -51,7 +51,7 @@ function StatItem({ stat, idx }: { stat: (typeof stats)[number]; idx: number }) 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, delay: idx * 0.15 }}
-      className="flex flex-col items-center justify-center px-2 sm:px-4 md:px-6 border-white/10 border-r last:border-r-0"
+      className="flex flex-col items-center justify-center px-2 sm:px-4 md:px-6 border-white/10 md:border-r md:last:border-r-0"
     >
       <span className="text-xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white mb-0.5 font-sans whitespace-nowrap">
         {stat.prefix}{formatNumber(count, stat.format)}{stat.suffix}
@@ -67,7 +67,7 @@ export function StatsStrip() {
   return (
     <div className="relative z-30 bg-gradient-to-r from-[#8a66a8] to-[#735191] text-white overflow-hidden shadow-lg border-y border-purple-400/20">
       <div className="container mx-auto px-4 max-w-6xl py-2 sm:py-3 md:py-4">
-        <div className="flex flex-row items-center justify-between">
+        <div className="grid grid-cols-2 gap-4 md:flex md:flex-row md:items-center md:justify-between md:gap-0">
           {stats.map((stat, idx) => (
             <StatItem key={idx} stat={stat} idx={idx} />
           ))}
