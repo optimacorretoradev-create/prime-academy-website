@@ -1,27 +1,18 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getGalleryImages } from '@/lib/hygraph'
+import { getGalleryImages, getQuadroEmDestaque } from '@/lib/hygraph'
 import { GalleryGrid } from '@/components/gallery/gallery-grid'
-import { Star } from 'lucide-react'
-
-const featuredCourse = {
-  title: "Secretariado Executivo Digital e Novas Tecnologias",
-  metadata: [
-    { value: "2 Dias / 16 Horas", label: "Carga Horária" },
-    { value: "Avançado", label: "Nível do Programa" },
-    { value: "Presencial", label: "Regime de Aulas" },
-  ],
-}
+import { FeaturedCard } from '@/components/home/featured-card'
 
 export const metadata: Metadata = {
   title: 'Galeria - Prime Academy',
   description: 'Veja fotos das nossas formaturas, aulas práticas e workshops. Conheça o ambiente de aprendizagem da Prime Academy.',
 }
 
-
 export default async function GalleryPage() {
   const images = await getGalleryImages()
-
+  const featuredBoards = await getQuadroEmDestaque()
+  const activeBoard = featuredBoards[0] // Assume first one for now
 
   // Extract unique categories
   const categories = ['Todos', ...new Set(images.map((img) => img.categoria))]
@@ -55,37 +46,17 @@ export default async function GalleryPage() {
 
             {/* Right - CTA + Featured Card */}
             <div className="lg:col-span-5 flex flex-col items-end gap-4">
-              <div className="w-full max-w-[360px] bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl overflow-hidden">
-                <div className="bg-[#312455]/80 px-4 pt-4 pb-3">
-                  <span className="text-[10px] tracking-wider bg-white/20 px-2 py-0.5 rounded-full uppercase inline-block font-bold text-white">
-                    <Star className="h-3 w-3 inline-block mr-1 fill-secondary text-secondary" />
-                    EM DESTAQUE
-                  </span>
-                  <h3 className="text-base font-bold text-white mt-2 leading-snug">
-                    {featuredCourse.title}
-                  </h3>
+              {activeBoard && (
+                <div className="w-full max-w-[360px] bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl overflow-hidden">
+                  <FeaturedCard
+                    title={activeBoard.title}
+                    duration={activeBoard.duration}
+                    level={activeBoard.level}
+                    regime={activeBoard.regime}
+                    vagasLimitadas={activeBoard.vagasLimitadas}
+                  />
                 </div>
-                <div className="grid grid-cols-2 gap-3 p-4">
-                  {featuredCourse.metadata.map((item, idx) => (
-                    <div key={idx}>
-                      <p className="text-sm font-semibold text-white">{item.value}</p>
-                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{item.label}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="border-t border-white/10 pt-3 flex items-center justify-between gap-2 px-4 pb-4">
-                  <div className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-pulse" />
-                    <span className="text-xs font-semibold text-purple-300">Vagas Limitadas</span>
-                  </div>
-                  <Link
-                    href="/enroll"
-                    className="bg-secondary hover:bg-secondary/90 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all"
-                  >
-                    Inscrever-me
-                  </Link>
-                </div>
-              </div>
+              )}
 
               <Link
                 href="/contact"
