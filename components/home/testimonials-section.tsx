@@ -58,7 +58,7 @@ export async function TestimonialsSection() {
         <div className="space-y-8">
           <div className="text-center">
             <span className="text-xs font-extrabold text-muted-foreground uppercase tracking-widest block mb-1">
-              ORGANIZAÇÕES QUE CONFIAM NO NOSSO VALOR
+              Sectores que confiam em nós
             </span>
             <p className="text-xs text-muted-foreground">Parceiros e clientes dos principais segmentos do mercado angolano</p>
           </div>

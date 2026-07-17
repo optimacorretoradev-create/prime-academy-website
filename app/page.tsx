@@ -1,4 +1,4 @@
-import { getCourses } from '@/lib/hygraph'
+import { getCourses, getQuadroEmDestaque } from '@/lib/hygraph'
 import { HeroSection } from '@/components/home/hero-section'
 import { HowItWorksSection } from '@/components/home/how-it-works-section'
 import { WhyPrimeSection } from '@/components/home/why-prime-section'
@@ -17,10 +17,11 @@ import { CtaSection } from '@/components/home/cta-section'
 
 export default async function HomePage() {
   const courses = await getCourses()
+  const featuredBoards = await getQuadroEmDestaque()
 
   return (
     <>
-      <HeroSection featuredCourses={courses} />
+      <HeroSection featuredCourses={courses} featuredBoards={featuredBoards} />
       <StatsStrip />
       <AboutSection />
       <ChallengesSection />
