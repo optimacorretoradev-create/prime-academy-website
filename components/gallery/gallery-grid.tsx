@@ -133,7 +133,7 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
                     {mainHighlight.title}
                   </h3>
                   <p className="text-slate-500 text-sm font-light leading-relaxed">
-                    Registo dos momentos marcantes, workshops, celebrações e eventos de excelência que traduzem a evolução prática e a trajetória de sucesso no nosso ecossistema.
+                    Registo dos momentos marcantes, workshops, celebrações e eventos de excelência que traduzem a evolução prática e a trajectória de sucesso no nosso ecossistema.
                   </p>
                   <div className="flex items-center gap-1.5 text-xs font-bold text-[#8a66a8] uppercase pt-2">
                     <span>Ver em Tamanho Cheio</span>

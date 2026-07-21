@@ -234,7 +234,7 @@ export function SignupForm() {
           </h2>
           
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-8">
-            Enviámos um link de ativação para o endereço <strong className="text-slate-900">{email}</strong>. Por favor, consulte a sua caixa de entrada e confirme a sua conta para poder aceder à plataforma.
+            Enviámos um link de activação para o endereço <strong className="text-slate-900">{email}</strong>. Por favor, consulte a sua caixa de entrada e confirme a sua conta para poder aceder à plataforma.
           </p>
           
           <Button

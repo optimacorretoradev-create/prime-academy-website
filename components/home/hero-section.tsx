@@ -36,7 +36,7 @@ const FALLBACK_COURSES: FeaturedBoard[] = [
   },
   {
     id: 'f2',
-    title: "Gestão de Documentos e Arquivos Eletrónicos",
+    title: "Gestão de Documentos e Arquivos Electrónicos",
     duration: "2 Dias / 14 Horas",
     level: "Intermédio",
     regime: "Híbrido",
@@ -148,7 +148,7 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
                   </span>
                 </h1>
                 <p className="text-sm sm:text-base md:text-lg text-white/80 max-w-lg font-light leading-relaxed text-pretty mt-3 lg:mt-4">
-                  Oferecemos formação corporativa especializada em secretariado executivo, gestão administrativa e tecnologias digitais em Angola. Programas práticos, formadores com experiência real — para profissionais ativos no alcance dos objetivos organizacionais.
+                  Oferecemos formação corporativa especializada em secretariado executivo, gestão administrativa e tecnologias digitais em Angola. Programas práticos, formadores com experiência real — para profissionais ativos no alcance dos objectivos organizacionais.
                 </p>
               </div>
 
@@ -202,7 +202,7 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
                         </span>
                       </h1>
                       <p className="text-sm sm:text-base md:text-lg text-white/80 max-w-lg font-light leading-relaxed text-pretty mt-3">
-                        Oferecemos formação corporativa especializada em secretariado executivo, gestão administrativa e tecnologias digitais em Angola. Programas práticos, formadores com experiência real — para profissionais ativos no alcance dos objetivos organizacionais.
+                        Oferecemos formação corporativa especializada em secretariado executivo, gestão administrativa e tecnologias digitais em Angola. Programas práticos, formadores com experiência real — para profissionais ativos no alcance dos objectivos organizacionais.
                       </p>
                     </div>
 

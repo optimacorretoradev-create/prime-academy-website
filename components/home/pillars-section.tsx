@@ -23,11 +23,11 @@ const pillars = [
   {
     id: 1,
     icon: BookOpen,
-    title: "Liderança & Redação Oficial",
+    title: "Liderança & Redacção Oficial",
     subtitle: "Comunicação e Procedimentos Estatais",
     description: "Desenvolva capacidades de liderança e domine a redação oficial, essencial para a comunicação institucional de alto nível.",
     competencies: [
-      "Técnicas de Redação Oficial",
+      "Técnicas de Redacção Oficial",
       "Comunicação Institucional",
       "Liderança de Equipas",
       "Protocolo e Procedimentos Estatais"
@@ -40,7 +40,7 @@ const pillars = [
     subtitle: "Assessoria de Altos Gestores",
     description: "Capacite-se para ser o braço direito da gestão, com competências avançadas em assessoria e suporte à decisão.",
     competencies: [
-      "Assessoria de Alta Direção",
+      "Assessoria de Alta Direcção",
       "Gestão de Agenda Executiva",
       "Protocolo Executivo",
       "Suporte à Decisão"
@@ -80,7 +80,7 @@ export function PillarsSection() {
           
           {/* Left: List of Pillars */}
           <div className="lg:col-span-4 space-y-4">
-            <span className="text-xs text-muted-foreground uppercase tracking-widest font-bold">Selecione uma área de impacto</span>
+            <span className="text-xs text-muted-foreground uppercase tracking-widest font-bold">Seleccione uma área de impacto</span>
             {pillars.map((pillar) => (
               <button
                 key={pillar.id}

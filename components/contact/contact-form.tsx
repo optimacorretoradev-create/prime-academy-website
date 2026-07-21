@@ -24,7 +24,7 @@ export function ContactForm() {
 
   const courses = [
     "Gestão Administrativa",
-    "Liderança & Redação Oficial",
+    "Liderança & Redacção Oficial",
     "Secretariado Estratégico",
     "Tecnologia & IA Aplicada",
     "Outros"
@@ -148,7 +148,7 @@ export function ContactForm() {
             </Label>
             <Select onValueChange={(value) => setFormData({ ...formData, course: value })} value={formData.course} required>
               <SelectTrigger id="contact-course" className="w-full h-14 sm:h-16 rounded-xl border-slate-200 focus:ring-[#8a66a8] focus-visible:ring-[#8a66a8] text-base bg-white px-3 py-2">
-                <SelectValue placeholder="Selecione um curso" />
+                <SelectValue placeholder="Seleccione um curso" />
               </SelectTrigger>
               <SelectContent className="rounded-xl bg-white">
                 {courses.map((course) => (
