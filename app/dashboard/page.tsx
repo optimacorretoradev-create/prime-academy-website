@@ -1455,8 +1455,7 @@ function DashboardPageContent() {
                           bg-white border border-slate-100 shadow-2xl
                           rounded-[2rem]
                           top-[4.5rem] right-4 left-4
-                          sm:absolute sm:top-full sm:left-auto sm:right-0 sm:mt-2
-                          sm:w-[360px]
+                          sm:left-auto sm:w-[360px]
                         "
                       >
                         {/* Cabeçalho */}

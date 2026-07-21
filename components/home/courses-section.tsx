@@ -10,17 +10,17 @@ const categories = [
   {
     title: 'GESTÃO ADMINISTRATIVA DIGITAL',
     image: '/images/courses/gestao.jpeg',
-    items: ['Ferramentas de Produtividade Avançada (Office 365/Google Workspace)', 'Gestão de Documentos e Arquivos Eletrónicos', 'Gestão do Tempo, Processos e Produtividade']
+    items: ['Ferramentas de Produtividade Avançada (Office 365/Google Workspace)', 'Gestão de Documentos e Arquivos Electrónicos', 'Gestão do Tempo, Processos e Produtividade']
   },
   {
     title: 'LIDERANÇA E COMUNICAÇÃO',
     image: '/images/courses/lideranca.jpeg',
-    items: ['Comunicação Institucional', 'Redação Oficial', 'Procedimentos Administrativos', 'Liderança e Gestão de RH', 'Oratória e Persuasão']
+    items: ['Comunicação Institucional', 'Redacção Oficial', 'Procedimentos Administrativos', 'Liderança e Gestão de RH', 'Oratória e Persuasão']
   },
   {
     title: 'SECRETARIADO ESTRATÉGICO',
     image: '/images/courses/secretariado.jpeg',
-    items: ['Secretariado para Alta Direção', 'Gestão de Gabinete de Altos Gestores', 'Protocolo e Etiqueta Empresarial', 'Práticas de Secretariado Executivo']
+    items: ['Secretariado para Alta Direcção', 'Gestão de Gabinete de Altos Gestores', 'Protocolo e Etiqueta Empresarial', 'Práticas de Secretariado Executivo']
   },
   {
     title: 'TECNOLOGIAS INOVADORAS',
@@ -43,7 +43,7 @@ export function CoursesSection() {
               CURSOS EM DESTAQUE
             </h2>
             <p className="text-slate-500 text-sm">
-              Selecione uma das nossas especialidades de alta conversão empresarial e acelere a sua carreira.
+              Seleccione uma das nossas especialidades de alta conversão empresarial e acelere a sua carreira.
             </p>
           </div>
           <Button asChild variant="outline" className="rounded-full font-bold px-8 text-[#312455] hover:bg-[#312455] hover:text-white transition-all h-12 shadow-sm">

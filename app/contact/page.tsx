@@ -39,7 +39,7 @@ export default async function ContactPage() {
             Dê o Próximo Passo na Sua Carreira Connosco
           </h1>
           <p className="text-slate-300 max-w-2xl mx-auto text-base md:text-lg mt-4 text-pretty">
-            Seja para formação individual, programas corporativos sob medida ou parcerias institucionais, estamos prontos para ajudar a alcançar os seus objetivos.
+            Seja para formação individual, programas corporativos sob medida ou parcerias institucionais, estamos prontos para ajudar a alcançar os seus objectivos.
           </p>
         </div>
       </section>

@@ -40,7 +40,7 @@ export default async function GalleryPage() {
                 Cada Imagem é uma Competência Transformada.
               </h1>
               <p className="text-slate-300 max-w-2xl text-base md:text-lg font-light leading-relaxed mt-4 text-pretty">
-                Mais de 10.353 profissionais formados não cabem numa página — cada momento aqui representa projetos reais, pessoas reais, resultados reais. Veja a Prime Academy em ação.
+                Mais de 10.353 profissionais formados não cabem numa página — cada momento aqui representa projectos reais, pessoas reais, resultados reais. Veja a Prime Academy em acção.
               </p>
             </div>
 

@@ -8,7 +8,7 @@ export function TrainersSection() {
   const trainers = [
     {
       name: "Lourença Ricardo",
-      role: "Protocolo & Secretariado de Direção",
+      role: "Protocolo & Secretariado de Direcção",
       image: "/images/trainers/LourençaRicardo.jpeg"
     },
     {

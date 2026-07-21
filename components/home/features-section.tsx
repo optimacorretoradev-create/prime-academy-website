@@ -21,14 +21,14 @@ export function FeaturesSection() {
       icon: Award,
       badge: "VALIDADE NACIONAL",
       title: "Certificação de Prestígio",
-      description: "Diplomas emitidos em conformidade com as diretivas de formação profissional de Angola, altamente valorizados."
+      description: "Diplomas emitidos em conformidade com as directivas de formação profissional de Angola, altamente valorizados."
     },
     {
       id: 2,
       icon: MessageSquare,
       badge: "RESPOSTA IMEDIATA",
-      title: "Suporte Mentorado Direto",
-      description: "Diga adeus a dúvidas sem resposta. Aceda a um canal de suporte individual direto com formadores especialistas."
+      title: "Suporte Mentorado Directo",
+      description: "Diga adeus a dúvidas sem resposta. Aceda a um canal de suporte individual directo com formadores especialistas."
     }
   ]
 
@@ -135,7 +135,7 @@ export function FeaturesSection() {
                       <div className="space-y-2">
                         <div className="flex items-center gap-2 text-[10px] bg-white/5 px-2.5 py-2 rounded-xl border border-white/5">
                           <Check className="w-3.5 h-3.5 text-secondary shrink-0" />
-                          <span className="truncate">Dinâmica: Redação Oficial</span>
+                          <span className="truncate">Dinâmica: Redacção Oficial</span>
                         </div>
                         <div className="flex items-center gap-2 text-[10px] bg-white/5 px-2.5 py-2 rounded-xl border border-white/5">
                           <Check className="w-3.5 h-3.5 text-secondary shrink-0" />
