@@ -78,8 +78,8 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
       ? featuredCourses.map(c => ({
           id: c.id,
           title: c.name,
-          duration: c.duration || '—',
-          level: c.level || '—',
+          duration: c.duration || '-',
+          level: c.level || '-',
           regime: c.online ? 'Online' : 'Híbrido',
           vagasLimitadas: true,
         }))
@@ -127,12 +127,12 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
       <div className="relative z-20 w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 px-6 sm:px-12 lg:px-16 pb-2 lg:pb-8">
 
         {/* Left Column - Text Content */}
-        <div className="lg:col-span-7 flex flex-col justify-end items-start text-left h-full pb-2 pt-32 px-3 lg:justify-end lg:pt-0 lg:pb-12 lg:px-0 lg:pl-8 space-y-4 md:space-y-6 lg:space-y-8">
+        <div className="lg:col-span-7 flex flex-col justify-end items-start text-left h-full pb-2 pt-32 px-3 lg:justify-end lg:pt-0 lg:pb-10 lg:px-0 lg:pl-8 space-y-4 md:space-y-6 lg:space-y-7">
 
           {/* DESKTOP CONTENT (Always visible on desktop, hidden on mobile) */}
           <div className="hidden lg:flex lg:flex-col lg:items-start lg:space-y-8 w-full">
             {/* Badge */}
-            <div className="flex flex-wrap items-center gap-3 pt-2 lg:pt-10">
+            <div className="flex flex-wrap items-center gap-3 pt-2 lg:pt-8">
               <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-white text-[10px] tracking-wider border border-white/10 uppercase">
                 <Star className="h-3 w-3 text-secondary fill-secondary" />
                 <span className="font-semibold">FORMAÇÃO EXECUTIVA EM ANGOLA</span>
@@ -141,31 +141,28 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
 
             <div className="max-w-xl text-left flex flex-col items-start justify-start">
               <div className="overflow-hidden">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-white leading-tight tracking-tight uppercase">
-                  Da Competência à Excelência
-                  <span className="block text-secondary mt-1 lg:mt-2 text-sm sm:text-base md:text-lg lg:text-xl font-medium normal-case tracking-normal text-white/90">
-                    em Novas Tecnologias de Gestão Secretarial
-                  </span>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-white leading-tight tracking-tight">
+                  Da competência à excelência
                 </h1>
                 <p className="text-sm sm:text-base md:text-lg text-white/80 max-w-lg font-light leading-relaxed text-pretty mt-3 lg:mt-4">
-                  Oferecemos formação corporativa especializada em secretariado executivo, gestão administrativa e tecnologias digitais em Angola. Programas práticos, formadores com experiência real — para profissionais ativos no alcance dos objectivos organizacionais.
+                  Formação corporativa especializada em Novas Tecnologias de Gestão Secretarial, focada no desenvolvimento de profissionais de alta performance para o alcance dos objectivos organizacionais.
                 </p>
               </div>
 
               {/* CTAs */}
-              <div className="flex flex-row items-center justify-start gap-3 lg:gap-4 mt-5 md:mt-10 lg:mt-12 w-full relative z-10">
+              <div className="flex flex-row items-center justify-start gap-3 lg:gap-4 mt-4 md:mt-8 lg:mt-8 w-full relative z-10">
                 <Button
                   asChild
                   size="lg"
                   variant="outline"
-                  className="border-secondary/60 text-secondary hover:bg-secondary hover:text-white rounded-full text-xs md:text-base px-4 py-2.5 md:px-8 md:py-5 font-semibold transition-all w-fit"
+                  className="border-secondary/60 text-secondary hover:bg-secondary hover:text-white rounded-xl text-xs md:text-base px-4 py-2.5 md:px-8 md:py-5 font-semibold transition-all w-fit shadow-md hover:shadow-xl"
                 >
-                  <Link href="/gallery">Explorar o Portfólio</Link>
+                  <Link href="/courses">Explorar Soluções</Link>
                 </Button>
                 <Button
                   asChild
                   size="lg"
-                  className="bg-secondary text-white hover:bg-secondary/90 rounded-full shadow-lg hover:shadow-xl transition-all text-xs md:text-base px-4 py-2.5 md:px-8 md:py-5 font-semibold w-fit"
+                  className="bg-secondary text-white hover:bg-secondary/90 rounded-xl shadow-lg hover:shadow-2xl transition-all text-xs md:text-base px-4 py-2.5 md:px-8 md:py-5 font-semibold w-fit"
                 >
                   <Link href="/enroll">Inscreve-se Agora</Link>
                 </Button>
@@ -187,7 +184,7 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
                 >
                   {/* Badge */}
                   <div className="flex flex-wrap items-center gap-3 pt-2">
-                    <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-white text-[10px] tracking-wider border border-white/10 uppercase">
+                    <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-xl text-white text-[10px] tracking-wider border border-white/10 uppercase">
                       <Star className="h-3 w-3 text-secondary fill-secondary" />
                       <span className="font-semibold">FORMAÇÃO EXECUTIVA EM ANGOLA</span>
                     </div>
@@ -195,31 +192,28 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
 
                   <div className="max-w-[90%] md:max-w-[540px] text-left flex flex-col items-start justify-start">
                     <div className="overflow-hidden">
-                      <h1 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight tracking-tight uppercase">
-                        Da Competência à Excelência
-                        <span className="block text-secondary mt-1 text-sm sm:text-base md:text-lg font-medium normal-case tracking-normal text-white/90">
-                          em Novas Tecnologias de Gestão Secretarial
-                        </span>
+                      <h1 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight tracking-tight">
+                        Da competência à excelência
                       </h1>
                       <p className="text-sm sm:text-base md:text-lg text-white/80 max-w-lg font-light leading-relaxed text-pretty mt-3">
-                        Oferecemos formação corporativa especializada em secretariado executivo, gestão administrativa e tecnologias digitais em Angola. Programas práticos, formadores com experiência real — para profissionais ativos no alcance dos objectivos organizacionais.
+                        Oferecemos formação corporativa especializada em secretariado executivo, gestão administrativa e tecnologias digitais em Angola. Programas práticos, formadores com experiência real, para profissionais ativos no alcance dos objectivos organizacionais.
                       </p>
                     </div>
 
                     {/* CTAs */}
-                    <div className="flex flex-row flex-wrap items-center justify-start gap-2 mt-4 w-full relative z-10">
+                    <div className="flex flex-row flex-wrap items-center justify-start gap-2 mt-3 w-full relative z-10">
                       <Button
                         asChild
                         size="sm"
                         variant="outline"
-                        className="border-secondary/60 text-secondary hover:bg-secondary hover:text-white rounded-full text-[10px] md:text-sm px-3 py-2 md:px-8 md:py-5 font-semibold transition-all w-fit"
+                        className="border-secondary/60 text-secondary hover:bg-secondary hover:text-white rounded-xl text-[10px] md:text-sm px-3 py-2 md:px-8 md:py-5 font-semibold transition-all w-fit"
                       >
-                        <Link href="/gallery">Explorar o Portfólio</Link>
+                        <Link href="/courses">Explorar Soluções</Link>
                       </Button>
                       <Button
                         asChild
                         size="sm"
-                        className="bg-secondary text-white hover:bg-secondary/90 rounded-full shadow-lg hover:shadow-xl transition-all text-[10px] md:text-sm px-3 py-2 md:px-8 md:py-5 font-semibold w-fit"
+                        className="bg-secondary text-white hover:bg-secondary/90 rounded-xl shadow-lg hover:shadow-xl transition-all text-[10px] md:text-sm px-3 py-2 md:px-8 md:py-5 font-semibold w-fit"
                       >
                         <Link href="/enroll">Inscreve-se Agora</Link>
                       </Button>
@@ -236,7 +230,7 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
                   className="w-full flex flex-col items-start"
                 >
                   {/* Mobile Featured Card */}
-                  <div className="w-full max-w-[360px] mb-4 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl overflow-hidden flex flex-col">
+                  <div className="w-full max-w-[360px] mb-4 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-xl shadow-xl overflow-hidden flex flex-col">
                     <FeaturedCard
                       title={activeCourse.title}
                       duration={activeCourse.duration}
@@ -255,7 +249,7 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
 
         {/* Right Column - Featured Card */}
         <div className="hidden lg:flex lg:col-span-5 lg:items-end lg:justify-start">
-          <div className="w-full max-w-[360px] mb-24 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl overflow-hidden">
+          <div className="w-full max-w-[360px] mb-24 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-xl shadow-xl overflow-hidden">
             <FeaturedCard
               title={activeCourse.title}
               duration={activeCourse.duration}
@@ -268,7 +262,7 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
       </div>
 
       {/* Slide Pagination Dots */}
-      <div className="hidden sm:flex absolute bottom-10 right-12 md:right-24 z-20 gap-2.5 items-center bg-black/35 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/10 shadow-xl">
+      <div className="hidden sm:flex absolute bottom-10 right-12 md:right-24 z-20 gap-2.5 items-center bg-black/35 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10 shadow-xl">
         {slides.map((_, index) => (
           <button
             key={index}

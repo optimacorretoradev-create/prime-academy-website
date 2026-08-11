@@ -13,14 +13,14 @@ export function AboutSection() {
               QUEM SOMOS
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#312455] leading-tight">
-              Liderança, Inovação e Impacto no Desenvolvimento Corporativo
+              Liderança, inovação e impacto no desenvolvimento corporativo
             </h2>
             <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-              Transformamos Organizações e Carreiras desenvolvendo programas individuais ou para equipas de qualquer dimensão — com diagnóstico de necessidades, formação in-company e relatório de impacto incluídos.
+              Transformamos organizações e carreiras desenvolvendo programas individuais ou para equipas de qualquer dimensão, com diagnóstico de necessidades, formação in-company e relatório de impacto incluídos.
             </p>
             <Link
               href="/about"
-              className="inline-flex items-center gap-2 text-[#8a66a8] hover:text-[#735191] font-bold text-sm transition-colors group"
+              className="inline-flex items-center gap-2 bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-6 py-3 rounded-xl transition-all shadow-md hover:shadow-xl group"
             >
               Conheça a nossa história
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -30,7 +30,7 @@ export function AboutSection() {
           {/* Right - Team Images */}
           <div className="lg:col-span-5">
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-2xl overflow-hidden aspect-[3/4] shadow-lg shadow-[#8a66a8]/10">
+              <div className="rounded-xl overflow-hidden aspect-[3/4] shadow-lg shadow-[#8a66a8]/10">
                 <Image
                   src="/images/7.jpeg"
                   alt="Prime Academy"
@@ -39,7 +39,7 @@ export function AboutSection() {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="rounded-2xl overflow-hidden aspect-[3/4] mt-6 shadow-lg shadow-[#8a66a8]/10">
+              <div className="rounded-xl overflow-hidden aspect-[3/4] mt-6 shadow-lg shadow-[#8a66a8]/10">
                 <Image
                   src="/images/5.jpeg"
                   alt="Prime Academy"

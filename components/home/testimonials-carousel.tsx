@@ -56,7 +56,7 @@ export function TestimonialsCarousel({ testimonials }: { testimonials: any[] }) 
           >
             {testimonials.map((testimonial, idx) => (
               <div key={`mob-${testimonial.id}-${idx}`} className="w-full shrink-0 px-2">
-                <div className="bg-card p-8 rounded-3xl border border-border/80 shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col justify-between space-y-6 relative group min-h-[220px]">
+                <div className="bg-card p-8 rounded-xl border border-border/80 shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col justify-between space-y-6 relative group min-h-[220px]">
                   <div className="absolute top-6 right-6">
                     <Quote className="h-8 w-8 text-accent/15 group-hover:text-accent/30 transition-colors" />
                   </div>
@@ -100,7 +100,7 @@ export function TestimonialsCarousel({ testimonials }: { testimonials: any[] }) 
           >
             {desktopTestimonials.map((testimonial, idx) => (
               <div key={`desk-${testimonial.id}-${idx}`} className="w-1/3 shrink-0 px-4">
-                <div className="bg-card p-8 rounded-3xl border border-border/80 shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col justify-between space-y-6 relative group min-h-[220px]">
+                <div className="bg-card p-8 rounded-xl border border-border/80 shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col justify-between space-y-6 relative group min-h-[220px]">
                   <div className="absolute top-6 right-6">
                     <Quote className="h-8 w-8 text-accent/15 group-hover:text-accent/30 transition-colors" />
                   </div>
@@ -154,7 +154,7 @@ export function TestimonialsCarousel({ testimonials }: { testimonials: any[] }) 
       <div className="text-center mt-8">
         <Link
           href="/contact"
-          className="inline-flex items-center gap-2 bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-6 py-3 rounded-full transition-colors"
+          className="inline-flex items-center gap-2 bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-6 py-3 rounded-xl transition-colors"
         >
           Fale connosco
         </Link>

@@ -88,21 +88,21 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
   const secondaryHighlights = sortedImages.slice(1, 4)
 
   return (
-    <div className="space-y-24">
+    <div className="space-y-12 md:space-y-16">
       {/* ── SECTION 1: LATEST STORIES / DESTAQUES RECENTES ── */}
       {images.length > 0 && (
-        <section className="space-y-8">
+        <section className="space-y-6">
           <div>
-            <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">REGISTOS RECENTES</span>
-            <h2 className="text-2xl md:text-3xl font-black text-[#312455] mt-2 leading-tight">
-              Últimos Destaques da Prime Academy
+            <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">Registos recentes</span>
+            <h2 className="text-xl md:text-2xl font-black text-[#312455] mt-2 leading-tight">
+              Últimos destaques da Prime Academy
             </h2>
             <p className="text-slate-500 text-sm mt-1 max-w-lg">
               Explore os momentos marcantes que moldam o nosso ecossistema — formações intensivas, workshops práticos e celebrações de excelência profissional.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Left side: Main Highlight (Large Card) */}
             {mainHighlight && (
               <div 
@@ -124,19 +124,19 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
                   <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors duration-300" />
                 </div>
 
-                <div className="p-6 sm:p-8 space-y-3">
+                <div className="p-5 sm:p-6 space-y-2.5">
                   <div className="flex items-center gap-2 text-xs text-slate-400">
                     <Calendar className="w-3.5 h-3.5 text-[#8a66a8]" />
                     <span>Destaque Principal</span>
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-black text-[#312455] leading-tight group-hover:text-[#8a66a8] transition-colors duration-300">
+                  <h3 className="text-lg sm:text-xl font-black text-[#312455] leading-tight group-hover:text-[#8a66a8] transition-colors duration-300">
                     {mainHighlight.title}
                   </h3>
                   <p className="text-slate-500 text-sm font-light leading-relaxed">
                     Registo dos momentos marcantes, workshops, celebrações e eventos de excelência que traduzem a evolução prática e a trajectória de sucesso no nosso ecossistema.
                   </p>
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#8a66a8] uppercase pt-2">
-                    <span>Ver em Tamanho Cheio</span>
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#8a66a8] pt-2">
+                    <span>Ver em tamanho cheio</span>
                     <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
                   </div>
                 </div>
@@ -144,14 +144,14 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
             )}
 
             {/* Right side: Secondary highlights stacked vertically */}
-            <div className="lg:col-span-5 flex flex-col justify-between gap-6">
+            <div className="lg:col-span-5 flex flex-col justify-between gap-4">
               {secondaryHighlights.map((img) => (
                 <div 
                   key={img.id}
-                  className="group relative flex flex-col sm:flex-row items-center gap-4 p-4 rounded-3xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+                  className="group relative flex flex-col sm:flex-row items-center gap-3 p-3 rounded-xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
                   onClick={() => setSelectedImage(img)}
                 >
-                  <div className="relative w-full sm:w-40 aspect-video sm:aspect-square overflow-hidden rounded-2xl shrink-0">
+                  <div className="relative w-full sm:w-40 aspect-video sm:aspect-square overflow-hidden rounded-xl shrink-0">
                     <SafeImage
                       src={img.imageUrl}
                       alt={img.title}
@@ -183,12 +183,12 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
       )}
 
       {/* ── SECTION 2: TOP DESTINATIONS / EXPLORAR COLECÇÃO COMPLETA ── */}
-      <section id="galeria-coleccao" className="space-y-10 border-t border-slate-100 pt-16 scroll-mt-20">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <section id="galeria-coleccao" className="space-y-6 border-t border-slate-100 pt-8 md:pt-10 scroll-mt-20">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">COLECÇÃO COMPLETA</span>
-            <h2 className="text-2xl md:text-3xl font-black text-[#312455] mt-2 leading-tight">
-              Galeria Geral de Momentos
+            <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">Coleção completa</span>
+            <h2 className="text-xl md:text-2xl font-black text-[#312455] mt-2 leading-tight">
+              Galeria geral de momentos
             </h2>
           </div>
 
@@ -199,10 +199,10 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
                 key={category}
                 variant={activeCategory === category ? 'default' : 'outline'}
                 onClick={() => handleCategoryChange(category)}
-                className={`rounded-full px-5 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+                className={`rounded-xl px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all duration-300 ${
                   activeCategory === category
                     ? 'bg-[#312455] text-white hover:bg-[#8a66a8]'
-                    : 'border-slate-200 text-slate-600 hover:border-[#8a66a8] hover:text-[#8a66a8]'
+                    : 'border-slate-200 text-slate-600 hover:border-[#8a66a8] hover:text-[#312455] hover:bg-[#f5f0fa]'
                 }`}
               >
                 {category}
@@ -212,7 +212,7 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
         </div>
 
         {/* Dynamic Compact Grelha: Smaller Cards to prevent long scrolling */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
           <AnimatePresence mode="popLayout">
             {paginatedImages.map((image) => (
               <motion.div
@@ -222,7 +222,7 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
-                className="group relative flex flex-col overflow-hidden rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+                className="group relative flex flex-col overflow-hidden rounded-xl bg-white border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer"
                 onClick={() => setSelectedImage(image)}
               >
                 {/* Shorter landscape image frame */}
@@ -248,7 +248,7 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
                 </div>
 
                 {/* Footer with metadata */}
-                <div className="p-3.5 space-y-0.5 bg-white">
+                <div className="p-2.5 space-y-0.5 bg-white">
                   <h4 className="font-bold text-slate-800 text-xs leading-snug group-hover:text-[#8a66a8] transition-colors duration-200 line-clamp-1">
                     {image.title}
                   </h4>
@@ -274,7 +274,7 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 pt-8">
+          <div className="flex items-center justify-center gap-2 pt-6">
             <Button
               variant="outline"
               size="icon"

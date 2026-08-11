@@ -31,22 +31,22 @@ const categories = [
 
 export function CoursesSection() {
   return (
-    <section className="py-20 md:py-28 bg-white relative overflow-hidden">
+    <section className="pt-6 pb-8 md:pt-10 md:pb-12 bg-[#f8f7fb] relative overflow-hidden">
       <div className="container mx-auto px-4 max-w-[1600px]">
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-          <div className="space-y-4">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-5">
+          <div className="space-y-2">
             <span className="text-[11px] sm:text-xs font-bold text-[#8a66a8] uppercase tracking-[0.2em]">
-              FORMAÇÃO DE EXCELÊNCIA
+              FORMAÇÃO EXECUTIVA ESPECIALIZADA
             </span>
-            <h2 className="text-3xl md:text-5xl font-extrabold text-[#312455] tracking-tight uppercase">
-              CURSOS EM DESTAQUE
+            <h2 className="text-2xl md:text-4xl font-extrabold text-[#312455] tracking-tight">
+              Cursos em destaque
             </h2>
             <p className="text-slate-500 text-sm">
               Seleccione uma das nossas especialidades de alta conversão empresarial e acelere a sua carreira.
             </p>
           </div>
-          <Button asChild variant="outline" className="rounded-full font-bold px-8 text-[#312455] hover:bg-[#312455] hover:text-white transition-all h-12 shadow-sm">
+          <Button asChild variant="outline" className="rounded-xl font-bold px-6 text-[#312455] hover:bg-[#312455] hover:text-white transition-all h-10 shadow-md hover:shadow-xl">
             <Link href="/courses" className="flex items-center gap-2">
               Ver Todos os Cursos
               <ArrowRight className="h-4 w-4" />
@@ -55,7 +55,7 @@ export function CoursesSection() {
         </div>
 
         {/* 4 Course Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {categories.map((cat, index) => (
             <motion.div
               key={index}
@@ -66,19 +66,19 @@ export function CoursesSection() {
               className="group"
             >
               <Link href={`/courses?category=${encodeURIComponent(cat.title)}`} className="block h-full">
-                <Card className="h-full flex flex-col border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 rounded-3xl overflow-hidden bg-white">
-                <div className="h-48 overflow-hidden">
+                <Card className="h-full flex flex-col border border-slate-100 shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden bg-white">
+                <div className="h-32 overflow-hidden">
                   <img src={cat.image} alt={cat.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
                   
-                  <CardHeader>
-                    <CardTitle className="text-xl font-bold text-[#312455]">{cat.title}</CardTitle>
+                  <CardHeader className="p-3 pb-2">
+                    <CardTitle className="text-base font-bold text-[#312455] leading-snug">{cat.title}</CardTitle>
                   </CardHeader>
                   
-                  <CardContent className="flex-1">
-                    <ul className="space-y-3">
+                  <CardContent className="flex-1 p-3 pt-0">
+                    <ul className="space-y-1.5">
                       {cat.items.map((item, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
+                        <li key={i} className="flex items-start gap-2 text-xs leading-snug text-slate-600">
                           <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#8a66a8] shrink-0" />
                           {item}
                         </li>
@@ -86,8 +86,8 @@ export function CoursesSection() {
                     </ul>
                   </CardContent>
 
-                  <CardFooter className="pt-6 px-6 pb-6">
-                    <Button asChild className="w-full bg-[#8a66a8] hover:bg-[#312455] text-white rounded-full font-bold h-12 shadow-sm transition-all">
+                  <CardFooter className="pt-3 px-3 pb-3 justify-start">
+                    <Button asChild className="w-fit justify-center bg-[#8a66a8] hover:bg-[#312455] text-white rounded-xl font-bold h-9 px-4 shadow-md hover:shadow-xl transition-all">
                       <span>Saber mais</span>
                     </Button>
                   </CardFooter>

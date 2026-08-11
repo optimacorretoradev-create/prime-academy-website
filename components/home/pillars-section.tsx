@@ -85,7 +85,7 @@ export function PillarsSection() {
               <button
                 key={pillar.id}
                 onClick={() => setActivePillar(pillar.id)}
-                className={`w-full text-left p-4 rounded-2xl border transition-all duration-300 flex items-center justify-between group ${activePillar === pillar.id 
+                className={`w-full text-left p-4 rounded-xl border transition-all duration-300 flex items-center justify-between group ${activePillar === pillar.id 
                   ? 'bg-primary text-white shadow-lg' 
                   : 'bg-slate-50 hover:bg-slate-100 border-slate-100'}`}
               >
@@ -112,7 +112,7 @@ export function PillarsSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="bg-white border border-slate-100 rounded-3xl p-8 shadow-sm space-y-6"
+                className="bg-white border border-slate-100 rounded-xl p-8 shadow-sm space-y-6"
               >
                 <div className="flex justify-between items-start">
                    <Badge className="bg-secondary/10 text-secondary border-none">Foco: Futuro Exponencial</Badge>

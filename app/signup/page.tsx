@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { SignupForm } from '@/components/login/signup-form'
-import { LoginRightPanel } from '@/components/login/login-right-panel'
 
 export const metadata = {
   title: 'Criar Conta - Prime Academy',
@@ -37,11 +36,11 @@ function SignupFormSkeleton() {
 
 export default function SignupPage() {
   return (
-    <div className="min-h-screen flex bg-[#fafaf8] relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-[#312455] relative overflow-hidden">
       {/* Floating Back to Home button */}
       <Link 
         href="/" 
-        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600 hover:text-slate-900 transition-colors bg-white/80 backdrop-blur-md px-4 py-2.5 rounded-full border border-slate-200/60 shadow-sm hover:shadow-md active:scale-95"
+        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600 hover:text-slate-900 transition-colors bg-white/80 backdrop-blur-md px-4 py-2.5 rounded-xl border border-slate-200/60 shadow-sm hover:shadow-md active:scale-95"
       >
         ← Voltar ao início
       </Link>
@@ -60,8 +59,6 @@ export default function SignupPage() {
         </Suspense>
       </div>
 
-      {/* Right Side - Image/Branding Info */}
-      <LoginRightPanel />
     </div>
   )
 }

@@ -63,25 +63,25 @@ export function HowToReachUs() {
   ]
 
   return (
-    <section className="py-16 md:py-24 bg-[#f8f7fb]">
+    <section className="py-10 md:py-16 bg-[#f8f7fb]">
       <div className="container mx-auto px-4 max-w-6xl">
 
         {/* ── Section Title ─────────────────────────────────────────────── */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-6">
           <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">
             Localização
           </span>
-          <h2 className="text-3xl md:text-4xl font-black text-[#312455] mt-2">
+          <h2 className="text-2xl md:text-3xl font-black text-[#312455] mt-2">
             Como Chegar até Nós
           </h2>
           <div className="mx-auto mt-3 w-16 h-1 rounded-full bg-[#8a66a8]" />
-          <p className="text-slate-500 text-sm mt-4 max-w-md mx-auto leading-relaxed">
+          <p className="text-slate-500 text-sm mt-3 max-w-md mx-auto leading-relaxed">
             Utilize o planeador de rota para obter as melhores indicações até às nossas instalações em Luanda.
           </p>
         </div>
 
         {/* ── Route Planner Bar ─────────────────────────────────────────── */}
-        <div className="bg-white rounded-2xl shadow-md border border-slate-100 p-3 sm:p-4 mb-5 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <div className="bg-white rounded-2xl shadow-md border border-slate-100 p-2.5 sm:p-3 mb-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
 
           {/* Label */}
           <div className="flex items-center gap-3 shrink-0 px-1">
@@ -148,7 +148,7 @@ export function HowToReachUs() {
         </div>
 
         {/* ── Map Container ─────────────────────────────────────────────── */}
-        <div className="relative w-full h-[460px] md:h-[540px] overflow-hidden rounded-3xl shadow-lg border border-slate-100">
+        <div className="relative w-full h-[360px] md:h-[430px] overflow-hidden rounded-2xl shadow-lg border border-slate-100">
 
           {/* iframe */}
           <iframe

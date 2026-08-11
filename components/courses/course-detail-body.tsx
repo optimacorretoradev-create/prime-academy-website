@@ -16,16 +16,25 @@ import { toast } from 'sonner'
 function getCategoryLabel(category: string): string {
   switch (category) {
     case 'GESTAOADMINISTRATIVADIGITAL':
-      return 'Gestão Administrativa Digital'
+      return 'Gestão administrativa digital'
     case 'LIDERANCAECOMUNICACAO':
-      return 'Liderança e Comunicação'
+      return 'Liderança e comunicação'
     case 'SECRETARIADOESTRATEGICO':
-      return 'Secretariado Estratégico'
+      return 'Secretariado estratégico'
     case 'TECNOLOGIASINOVADORAS':
-      return 'Tecnologias Inovadoras'
+      return 'Tecnologias inovadoras'
     default:
       return category
   }
+}
+
+function formatDisplayTitle(value: string): string {
+  return value
+    .trim()
+    .replace(/\s+/g, ' ')
+    .split(' ')
+    .map((word) => word ? `${word.charAt(0).toUpperCase()}${word.slice(1).toLowerCase()}` : '')
+    .join(' ')
 }
 
 
@@ -69,6 +78,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
   const backLabel = isDashboard ? 'Explorar Cursos' : 'Cursos'
   const priceDisplay = getCoursePriceDisplay(course.id, course.price)
   const hasPrice = Boolean(priceDisplay)
+  const displayTitle = formatDisplayTitle(course.name)
 
   // Breadcrumb usado apenas no Dashboard
   const dashboardBreadcrumb = isDashboard ? (
@@ -90,8 +100,11 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
       <div className="relative z-10 container mx-auto px-4">
         {/* Conteúdo da Hero */}
         <div className="mt-2 pt-6">
+          <span className="inline-block text-[11px] sm:text-xs font-bold uppercase tracking-[0.2em] text-white/70 mb-3">
+            Detalhes do curso
+          </span>
           <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight max-w-3xl">
-            {course.name}
+            {displayTitle}
           </h1>
         </div>
 
@@ -102,7 +115,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
             {backLabel}
           </Link>
           <ChevronRight className="h-4 w-4 text-white/50" />
-          <span className="text-white font-semibold truncate">{course.name}</span>
+          <span className="text-white font-semibold truncate">{displayTitle}</span>
         </div>
       </div>
     </section>
@@ -132,7 +145,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
               : 'text-3xl md:text-4xl font-extrabold text-primary mb-4 leading-tight'
           }
         >
-          {course.name}
+          {displayTitle}
         </h1>
         <p
           className={
@@ -190,7 +203,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
               : 'text-2xl font-bold text-primary mb-6'
           }
         >
-          Conteúdo Programático
+          Conteúdo programático
         </h2>
         <div className="pb-4">
           {syllabus ? (
@@ -304,7 +317,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
                   : 'w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl h-12 text-sm font-semibold shadow-md cursor-pointer'
               }
             >
-              <Link href={`/enroll?course=${course.id}`}>Inscrever-se Agora</Link>
+              <Link href={`/enroll?course=${course.id}`}>Inscrever-se agora</Link>
             </Button>
           )}
         </div>

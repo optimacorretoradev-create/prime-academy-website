@@ -68,7 +68,7 @@ export function FeaturesSection() {
             whileInView={{ opacity: 1, scale: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="lg:col-span-6 bg-gradient-to-br from-primary via-primary/95 to-[#241a40] rounded-3xl p-6 text-white relative overflow-hidden shadow-2xl border border-primary/20 min-h-[420px] flex flex-col justify-between group"
+            className="lg:col-span-6 bg-gradient-to-br from-primary via-primary/95 to-[#241a40] rounded-xl p-6 text-white relative overflow-hidden shadow-2xl border border-primary/20 min-h-[420px] flex flex-col justify-between group"
           >
             {/* Ambient glows behind the dashboard */}
             <div className="absolute -top-10 -right-10 w-48 h-48 bg-secondary/15 rounded-full blur-2xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
@@ -100,7 +100,7 @@ export function FeaturesSection() {
                     className="w-full grid grid-cols-1 sm:grid-cols-12 gap-4 items-stretch"
                   >
                     {/* circular progress chart */}
-                    <div className="sm:col-span-5 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex flex-col justify-between space-y-4">
+                    <div className="sm:col-span-5 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-4 flex flex-col justify-between space-y-4">
                       <div className="space-y-1">
                         <span className="text-[8px] text-white/40 uppercase tracking-widest">Saber Fazer</span>
                         <h5 className="text-xs font-bold">Casos de Sucesso</h5>
@@ -126,7 +126,7 @@ export function FeaturesSection() {
                     </div>
 
                     {/* interactive task validation console */}
-                    <div className="sm:col-span-7 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex flex-col justify-between space-y-3">
+                    <div className="sm:col-span-7 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-4 flex flex-col justify-between space-y-3">
                       <div>
                         <span className="text-[8px] text-white/40 uppercase tracking-widest">Exercícios e Dinâmicas</span>
                         <h5 className="text-xs font-bold pt-0.5">Metodologia Laboratorial</h5>
@@ -160,7 +160,7 @@ export function FeaturesSection() {
                     transition={{ duration: 0.35, ease: "easeOut" }}
                     className="w-full flex items-center justify-center"
                   >
-                    <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 max-w-sm w-full flex flex-col items-center text-center space-y-4 shadow-xl">
+                    <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 max-w-sm w-full flex flex-col items-center text-center space-y-4 shadow-xl">
                       {/* Gold Badge */}
                       <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-yellow-600 flex items-center justify-center shadow-lg relative group-hover:rotate-12 transition-transform duration-500">
                         <div className="absolute inset-1 rounded-full border border-white/20 border-dashed" />
@@ -191,7 +191,7 @@ export function FeaturesSection() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -15, scale: 0.95 }}
                     transition={{ duration: 0.35, ease: "easeOut" }}
-                    className="w-full max-w-md bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex flex-col gap-3 shadow-xl"
+                    className="w-full max-w-md bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-4 flex flex-col gap-3 shadow-xl"
                   >
                     <div className="flex items-center justify-between border-b border-white/10 pb-2">
                       <div className="flex items-center gap-2">
@@ -242,7 +242,7 @@ export function FeaturesSection() {
             whileInView={{ opacity: 1, scale: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="lg:col-span-6 bg-slate-50/70 border border-slate-100/80 rounded-3xl p-6 md:p-8 flex flex-col justify-between min-h-[420px] shadow-sm relative"
+            className="lg:col-span-6 bg-slate-50/70 border border-slate-100/80 rounded-xl p-6 md:p-8 flex flex-col justify-between min-h-[420px] shadow-sm relative"
           >
             <div className="space-y-5">
                 <div className="space-y-2 text-left">
@@ -262,13 +262,13 @@ export function FeaturesSection() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className="w-full text-left flex gap-3.5 items-start p-3 rounded-2xl border transition-all duration-300 relative group"
+                      className="w-full text-left flex gap-3.5 items-start p-3 rounded-xl border transition-all duration-300 relative group"
                     >
                       {/* Active Sliding Tab Background Pill */}
                       {isActive && (
                         <motion.div
                           layoutId="activeTabHighlight"
-                          className="absolute inset-0 bg-white border border-slate-200/50 rounded-2xl -z-10 shadow-sm"
+                          className="absolute inset-0 bg-white border border-slate-200/50 rounded-xl -z-10 shadow-sm"
                           transition={{ type: "spring", stiffness: 350, damping: 30 }}
                         />
                       )}

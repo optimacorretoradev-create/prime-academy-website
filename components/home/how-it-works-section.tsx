@@ -47,9 +47,9 @@ export function HowItWorksSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-slate-50 p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 text-center flex flex-col items-center gap-4"
+                className="bg-slate-50 p-8 rounded-xl border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 text-center flex flex-col items-center gap-4"
               >
-                <div className="w-16 h-16 rounded-2xl bg-[#8a66a8]/10 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-xl bg-[#8a66a8]/10 flex items-center justify-center">
                   <Icon className="h-8 w-8 text-[#8a66a8]" />
                 </div>
                 <h3 className="text-lg font-black text-[#312455]">{step.title}</h3>

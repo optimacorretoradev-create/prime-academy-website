@@ -20,7 +20,7 @@ import { usePathname } from 'next/navigation'
 
 const navLinks = [
   { href: '/about', label: 'Sobre a Prime' },
-  { href: '/courses', label: 'Formação' },
+  { href: '/courses', label: 'Soluções' },
   { href: '/gallery', label: 'Galeria de Projectos' },
   { href: '/contact', label: 'Contacto' },
 ]
@@ -106,7 +106,7 @@ export function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`relative z-10 px-4 py-2 text-sm font-bold transition-all duration-300 rounded-full hover:scale-105 flex items-center justify-center ${
+                  className={`relative z-10 px-4 py-2 text-sm font-bold transition-all duration-300 rounded-xl hover:scale-105 flex items-center justify-center ${
                     isActive ? 'text-white' : 'text-slate-200 hover:text-white hover:bg-white/10'
                   }`}
                 >
@@ -114,7 +114,7 @@ export function Header() {
                   {isActive && (
                     <motion.div
                       layoutId="activeNavIndicator"
-                      className="absolute inset-0 bg-[#8a66a8]/25 border border-[#8a66a8]/40 rounded-full -z-10 shadow-[0_2px_8px_rgba(138,102,168,0.2)]"
+                      className="absolute inset-0 bg-[#8a66a8]/25 border border-[#8a66a8]/40 rounded-xl -z-10 shadow-[0_2px_8px_rgba(138,102,168,0.2)]"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -139,13 +139,13 @@ export function Header() {
                   <Button
                     asChild
                     variant="ghost"
-                    className="ml-2 text-slate-200 hover:text-white hover:bg-white/10 rounded-full font-bold cursor-pointer text-sm hover:scale-105 transition-all"
+                    className="ml-2 text-slate-200 hover:text-white hover:bg-white/10 rounded-xl font-bold cursor-pointer text-sm hover:scale-105 transition-all"
                   >
                     <Link href="/login">Entrar</Link>
                   </Button>
                   <Button
                     asChild
-                    className="bg-[#8a66a8] text-white hover:bg-[#8a66a8]/90 rounded-full shadow-md ml-2 font-bold px-5 text-sm cursor-pointer border border-[#8a66a8]/20 hover:scale-105 transition-all"
+                    className="bg-[#8a66a8] text-white hover:bg-[#8a66a8]/90 rounded-xl shadow-md ml-2 font-bold px-5 text-sm cursor-pointer border border-[#8a66a8]/20 hover:scale-105 transition-all"
                   >
                     <Link href="/signup">Criar Conta</Link>
                   </Button>
@@ -155,7 +155,7 @@ export function Header() {
 
             {/* Mobile Menu Button (White text) */}
             <button
-              className="lg:hidden p-2 rounded-full text-white hover:bg-white/10 transition-colors cursor-pointer"
+              className="lg:hidden p-2 rounded-xl text-white hover:bg-white/10 transition-colors cursor-pointer"
               onClick={() => setIsOpen(!isOpen)}
               aria-label={isOpen ? 'Fechar menu' : 'Abrir menu'}
             >
@@ -187,7 +187,7 @@ export function Header() {
             >
               {/* Close button at the top */}
               <button
-                className="absolute top-5 right-4 p-2 rounded-full text-white hover:bg-white/10 transition-colors"
+                className="absolute top-5 right-4 p-2 rounded-xl text-white hover:bg-white/10 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 <X className="h-8 w-8" />
@@ -269,7 +269,7 @@ export function Header() {
                       </Button>
                       <Button
                         asChild
-                        className="w-full bg-[#8a66a8] text-white hover:bg-[#8a66a8]/90 rounded-full font-bold cursor-pointer transition-all py-6 text-lg hover:scale-[1.02]"
+                        className="w-full bg-[#8a66a8] text-white hover:bg-[#8a66a8]/90 rounded-xl font-bold cursor-pointer transition-all py-6 text-lg hover:scale-[1.02]"
                       >
                         <Link href="/signup" onClick={() => setIsOpen(false)}>
                           Criar Conta Gratuita

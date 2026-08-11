@@ -14,7 +14,7 @@ export function FeaturedCard({ title, duration, level, regime, vagasLimitadas = 
     <>
       {/* Card Header */}
       <div className="bg-[#312455]/80 px-4 pt-4 pb-3">
-        <span className="text-[10px] tracking-wider bg-white/20 px-2 py-0.5 rounded-full uppercase inline-block font-bold text-white">
+        <span className="text-[10px] tracking-wider bg-white/20 px-2 py-0.5 rounded-xl uppercase inline-block font-bold text-white">
           <Star className="h-3 w-3 inline-block mr-1 fill-secondary text-secondary" />
           EM DESTAQUE
         </span>

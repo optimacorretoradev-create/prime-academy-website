@@ -21,7 +21,7 @@ const DESAFIOS = [
 
 export function ChallengesSection() {
   return (
-    <section className="relative py-12 md:py-16 bg-gray-50">
+    <section className="relative pt-4 pb-6 md:pt-8 md:pb-10 bg-gray-50">
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
         <div className="max-w-2xl mx-auto text-center space-y-4 mb-10 md:mb-14">
@@ -29,10 +29,10 @@ export function ChallengesSection() {
             DESAFIOS DO MERCADO
           </span>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#312455] leading-tight">
-            O que observamos e queremos elevar
+            Identificámos os Desafios. Construímos as Soluções.
           </h2>
           <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-            Procuramos dar resposta aos desafios na formação e atualização do capital humano de forma diferenciado e contextual.
+            Angola tem profissionais com potencial. A Prime Academy existe para ajudar organizações e pessoas a transformar esse potencial em resultados reais.
           </p>
         </div>
 
@@ -43,7 +43,7 @@ export function ChallengesSection() {
             return (
               <div
                 key={idx}
-                className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                className="bg-white rounded-xl p-6 md:p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
               >
                 <div className="w-10 h-10 rounded-xl bg-[#f5f0fa] flex items-center justify-center mb-4">
                   <Icon className="h-5 w-5 text-[#8a66a8]" />
@@ -63,9 +63,9 @@ export function ChallengesSection() {
         <div className="text-center mt-10 md:mt-14">
           <Link
             href="/courses"
-            className="inline-flex items-center gap-2 bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-6 py-3 rounded-full transition-colors"
+            className="inline-flex items-center gap-2 bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-6 py-3 rounded-xl transition-colors"
           >
-            Descubra as nossas soluções
+            Descubra os nossos programas
           </Link>
         </div>
       </div>
