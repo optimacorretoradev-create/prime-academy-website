@@ -142,7 +142,7 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
             <div className="max-w-xl text-left flex flex-col items-start justify-start">
               <div className="overflow-hidden">
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-white leading-tight tracking-tight">
-                  Da competência à excelência
+                  Da Competência à Excelência
                 </h1>
                 <p className="text-sm sm:text-base md:text-lg text-white/80 max-w-lg font-light leading-relaxed text-pretty mt-3 lg:mt-4">
                   Formação corporativa especializada em Novas Tecnologias de Gestão Secretarial, focada no desenvolvimento de profissionais de alta performance para o alcance dos objectivos organizacionais.
