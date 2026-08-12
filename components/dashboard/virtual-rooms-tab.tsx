@@ -558,40 +558,34 @@ export function VirtualRoomsTab({ isInstructor, availableCourses, activeTab: ext
       {/* HEADER SECTION - Minimalist top bar (hidden on mobile, visible on desktop) */}
       <div className="hidden md:flex items-center justify-between border-b border-slate-100 pb-4">
         <div className="flex items-center gap-6">
-          <div className="flex gap-4 text-xs font-semibold">
+          <div className="flex gap-3 text-sm font-semibold">
             <button
               onClick={() => {
                 setActiveTab('live')
                 setShowScheduleForm(false)
               }}
-              className={`relative py-1.5 transition-colors cursor-pointer ${
-                activeTab === 'live' ? 'text-[#312455] font-black' : 'text-slate-400 hover:text-slate-600'
+              className={`px-4 py-2 rounded-lg transition-all cursor-pointer flex items-center gap-2 ${
+                activeTab === 'live'
+                  ? 'bg-[#312455] text-white shadow-sm font-black'
+                  : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-100'
               }`}
             >
+              <Play className="h-4 w-4" />
               Online
-              {activeTab === 'live' && (
-                <motion.div
-                  layoutId="tab-underline"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#312455]"
-                />
-              )}
             </button>
             <button
               onClick={() => {
                 setActiveTab('presencial')
                 setShowScheduleForm(false)
               }}
-              className={`relative py-1.5 transition-colors cursor-pointer ${
-                activeTab === 'presencial' ? 'text-[#312455] font-black' : 'text-slate-400 hover:text-slate-600'
+              className={`px-4 py-2 rounded-lg transition-all cursor-pointer flex items-center gap-2 ${
+                activeTab === 'presencial'
+                  ? 'bg-[#312455] text-white shadow-sm font-black'
+                  : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-100'
               }`}
             >
+              <MapPin className="h-4 w-4" />
               Presencial
-              {activeTab === 'presencial' && (
-                <motion.div
-                  layoutId="tab-underline"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#312455]"
-                />
-              )}
             </button>
           </div>
         </div>
@@ -599,10 +593,11 @@ export function VirtualRoomsTab({ isInstructor, availableCourses, activeTab: ext
         {isInstructor && (
           <Button
             onClick={() => setShowScheduleForm(!showScheduleForm)}
-            variant="ghost"
-            className="text-xs font-bold text-slate-500 hover:text-[#312455] flex items-center gap-1 cursor-pointer h-8 px-2.5 rounded-lg border border-slate-200/50 hover:bg-slate-50 transition-all"
+            className={`text-xs font-bold text-white flex items-center gap-2 h-10 px-3 rounded-lg transition-all ${
+              showScheduleForm ? 'bg-red-600 hover:bg-red-700' : 'bg-gradient-to-r from-[#312455] to-[#8a66a8] hover:from-[#4a347c] hover:to-[#9f7bbd]'
+            }`}
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="h-4 w-4" />
             {showScheduleForm ? 'Cancelar' : 'Agendar Aula'}
           </Button>
         )}
@@ -779,11 +774,19 @@ export function VirtualRoomsTab({ isInstructor, availableCourses, activeTab: ext
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-center py-16"
+              className="flex items-center justify-center py-20 min-h-[36vh]"
             >
-              <p className="text-xs font-semibold text-slate-400 tracking-wide animate-pulse">
-                {activeTab === 'live' ? 'Nenhuma aula online agendada de momento.' : 'Nenhuma aula presencial agendada de momento.'}
-              </p>
+              <div className="text-center">
+                <p className="text-sm font-extrabold text-[#312455] mb-2">
+                  {activeTab === 'live' ? 'Nenhuma aula online agendada' : 'Nenhuma aula presencial agendada'}
+                </p>
+                <p className="text-xs font-semibold text-slate-400 tracking-wide mb-4">
+                  {activeTab === 'live'
+                    ? 'No momento não existem aulas online para os seus cursos ativos.'
+                    : 'No momento não existem aulas presenciais agendadas para os seus cursos ativos.'}
+                </p>
+                {/* no CTA buttons here by design; keep message concise */}
+              </div>
             </motion.div>
           ) : (
             <motion.div
