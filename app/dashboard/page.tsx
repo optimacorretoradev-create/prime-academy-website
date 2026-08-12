@@ -26,6 +26,10 @@ import { toast } from 'sonner'
 import type { Course } from '@/lib/hygraph'
 import { supabase } from '@/lib/supabase'
 import { VirtualRoomsTab } from '@/components/dashboard/virtual-rooms-tab'
+import { useCourses } from '@/hooks/use-courses'
+import { useActivePrograms } from '@/hooks/use-active-programs'
+import { useStudents } from '@/hooks/use-students'
+import { usePdfMaterials } from '@/hooks/use-pdf-materials'
 
 
 
@@ -155,6 +159,7 @@ function DashboardPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { user, isLoading, logout } = useAuth()
+  const isInstructor = user?.role === 'admin'
   
   const [activeTab, setActiveTab] = useState<DashboardTab>('courses')
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -305,9 +310,18 @@ function DashboardPageContent() {
     }, 700)
   }
   
-  // PDF Materials state
-  const [pdfMaterials, setPdfMaterials] = useState<PDFMaterial[]>([])
-  
+  // React Query: cursos do catálogo (shared cache entre explore, active programs e PDFs)
+  const { data: exploreCourses = [] } = useCourses()
+
+  // React Query: programas ativos do utilizador
+  const { data: activeCourses = [] } = useActivePrograms(user?.id, user?.role)
+
+  // React Query: lista de formandos (apenas admin)
+  const { data: students = [], isLoading: isLoadingStudents } = useStudents(isInstructor)
+
+  // React Query: materiais PDF
+  const { data: pdfMaterials = [] } = usePdfMaterials()
+
   // Form state for PDF upload
   const [newPdfTitle, setNewPdfTitle] = useState('')
   const [newPdfDesc, setNewPdfDesc] = useState('')
@@ -317,16 +331,12 @@ function DashboardPageContent() {
   const [isUploadingPdf, setIsUploadingPdf] = useState(false)
 
   // Explore tab state
-  const [exploreCourses, setExploreCourses] = useState<Course[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [isFiltering, setIsFiltering] = useState(false)
   const [loadingCategory, setLoadingCategory] = useState<string | null>(null)
   const [searchTimer, setSearchTimer] = useState<NodeJS.Timeout | null>(null)
   const [exploreSearch, setExploreSearch] = useState('')
   const [exploreCategory, setExploreCategory] = useState('Todos')
-  const [activeCourses, setActiveCourses] = useState<ActiveProgram[]>([])
-  const [students, setStudents] = useState<{ id: string; name: string; email: string; course: string; progress: number; status: string }[]>([])
-  const [isLoadingStudents, setIsLoadingStudents] = useState(false)
   const [showExploreHeader, setShowExploreHeader] = useState(true)
   const [isHeaderUserClosed, setIsHeaderUserClosed] = useState(false)
   const isHeaderVisible = useScrollDirection()
@@ -346,225 +356,14 @@ function DashboardPageContent() {
     }
   }, [isHeaderVisible, isHeaderUserClosed])
 
+  // Inicializar selectedCourseId com o primeiro curso disponível
   useEffect(() => {
-    async function loadActiveCourses() {
-      try {
-        // Blindagem total contra IDs indefinidos ou strings "undefined"
-        if (!user || !user.id || user.id === 'undefined' || typeof user.id !== 'string') {
-          return;
-        }
-
-        const isInstructor = user.role === 'admin';
-
-        // 1. Busca simples nas matrículas usando a coluna real do diagrama
-        let matriculas: any[] = [];
-        if (isInstructor) {
-          // Admin/Instructor gets all matriculas
-          const { data, error: matriculaError } = await supabase
-            .from('matriculas')
-            .select('id, curso_id_catalogo, progresso_percentagem');
-
-          if (matriculaError) {
-            return;
-          }
-          matriculas = data || [];
-        } else {
-          // Student gets own matriculas
-          const { data, error: matriculaError } = await supabase
-            .from('matriculas')
-            .select('id, curso_id_catalogo, progresso_percentagem')
-            .eq('perfil_id', user.id);
-
-          if (matriculaError) {
-            return;
-          }
-          matriculas = data || [];
-        }
-
-        if (!matriculas || matriculas.length === 0) {
-          setActiveCourses([]);
-          return;
-        }
-
-        // 2. Buscar todos os cursos do catálogo do Hygraph para obter os detalhes
-        // Usa a API route servidor para garantir que o token de autenticação está disponível
-        const coursesRes = await fetch('/api/courses')
-        const allCatalogCourses: Course[] = coursesRes.ok ? await coursesRes.json() : [];
-
-        let coursesWithDetails: (ActiveProgram | null)[] = [];
-
-        if (isInstructor) {
-          // Group by curso_id_catalogo and average progress
-          const uniqueCoursesMap: Record<string, { catalogId: string, progresso_total: number, count: number }> = {};
-          matriculas.forEach(item => {
-            if (!item.curso_id_catalogo) return;
-            if (!uniqueCoursesMap[item.curso_id_catalogo]) {
-              uniqueCoursesMap[item.curso_id_catalogo] = {
-                catalogId: item.curso_id_catalogo,
-                progresso_total: item.progresso_percentagem || 0,
-                count: 1
-              };
-            } else {
-              uniqueCoursesMap[item.curso_id_catalogo].progresso_total += item.progresso_percentagem || 0;
-              uniqueCoursesMap[item.curso_id_catalogo].count += 1;
-            }
-          });
-
-          coursesWithDetails = Object.values(uniqueCoursesMap).map(item => {
-            const matchedCourse = allCatalogCourses.find(
-              (c) => c.id === item.catalogId
-            );
-
-            if (!matchedCourse) {
-              return null;
-            }
-
-            const totalAulas = 12; // Fallback as lessons field was removed
-            const avgProgress = Math.round(item.progresso_total / item.count);
-
-            return {
-              id: matchedCourse.id,
-              name: matchedCourse.name,
-              description: matchedCourse.description,
-              image: matchedCourse.image,
-              category: matchedCourse.category,
-              progress: avgProgress,
-              totalLessons: totalAulas,
-              completedLessons: Math.floor((avgProgress * totalAulas) / 100),
-              online: matchedCourse.online || false,
-              catalogId: matchedCourse.id
-            };
-          });
-        } else {
-          // Mapear dados e buscar os detalhes de cada curso matriculado para o aluno
-          coursesWithDetails = matriculas.map((item) => {
-            if (!item.curso_id_catalogo) return null;
-
-            // Encontrar o curso correspondente no catálogo do Hygraph (por id)
-            const matchedCourse = allCatalogCourses.find(
-              (c) => c.id === item.curso_id_catalogo
-            );
-
-            if (!matchedCourse) {
-              return null;
-            }
-
-            const totalAulas = 12; // Fallback as lessons field was removed
-
-            return {
-              id: matchedCourse.id,
-              name: matchedCourse.name,
-              description: matchedCourse.description,
-              image: matchedCourse.image,
-              category: matchedCourse.category,
-              progress: item.progresso_percentagem || 0,
-              totalLessons: totalAulas,
-              completedLessons: Math.floor(((item.progresso_percentagem || 0) * totalAulas) / 100),
-              online: matchedCourse.online || false,
-              catalogId: matchedCourse.id
-            };
-          });
-        }
-
-        // Filtrar registros nulos e atualizar o estado global dos cursos ativos
-        const validCourses = coursesWithDetails.filter(Boolean) as ActiveProgram[];
-        setActiveCourses(validCourses);
-
-      } catch (err) {
-      }
+    if (exploreCourses && exploreCourses.length > 0) {
+      setSelectedCourseId(exploreCourses[0].id)
     }
-
-    loadActiveCourses()
-  }, [user, user?.id, user?.role])
-
-  // Load real students under tutelage for admin/instructor view
-  useEffect(() => {
-    async function loadStudents() {
-      if (!user || user.role !== 'admin') return
-      setIsLoadingStudents(true)
-      try {
-        const { data: matriculas, error: matriculasError } = await supabase
-          .from('matriculas')
-          .select('id, perfil_id, curso_id_catalogo, curso_nome, progresso_percentagem')
-
-        if (matriculasError) {
-          return
-        }
-
-        if (!matriculas || matriculas.length === 0) {
-          setStudents([])
-          return
-        }
-
-        const perfilIds = Array.from(new Set(matriculas.map(m => m.perfil_id).filter(Boolean)))
-        let profilesMap: Record<string, { nome: string; email: string }> = {}
-
-        if (perfilIds.length > 0) {
-          const { data: profilesData, error: profilesError } = await supabase
-            .from('perfis')
-            .select('id, nome, email')
-            .in('id', perfilIds)
-
-          if (profilesError) {
-            // Error fetching profiles
-          } else if (profilesData) {
-            profilesData.forEach(p => {
-              profilesMap[p.id] = { nome: p.nome, email: p.email }
-            })
-          }
-        }
-
-        const coursesRes2 = await fetch('/api/courses')
-        const allCatalogCourses: Course[] = coursesRes2.ok ? await coursesRes2.json() : []
-
-        const mapped = matriculas.map(m => {
-          const profile = m.perfil_id ? profilesMap[m.perfil_id] : null
-          const matchedCourse = allCatalogCourses.find(
-            (c) => c.id === m.curso_id_catalogo
-          )
-
-          const progressVal = m.progresso_percentagem || 0
-          const statusText = progressVal >= 100 ? 'Concluído' : 'Ativo'
-
-          return {
-            id: m.id || Math.random().toString(),
-            name: profile?.nome || 'Utilizador Inativo',
-            email: profile?.email || 'N/A',
-            course: matchedCourse?.name || m.curso_nome || 'Curso Sem Nome',
-            progress: progressVal,
-            status: statusText
-          }
-        })
-
-        setStudents(mapped)
-      } catch (err) {
-        // Runtime error loading students
-      } finally {
-        setIsLoadingStudents(false)
-      }
-    }
-
-    loadStudents()
-  }, [user, user?.role])
+  }, [exploreCourses])
 
   const [enrolledCourses, setEnrolledCourses] = useState<string[]>([])
-
-  // Load explore courses on mount
-  useEffect(() => {
-    async function loadCourses() {
-      try {
-        const res = await fetch('/api/courses')
-        const courses: Course[] = res.ok ? await res.json() : []
-        setExploreCourses(courses)
-        if (courses && courses.length > 0) {
-          setSelectedCourseId(courses[0].id)
-        }
-      } catch (err) {
-        // Error fetching courses
-      }
-    }
-    loadCourses()
-  }, [])
 
   // Load enrolled courses from localStorage on mount
   useEffect(() => {
@@ -592,100 +391,33 @@ function DashboardPageContent() {
   const [showCurrentPw, setShowCurrentPw] = useState(false)
   const [showNewPw, setShowNewPw] = useState(false)
 
-  useEffect(() => {
-    const tab = searchParams.get('tab')
-    if (isDashboardTab(tab)) {
-      setActiveTab(tab)
-    }
-  }, [searchParams])
-
-  // Load date in Portuguese
-  useEffect(() => {
-    const options: Intl.DateTimeFormatOptions = { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    }
-    const today = new Date().toLocaleDateString('pt-AO', options)
-    setCurrentDate(today.charAt(0).toUpperCase() + today.slice(1))
-  }, [])
-
-  // Load PDFs from database public.materiais_pdf or fallback
-  useEffect(() => {
-    async function loadPdfMaterials() {
-      try {
-        const { data: databasePDFs, error: pdfError } = await supabase
-          .from('materiais_pdf')
-          .select('*')
-          .order('id', { ascending: false })
-
-        if (pdfError) {
-          // Fallback to localStorage or mock
-          const savedPDFs = localStorage.getItem('prime_academy_pdfs')
-          if (savedPDFs) {
-            setPdfMaterials(JSON.parse(savedPDFs))
-          } else {
-            const initialPDFs: PDFMaterial[] = [
-              {
-                id: 'pdf1',
-                title: 'Manual de Iniciação ao PMBOK v7',
-                courseId: '1',
-                courseName: 'Gestão de Projectos',
-                description: 'Material teórico complementar cobrindo a sétima edição do guia PMBOK.',
-                fileName: 'Manual_PMBOK_v7_Prime.pdf',
-                uploadedAt: new Date().toLocaleDateString('pt-AO'),
-              },
-              {
-                id: 'pdf2',
-                title: 'Guia Prático de Fórmulas e Atalhos Excel',
-                courseId: '2',
-                courseName: 'Excel Avançado',
-                description: 'Lista completa de atalhos e fórmulas essenciais de finanças no Excel.',
-                fileName: 'Guia_Atalhos_Excel_Avançado.pdf',
-                uploadedAt: new Date().toLocaleDateString('pt-AO'),
-              }
-            ]
-            setPdfMaterials(initialPDFs)
-            localStorage.setItem('prime_academy_pdfs', JSON.stringify(initialPDFs))
-          }
-          return
-        }
-
-        if (databasePDFs && databasePDFs.length > 0) {
-          const coursesRes3 = await fetch('/api/courses')
-          const allCatalogCourses: Course[] = coursesRes3.ok ? await coursesRes3.json() : []
-          const mappedPDFs: PDFMaterial[] = databasePDFs.map((pdf: any) => {
-            const matchedCourse = allCatalogCourses.find(c => c.id === pdf.curso_id)
-            return {
-              id: pdf.id,
-              title: pdf.titulo,
-              courseId: pdf.curso_id,
-              courseName: matchedCourse?.name || 'Curso Geral',
-              description: pdf.descricao,
-              fileName: pdf.nome_arquivo,
-              uploadedAt: pdf.created_at ? new Date(pdf.created_at).toLocaleDateString('pt-AO') : new Date().toLocaleDateString('pt-AO'),
-              fileUrl: pdf.url_arquivo
-            }
-          })
-          setPdfMaterials(mappedPDFs)
-          localStorage.setItem('prime_academy_pdfs', JSON.stringify(mappedPDFs))
-        } else {
-          setPdfMaterials([])
-        }
-      } catch (err) {
-        // Exception loading PDF materials
-      }
-    }
-
-    loadPdfMaterials()
-  }, [])
-
   // Prefill settings name from user
   useEffect(() => {
     if (displayName) setSettingsName(displayName)
     else if (user?.name) setSettingsName(user.name)
   }, [user, displayName])
+
+  // Sync active tab from URL searchParams
+  useEffect(() => {
+    const tab = searchParams.get('tab')
+    if (isDashboardTab(tab)) {
+      setActiveTab(tab)
+    } else if (!isInstructor && user && !searchParams.has('tab')) {
+      setActiveTab('explore')
+    }
+  }, [searchParams, user, isInstructor])
+
+  // Load date in Portuguese
+  useEffect(() => {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }
+    const today = new Date().toLocaleDateString('pt-AO', options)
+    setCurrentDate(today.charAt(0).toUpperCase() + today.slice(1))
+  }, [])
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -979,8 +711,6 @@ function DashboardPageContent() {
     }, 850)
   }
 
-  const isInstructor = user.role === 'admin'
-
   // Dynamic categories from loaded courses
   const exploreCategories = ['Todos', ...Array.from(new Set(exploreCourses.map(c => c.category)))]
 
@@ -1017,38 +747,66 @@ function DashboardPageContent() {
     return matchesCategory && matchesSearch
   })
 
-  const sidebarLinks = [
-    {
-      id: 'courses' as const,
-      label: isInstructor ? 'Minhas Turmas' : 'Meus Cursos',
-      icon: BookOpen,
-    },
-    {
-      id: 'online-classes' as const,
-      label: 'Aulas',
-      icon: Video,
-    },
-    {
-      id: 'pdfs' as const,
-      label: isInstructor ? 'Gerir PDFs' : 'Biblioteca PDF',
-      icon: FileText,
-    },
-    ...(isInstructor ? [{
-      id: 'students' as const,
-      label: 'Lista de Formandos',
-      icon: Users,
-    }] : []),
-    {
-      id: 'explore' as const,
-      label: 'Explorar Cursos',
-      icon: Compass,
-    },
-    {
-      id: 'settings' as const,
-      label: 'Definições',
-      icon: Settings,
-    },
-  ]
+  const sidebarLinks = isInstructor
+    ? [
+        {
+          id: 'courses' as const,
+          label: 'Minhas Turmas',
+          icon: BookOpen,
+        },
+        {
+          id: 'online-classes' as const,
+          label: 'Aulas',
+          icon: Video,
+        },
+        {
+          id: 'pdfs' as const,
+          label: 'Gerir PDFs',
+          icon: FileText,
+        },
+        {
+          id: 'students' as const,
+          label: 'Lista de Formandos',
+          icon: Users,
+        },
+        {
+          id: 'explore' as const,
+          label: 'Explorar Cursos',
+          icon: Compass,
+        },
+        {
+          id: 'settings' as const,
+          label: 'Definições',
+          icon: Settings,
+        },
+      ]
+    : [
+        {
+          id: 'explore' as const,
+          label: 'Explorar Cursos',
+          icon: Compass,
+        },
+        {
+          id: 'courses' as const,
+          label: 'Meus Cursos',
+          icon: BookOpen,
+        },
+        {
+          id: 'online-classes' as const,
+          label: 'Aulas',
+          icon: Video,
+        },
+        {
+          id: 'pdfs' as const,
+          label: 'Biblioteca PDF',
+          icon: FileText,
+        },
+        {
+          id: 'settings' as const,
+          label: 'Definições',
+          icon: Settings,
+        },
+      ]
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex text-slate-800">
@@ -1178,45 +936,8 @@ function DashboardPageContent() {
         </div>
 
         <nav className="flex-1 pl-4 pr-0 py-6 space-y-1 lg:overflow-visible overflow-y-auto">
-          <div className="text-[10px] font-bold tracking-wider text-white/40 uppercase px-3 mb-2">
-            Área de Formação
-          </div>
-          {sidebarLinks.map((link) => {
-            const Icon = link.icon
-            const isActive = activeTab === link.id
-            const isSettings = link.id === 'settings'
-            return (
-              <Fragment key={link.id}>
-                {isSettings && <div className="h-px bg-white/10 my-3 mr-4 ml-3" />}
-                <button
-                  onClick={() => handleTabChange(link.id)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-l-[2rem] rounded-r-none text-sm font-semibold transition-all duration-300 w-full relative ${
-                    isActive 
-                      ? 'bg-[#f8fafc] text-[#312455] z-10 shadow-sm' 
-                      : 'text-white/70 hover:bg-white/5 hover:text-white'
-                  }`}
-                >
-                  <Icon className={`h-4.5 w-4.5 transition-colors ${isActive ? 'text-[#312455]' : 'text-white/60'}`} />
-                  <span className="relative z-10">{link.label}</span>
-                  {isActive && (
-                    <>
-                      {/* Top scoop (pontinha superior) */}
-                      <div className="absolute bottom-full right-0 w-8 h-8 bg-[#f8fafc] pointer-events-none translate-y-[1px]">
-                        <div className="w-full h-full bg-[#312455] rounded-br-[2rem]" />
-                      </div>
-                      {/* Bottom scoop (pontinha inferior) */}
-                      <div className="absolute top-full right-0 w-8 h-8 bg-[#f8fafc] pointer-events-none -translate-y-[1px]">
-                        <div className="w-full h-full bg-[#312455] rounded-tr-[2rem]" />
-                      </div>
-                    </>
-                  )}
-                </button>
-              </Fragment>
-            )
-          })}
-
           {isInstructor && (
-            <div className="pt-4 pr-4">
+            <div className="pb-4 pr-4">
               <div className="text-[10px] font-bold tracking-wider text-white/40 uppercase px-3 mb-2">
                 Administração
               </div>
@@ -1229,6 +950,31 @@ function DashboardPageContent() {
               </Link>
             </div>
           )}
+
+          <div className="text-[10px] font-bold tracking-wider text-white/40 uppercase px-3 mb-2">
+            Área de Formação
+          </div>
+          {sidebarLinks.map((link) => {
+            const Icon = link.icon
+            const isActive = activeTab === link.id
+            const isSettings = link.id === 'settings'
+            return (
+              <Fragment key={link.id}>
+                {isSettings && <div className="h-px bg-white/10 my-3 mr-4 ml-3" />}
+                <button
+                  onClick={() => handleTabChange(link.id)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 w-full ${
+                    isActive 
+                      ? 'bg-white/15 text-white shadow-sm' 
+                      : 'text-white/70 hover:bg-white/8 hover:text-white'
+                  }`}
+                >
+                  <Icon className={`h-4.5 w-4.5 transition-colors ${isActive ? 'text-white' : 'text-white/60'}`} />
+                  <span>{link.label}</span>
+                </button>
+              </Fragment>
+            )
+          })}
         </nav>
 
         {/* Logout Section at bottom */}
@@ -1307,6 +1053,22 @@ function DashboardPageContent() {
               </div>
 
               <nav className="flex-1 pl-4 pr-0 py-6 space-y-1 overflow-y-auto">
+                {isInstructor && (
+                  <div className="pb-4 pr-4">
+                    <div className="text-[10px] font-bold tracking-wider text-white/40 uppercase px-3 mb-2">
+                      Administração
+                    </div>
+                    <Link
+                      href="/admin"
+                      onClick={() => setSidebarOpen(false)}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-white/70 hover:bg-white/5 hover:text-white transition-all duration-300"
+                    >
+                      <ShieldCheck className="h-4.5 w-4.5 text-white/60" />
+                      Painel Geral Admin
+                    </Link>
+                  </div>
+                )}
+
                 <div className="text-[10px] font-bold tracking-wider text-white/40 uppercase px-3 mb-2">
                   Área de Formação
                 </div>
@@ -1322,46 +1084,18 @@ function DashboardPageContent() {
                           handleTabChange(link.id)
                           setSidebarOpen(false)
                         }}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-l-[2rem] rounded-r-none text-sm font-semibold transition-all duration-300 w-full relative ${
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 w-full ${
                           isActive 
-                            ? 'bg-[#f8fafc] text-[#312455] z-10 shadow-sm' 
-                            : 'text-white/70 hover:bg-white/5 hover:text-white'
+                            ? 'bg-white/15 text-white shadow-sm' 
+                            : 'text-white/70 hover:bg-white/8 hover:text-white'
                         }`}
                       >
-                        <Icon className={`h-4.5 w-4.5 transition-colors ${isActive ? 'text-[#312455]' : 'text-white/60'}`} />
-                        <span className="relative z-10">{link.label}</span>
-                        {isActive && (
-                          <>
-                            {/* Top scoop (pontinha superior) */}
-                            <div className="absolute bottom-full right-0 w-8 h-8 bg-[#f8fafc] pointer-events-none translate-y-[1px]">
-                              <div className="w-full h-full bg-[#312455] rounded-br-[2rem]" />
-                            </div>
-                            {/* Bottom scoop (pontinha inferior) */}
-                            <div className="absolute top-full right-0 w-8 h-8 bg-[#f8fafc] pointer-events-none -translate-y-[1px]">
-                              <div className="w-full h-full bg-[#312455] rounded-tr-[2rem]" />
-                            </div>
-                          </>
-                        )}
+                        <Icon className={`h-4.5 w-4.5 transition-colors ${isActive ? 'text-white' : 'text-white/60'}`} />
+                        <span>{link.label}</span>
                       </button>
                     </Fragment>
                   )
                 })}
-
-                {isInstructor && (
-                  <div className="pt-4 pr-4">
-                    <div className="text-[10px] font-bold tracking-wider text-white/40 uppercase px-3 mb-2">
-                      Administração
-                    </div>
-                    <Link
-                      href="/admin"
-                      onClick={() => setSidebarOpen(false)}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-white/70 hover:bg-white/5 hover:text-white transition-all duration-300"
-                    >
-                      <ShieldCheck className="h-4.5 w-4.5 text-white/60" />
-                      Painel Geral Admin
-                    </Link>
-                  </div>
-                )}
               </nav>
 
               {/* Mobile Logout Section at bottom */}
@@ -1866,7 +1600,7 @@ function DashboardPageContent() {
                     </div>
                   ) : (
                     activeCourses.map((course) => (
-                      <Card key={course.id} className="overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 rounded-3xl bg-white flex flex-col group">
+                      <Card key={course.id} className="overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 rounded-3xl bg-white flex flex-col group py-0 pt-0 gap-0">
                       <div className="relative h-48 w-full overflow-hidden">
                         {course.image ? (
                           <SafeImage
@@ -2391,7 +2125,7 @@ function DashboardPageContent() {
                           exit={{ opacity: 0, scale: 0.95 }}
                           transition={{ duration: 0.25 }}
                         >
-                          <Card className="overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 rounded-3xl bg-white flex flex-col group h-full">
+                          <Card className="overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 rounded-3xl bg-white flex flex-col group h-full py-0 pt-0 gap-0">
                             <div className="relative h-40 w-full overflow-hidden">
                               <SafeImage
                                 src={course.image}

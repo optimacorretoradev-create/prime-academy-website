@@ -225,7 +225,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
 
   const investmentCard = (
     <Card
-      className={`border shadow-lg rounded-3xl overflow-hidden ${
+      className={`border shadow-lg rounded-3xl overflow-hidden py-0 pt-0 gap-0 ${
         isDashboard ? 'border-slate-100 bg-white shadow-md' : 'border-border bg-card'
       }`}
     >
@@ -242,7 +242,7 @@ export function CourseDetailBody({ course, syllabus, highlights, variant }: Cour
         <div className={`absolute inset-0 ${isDashboard ? 'bg-[#312455]/25' : 'bg-primary/20'}`} />
       </div>
       <CardContent className="p-5 md:p-6 space-y-5">
-        {hasPrice && (
+        {isDashboard && hasPrice && (
           <div
             className={`rounded-2xl px-4 py-3 border ${
               isDashboard ? 'bg-[#312455]/5 border-[#312455]/10' : 'bg-primary/5 border-primary/10'

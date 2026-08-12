@@ -6,6 +6,7 @@ import { AuthProvider } from '@/contexts/auth-context'
 import { NotificationsProvider } from '@/contexts/notifications-context'
 import { ConditionalChrome } from '@/components/layout/conditional-chrome'
 import { Toaster } from '@/components/ui/sonner'
+import { QueryProvider } from '@/providers/query-provider'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -34,11 +35,13 @@ export default function RootLayout({
   return (
     <html lang="pt" className={`${inter.variable} bg-background`} suppressHydrationWarning>
       <body className="font-sans antialiased min-h-screen flex flex-col" suppressHydrationWarning>
-        <AuthProvider>
-          <NotificationsProvider>
-            <ConditionalChrome>{children}</ConditionalChrome>
-          </NotificationsProvider>
-        </AuthProvider>
+        <QueryProvider>
+          <AuthProvider>
+            <NotificationsProvider>
+              <ConditionalChrome>{children}</ConditionalChrome>
+            </NotificationsProvider>
+          </AuthProvider>
+        </QueryProvider>
         <Toaster />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

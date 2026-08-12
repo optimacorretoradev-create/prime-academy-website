@@ -22,6 +22,8 @@ import {
   ChevronRight,
   ChevronLeft,
   X,
+  ShieldCheck,
+  Building2,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Course } from '@/lib/hygraph'
@@ -380,138 +382,191 @@ export function EnrollmentCheckoutForm({
         </div>
       </header>
 
-      {/* Main Grid com Padding Superior */}
-      <div className="w-full flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 pt-[56px] md:pt-[60px]">
+      {/* Main Grid com Altura Calculada para Desktop sem Scroll */}
+      <div className="w-full flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 pt-[56px] md:pt-[60px] lg:h-[calc(100vh-60px)] lg:max-h-[calc(100vh-60px)] lg:overflow-hidden bg-background">
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
-        className="order-first flex flex-col justify-between p-4 md:p-6 lg:p-8 bg-gradient-to-br from-primary via-[#312455] to-[#1d1533] relative overflow-hidden"
+        className="order-first flex flex-col justify-center p-4 md:p-6 lg:px-8 lg:py-4 bg-background border-b lg:border-b-0 lg:border-r border-border relative overflow-hidden lg:h-full"
       >
-        <div className="absolute -right-32 -top-32 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
-        <div className="absolute -left-16 -bottom-16 w-48 h-48 bg-accent/5 rounded-full blur-2xl" />
+        <div className="absolute -right-32 -top-32 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -left-16 -bottom-16 w-48 h-48 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
 
-        <div className="relative z-10">
-          <div className="mb-4 md:mb-8">
-            <div className="inline-flex items-center justify-center px-3 py-1 mb-2 rounded-full bg-accent/20 border border-accent/30">
-              <span className="text-xs font-semibold text-accent uppercase tracking-wider">
-                Checkout de Inscrição
+        <div className="relative z-10 my-auto w-full max-w-xl mx-auto">
+          {/* Cabeçalho Centralizado Compacto */}
+          <div className="mb-2 lg:mb-3 text-center flex flex-col items-center">
+            <div className="inline-flex items-center justify-center px-2.5 py-0.5 mb-1.5 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-md">
+              <span className="text-[10px] font-semibold text-primary uppercase tracking-wider flex items-center gap-1">
+                <ShieldCheck className="h-3 w-3 text-primary" />
+                Dados de Pagamento Seguros
               </span>
             </div>
-            <h2 className="text-xl md:text-2xl lg:text-2xl font-bold text-white mb-1">Complete a sua Inscrição</h2>
-            <p className="text-white/70 text-xs">Preencha os dados e proceda ao pagamento</p>
+            <h2 className="text-lg lg:text-xl font-extrabold text-foreground mb-0.5 tracking-tight">
+              Pagamento por Transferência
+            </h2>
+            <p className="text-muted-foreground text-[11px] max-w-sm mx-auto">
+              Efetue o pagamento utilizando os dados bancários oficiais da Prime Academy
+            </p>
           </div>
 
-          <div className="mb-4 md:mb-6 space-y-4">
-            {selectedCourse ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-3 md:p-4 lg:p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-white/20 transition-colors"
-              >
-                <div className="flex items-start gap-3 mb-2">
-                  <div className="p-2 bg-accent/20 rounded-lg">
-                    <BookOpen className="h-5 w-5 text-accent" />
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wider text-white/60 font-semibold">
-                      Curso Selecionado
-                    </p>
-                    <h3 className="text-base md:text-lg lg:text-lg font-bold text-white">{selectedCourse.name}</h3>
-                  </div>
-                </div>
-              </motion.div>
-            ) : (
-              <div className="p-6 bg-white/5 border border-white/10 rounded-2xl text-center">
-                <p className="text-white/60 text-sm">Selecione um curso para ver o resumo</p>
-              </div>
-            )}
-
+          <div className="space-y-2.5 lg:space-y-3">
+            {/* VALOR DO INVESTIMENTO CENTRALIZADO */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="p-3 md:p-4 lg:p-4 bg-gradient-to-r from-accent/30 to-accent/10 border border-accent/50 rounded-2xl"
+              className="p-2 lg:p-2.5 bg-muted/40 border border-border rounded-xl text-center"
             >
-              <p className="text-xs uppercase tracking-wider text-white/60 font-semibold mb-1">
-                Investimento
+              <p className="text-[9px] uppercase tracking-widest text-muted-foreground font-bold mb-0.5">
+                Valor do Investimento
               </p>
               {selectedCourse ? (
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl md:text-3xl lg:text-3xl font-bold text-accent">
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-lg lg:text-xl font-black text-primary tracking-tight">
                     {getCoursePriceDisplay(selectedCourse.id, selectedCourse.price)}
                   </span>
                 </div>
               ) : (
-                <p className="text-white/50 text-sm italic">Selecione um curso para ver o valor</p>
+                <p className="text-muted-foreground text-[11px] italic">Selecione um curso para ver o valor</p>
               )}
             </motion.div>
-          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="p-3 md:p-4 lg:p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl space-y-3"
-          >
-            <h3 className="text-white font-bold text-base flex items-center gap-2">
-              <Banknote className="h-5 w-5 text-accent" />
-              Dados Bancários
-            </h3>
+            {/* DADOS BANCÁRIOS CENTRALIZADOS E ELEGANTES NA IDENTIDADE DA PRIME */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="p-4 lg:p-5 bg-gradient-to-br from-[#312455] via-[#2a1e4a] to-[#1c1435] text-white rounded-2xl space-y-3 shadow-xl relative overflow-hidden text-center border border-white/10"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl pointer-events-none" />
 
-            <div className="pb-3 border-b border-white/10">
-              <p className="text-xs uppercase tracking-wider text-white/50 font-semibold mb-1">Banco</p>
-              <p className="text-sm text-white/90">{bankInfo.banco}</p>
-            </div>
+              {/* Ícone e Título Centralizado */}
+              <div className="flex flex-col items-center border-b border-white/15 pb-2.5">
+                <div className="w-9 h-9 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white shadow-sm mb-1.5">
+                  <Building2 className="h-4.5 w-4.5 text-white" />
+                </div>
+                <h3 className="text-white font-bold text-sm lg:text-base">Dados Bancários Prime</h3>
+                <span className="mt-1 text-[9px] font-semibold text-white/90 bg-white/15 px-2.5 py-0.5 rounded-full border border-white/25">
+                  Conta Oficial
+                </span>
+              </div>
 
-            <div>
-              <p className="text-xs uppercase tracking-wider text-white/50 font-semibold mb-1">IBAN</p>
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-sm font-mono font-semibold text-white/90 flex-1 break-all">
+              {/* BANCO */}
+              <div className="space-y-0.5">
+                <p className="text-[9px] uppercase tracking-widest text-white/60 font-medium">Banco</p>
+                <p className="text-xs lg:text-sm font-bold text-white">
+                  {bankInfo.banco}
+                </p>
+              </div>
+
+              {/* IBAN DESTAQUE CENTRALIZADO */}
+              <div className="bg-black/25 backdrop-blur-md p-2.5 rounded-xl border border-white/15 shadow-inner hover:border-white/30 transition-all text-center space-y-1.5">
+                <div className="flex items-center justify-center gap-1.5">
+                  <p className="text-[9px] uppercase tracking-wider text-white/80 font-bold">IBAN</p>
+                  {copiedField === 'iban' && (
+                    <span className="text-[9px] text-emerald-400 font-bold animate-pulse">Copiado!</span>
+                  )}
+                </div>
+                <p className="text-xs md:text-sm font-mono font-black text-white tracking-wider break-all select-all">
                   {bankInfo.iban}
                 </p>
-                <button
-                  type="button"
-                  onClick={() => handleCopyToClipboard(bankInfo.iban, 'iban')}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0"
-                  title="Copiar"
-                >
-                  <AnimatePresence mode="wait">
-                    {copiedField === 'iban' ? (
-                      <motion.div
-                        key="check"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                      >
-                        <Check className="h-4 w-4 text-green-400" />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="copy"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                      >
-                        <Copy className="h-4 w-4 text-white/60" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </button>
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyToClipboard(bankInfo.iban, 'iban')}
+                    className="inline-flex items-center justify-center gap-1 px-3 py-1 rounded-lg bg-white text-[#312455] hover:bg-white/90 text-[10px] font-bold transition-all active:scale-95 shadow-md"
+                  >
+                    <AnimatePresence mode="wait">
+                      {copiedField === 'iban' ? (
+                        <motion.div
+                          key="check"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          exit={{ scale: 0 }}
+                          className="flex items-center gap-1 text-emerald-700 font-bold"
+                        >
+                          <Check className="h-3 w-3" />
+                          <span>IBAN Copiado!</span>
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="copy"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          exit={{ scale: 0 }}
+                          className="flex items-center gap-1"
+                        >
+                          <Copy className="h-3 w-3" />
+                          <span>Copiar IBAN</span>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <div className="pt-3 border-t border-white/10">
-              <p className="text-xs uppercase tracking-wider text-white/50 font-semibold mb-1">Titular</p>
-              <p className="text-sm text-white/90">{bankInfo.titular}</p>
-            </div>
+              {/* NUMERO DE CONTA CENTRALIZADO */}
+              <div className="bg-white/5 p-2 rounded-xl border border-white/10 text-center space-y-0.5">
+                <div className="flex items-center justify-center gap-1.5">
+                  <p className="text-[9px] uppercase tracking-wider text-white/70 font-semibold">Número de Conta</p>
+                  {copiedField === 'conta' && (
+                    <span className="text-[9px] text-emerald-400 font-bold animate-pulse">Copiado!</span>
+                  )}
+                </div>
+                <p className="text-xs font-mono font-bold text-white tracking-wider select-all">
+                  {bankInfo.conta}
+                </p>
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyToClipboard(bankInfo.conta, 'conta')}
+                    className="inline-flex items-center justify-center gap-1 px-2 py-0.5 rounded bg-white/10 hover:bg-white/20 border border-white/15 text-[9px] font-medium text-white transition-all active:scale-95"
+                  >
+                    <AnimatePresence mode="wait">
+                      {copiedField === 'conta' ? (
+                        <motion.div
+                          key="check-conta"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          exit={{ scale: 0 }}
+                          className="flex items-center gap-1 text-emerald-400"
+                        >
+                          <Check className="h-3 w-3" />
+                          <span>Copiado</span>
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="copy-conta"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          exit={{ scale: 0 }}
+                          className="flex items-center gap-1"
+                        >
+                          <Copy className="h-3 w-3" />
+                          <span>Copiar Conta</span>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </button>
+                </div>
+              </div>
 
-            <div className="mt-2 p-2 bg-accent/10 border border-accent/30 rounded-lg">
-              <p className="text-xs text-white/80 leading-tight">
-                <strong>Nota:</strong> Efetue o pagamento e guarde o comprovativo para validação.
-              </p>
-            </div>
-          </motion.div>
+              {/* TITULAR */}
+              <div className="pt-1.5 border-t border-white/15 space-y-0.5">
+                <p className="text-[9px] uppercase tracking-widest text-white/60 font-semibold">Titular da Conta</p>
+                <p className="text-xs font-bold text-white">{bankInfo.titular}</p>
+              </div>
+
+              {/* NOTA E INSTRUÇÕES */}
+              <div className="mt-1.5 p-2 bg-white/10 border border-white/15 rounded-xl text-center flex flex-col items-center gap-0.5">
+                <ShieldCheck className="h-3.5 w-3.5 text-white/90" />
+                <p className="text-[10px] text-white/90 leading-tight max-w-sm">
+                  <strong>Instruções:</strong> Realize a transferência e anexe o comprovativo no formulário ao lado.
+                </p>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </motion.div>
 
@@ -519,94 +574,88 @@ export function EnrollmentCheckoutForm({
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
-        className="order-last flex flex-col justify-center p-4 md:p-6 lg:p-8 bg-background"
+        className="order-last flex flex-col justify-center p-4 md:p-6 lg:px-8 lg:py-4 bg-background lg:h-full lg:overflow-y-auto"
       >
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
+          className="my-auto max-w-xl mx-auto w-full"
         >
-          <form onSubmit={handleSubmit} className="w-full space-y-4">
+          <form onSubmit={handleSubmit} className="w-full space-y-3">
           {error && (
-            <Alert variant="destructive" className="rounded-xl border-red-200">
-              <AlertDescription>{error}</AlertDescription>
+            <Alert variant="destructive" className="rounded-xl border-red-200 py-2">
+              <AlertDescription className="text-xs">{error}</AlertDescription>
             </Alert>
           )}
 
-          <div className="space-y-3">
-            <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
-              <div className="w-1 h-6 bg-primary rounded-full" />
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <div className="w-1 h-5 bg-primary rounded-full" />
               Informações Pessoais
             </h3>
 
-            <div className="space-y-1">
-              <Label htmlFor="name" className="text-foreground font-medium text-sm">
-                Nome Completo
-              </Label>
-              <Input
-                id="name"
-                type="text"
-                value={userProfile.nome}
-                disabled
-                readOnly
-                className="rounded-xl bg-muted/50 cursor-not-allowed border border-border"
-              />
-              <p className="text-[10px] text-muted-foreground">
-                Campo preenchido automaticamente do seu perfil
-              </p>
-            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="space-y-0.5">
+                <Label htmlFor="name" className="text-foreground font-medium text-xs">
+                  Nome Completo
+                </Label>
+                <Input
+                  id="name"
+                  type="text"
+                  value={userProfile.nome}
+                  disabled
+                  readOnly
+                  className="rounded-xl bg-muted/50 cursor-not-allowed border border-border h-8 text-xs"
+                />
+              </div>
 
-            <div className="space-y-1">
-              <Label htmlFor="email" className="text-foreground font-medium text-sm">
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={userProfile.email}
-                disabled
-                readOnly
-                className="rounded-xl bg-muted/50 cursor-not-allowed border border-border"
-              />
-              <p className="text-[10px] text-muted-foreground">
-                Campo preenchido automaticamente do seu perfil
-              </p>
+              <div className="space-y-0.5">
+                <Label htmlFor="email" className="text-foreground font-medium text-xs">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={userProfile.email}
+                  disabled
+                  readOnly
+                  className="rounded-xl bg-muted/50 cursor-not-allowed border border-border h-8 text-xs"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="space-y-3">
-            <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
-              <div className="w-1 h-6 bg-primary rounded-full" />
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <div className="w-1 h-5 bg-primary rounded-full" />
               Curso Pretendido
             </h3>
 
-            <div className="space-y-1">
-              <Label htmlFor="course" className="text-foreground font-medium text-sm">
-                Curso Selecionado
-              </Label>
+            <div className="space-y-0.5">
               {selectedCourse ? (
-                <div className="p-3 rounded-xl bg-primary/10 border border-primary/20 flex items-center gap-3">
-                  <div className="p-2 bg-primary/20 rounded-lg">
-                    <BookOpen className="h-5 w-5 text-primary" />
+                <div className="p-2.5 rounded-xl bg-primary/10 border border-primary/20 flex items-center gap-3">
+                  <div className="p-1.5 bg-primary/20 rounded-lg">
+                    <BookOpen className="h-4 w-4 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-foreground">{selectedCourse.name}</p>
-                    <p className="text-xs text-muted-foreground">Curso confirmado para inscrição</p>
+                    <p className="font-semibold text-xs text-foreground">{selectedCourse.name}</p>
+                    <p className="text-[10px] text-muted-foreground">Curso confirmado para inscrição</p>
                   </div>
-                  <Check className="h-5 w-5 text-green-600" />
+                  <Check className="h-4 w-4 text-green-600" />
                 </div>
               ) : (
-                <div className="p-3 rounded-xl bg-muted/50 border border-border flex items-center gap-3">
-                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">Carregando curso...</p>
+                <div className="p-2.5 rounded-xl bg-muted/50 border border-border flex items-center gap-3">
+                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                  <p className="text-xs text-muted-foreground">Carregando curso...</p>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="space-y-3">
-            <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
-              <div className="w-1 h-6 bg-primary rounded-full" />
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <div className="w-1 h-5 bg-primary rounded-full" />
               Formato de Aprendizagem
             </h3>
 
@@ -614,15 +663,15 @@ export function EnrollmentCheckoutForm({
               <button
                 type="button"
                 onClick={() => setFormData((prev) => ({ ...prev, modalidade: 'online' }))}
-                className={`relative p-3 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-1 group ${
+                className={`relative p-2 rounded-xl border-2 transition-all duration-300 flex items-center justify-center gap-2 group ${
                   formData.modalidade === 'online'
                     ? 'border-primary bg-primary/10'
                     : 'border-border bg-muted/30 hover:border-primary/50'
                 }`}
               >
-                <div className="relative w-5 h-5 rounded-full border-2 border-border group-hover:border-primary/50 transition-colors">
+                <div className="relative w-4 h-4 rounded-full border-2 border-border group-hover:border-primary/50 transition-colors">
                   {formData.modalidade === 'online' && (
-                    <div className="absolute inset-1 rounded-full bg-primary animate-pulse" />
+                    <div className="absolute inset-0.5 rounded-full bg-primary animate-pulse" />
                   )}
                 </div>
                 <span className={`text-xs font-semibold transition-colors ${
@@ -635,15 +684,15 @@ export function EnrollmentCheckoutForm({
               <button
                 type="button"
                 onClick={() => setFormData((prev) => ({ ...prev, modalidade: 'presencial' }))}
-                className={`relative p-3 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-1 group ${
+                className={`relative p-2 rounded-xl border-2 transition-all duration-300 flex items-center justify-center gap-2 group ${
                   formData.modalidade === 'presencial'
                     ? 'border-primary bg-primary/10'
                     : 'border-border bg-muted/30 hover:border-primary/50'
                 }`}
               >
-                <div className="relative w-5 h-5 rounded-full border-2 border-border group-hover:border-primary/50 transition-colors">
+                <div className="relative w-4 h-4 rounded-full border-2 border-border group-hover:border-primary/50 transition-colors">
                   {formData.modalidade === 'presencial' && (
-                    <div className="absolute inset-1 rounded-full bg-primary animate-pulse" />
+                    <div className="absolute inset-0.5 rounded-full bg-primary animate-pulse" />
                   )}
                 </div>
                 <span className={`text-xs font-semibold transition-colors ${
@@ -655,17 +704,17 @@ export function EnrollmentCheckoutForm({
             </div>
           </div>
           
-          <div className="space-y-3">
-            <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
-              <div className="w-1 h-6 bg-primary rounded-full" />
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <div className="w-1 h-5 bg-primary rounded-full" />
               Comprovativo de Pagamento
             </h3>
 
-            <div className="space-y-1">
-              <Label htmlFor="file" className="text-foreground font-medium text-sm">
+            <div className="space-y-0.5">
+              <Label htmlFor="file" className="text-foreground font-medium text-xs">
                 Upload do comprovativo bancário (obrigatório)
               </Label>
-              <div className="relative border-2 border-dashed border-border rounded-xl p-5 hover:border-primary/50 transition-colors cursor-pointer overflow-hidden bg-muted/20">
+              <div className="relative border-2 border-dashed border-border rounded-xl p-3 hover:border-primary/50 transition-colors cursor-pointer overflow-hidden bg-muted/20">
                 <input
                   id="file"
                   type="file"
@@ -675,11 +724,11 @@ export function EnrollmentCheckoutForm({
                   required
                 />
                 <div className="flex flex-col items-center justify-center text-center">
-                  <Upload className="h-6 w-6 text-muted-foreground mb-1" />
+                  <Upload className="h-5 w-5 text-muted-foreground mb-0.5" />
                   <p className="text-xs font-medium text-foreground">
-                    {uploadFileName || 'Clique para fazer upload'}
+                    {uploadFileName || 'Clique para fazer upload do comprovativo'}
                   </p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">
+                  <p className="text-[10px] text-muted-foreground">
                     PDF, JPG ou PNG (máx. 5MB)
                   </p>
                 </div>
@@ -690,17 +739,17 @@ export function EnrollmentCheckoutForm({
           <Button
             type="submit"
             disabled={isSubmitting || !formData.course}
-            className="w-full h-9 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-xs flex items-center justify-center gap-2"
+            className="w-full h-9 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-xs flex items-center justify-center gap-2 mt-1"
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="h-3 w-3 animate-spin" />
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
                 Processando...
               </>
             ) : (
               <>
                 Confirmar Inscrição
-                <ArrowRight className="h-3 w-3" />
+                <ArrowRight className="h-3.5 w-3.5" />
               </>
             )}
           </Button>
