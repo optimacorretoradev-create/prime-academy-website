@@ -61,18 +61,15 @@ export function LoginForm() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-md bg-white border border-slate-100 rounded-[2.5rem] p-8 sm:p-10 shadow-xl shadow-slate-200/50"
+      className="w-full max-w-md bg-white border border-slate-100 rounded-[2.5rem] p-8 sm:p-10 shadow-xl"
     >
       <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-tr from-[#312455] to-[#8a66a8] rounded-2xl mb-4 shadow-md shadow-purple-950/20">
+        <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-tr from-[#312455] to-[#8a66a8] rounded-xl mb-4 shadow-md shadow-purple-950/20">
           <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C6.5 6.253 2 10.753 2 16.5S6.5 26.747 12 26.747s10-4.5 10-10.247S17.5 6.253 12 6.253z" />
           </svg>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-black text-[#312455] mb-2 tracking-tight">Bem-vindo de volta</h1>
-        <p className="text-slate-500 text-sm sm:text-base">
-          Entre na sua conta para continuar a sua formação
-        </p>
+        <h1 className="text-2xl sm:text-3xl font-black text-[#312455] mb-2 tracking-tight">Bem-Vindo</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -80,7 +77,7 @@ export function LoginForm() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="p-4 bg-destructive/10 border border-destructive/20 rounded-2xl text-destructive text-sm"
+            className="p-4 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive text-sm"
           >
             {error}
           </motion.div>
@@ -98,7 +95,7 @@ export function LoginForm() {
               placeholder="seu@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="pl-12 h-12 rounded-2xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
+              className="pl-12 h-12 rounded-xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
               required
             />
           </div>
@@ -121,7 +118,7 @@ export function LoginForm() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="pl-12 pr-12 h-12 rounded-2xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
+              className="pl-12 pr-12 h-12 rounded-xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
               required
             />
             <button
@@ -136,7 +133,7 @@ export function LoginForm() {
 
         <Button
           type="submit"
-          className="w-full h-12 bg-[#312455] hover:bg-[#402f6e] text-white rounded-2xl text-base font-semibold shadow-lg shadow-purple-950/15 hover:shadow-xl transition-all duration-300"
+          className="w-full h-12 bg-[#8a66a8] hover:bg-[#735191] text-white rounded-xl text-base font-semibold shadow-lg shadow-purple-950/15 hover:shadow-xl transition-all duration-300"
           disabled={isLoading}
         >
           {isLoading ? (
@@ -161,7 +158,7 @@ export function LoginForm() {
         <Button
           type="button"
           variant="outline"
-          className="w-full h-12 border-2 border-slate-200 hover:border-slate-300 text-[#312455] rounded-2xl text-base font-semibold transition-all duration-300"
+          className="w-full h-12 border-2 border-slate-200 hover:border-slate-300 text-[#312455] rounded-xl text-base font-semibold transition-all duration-300"
           onClick={() => router.push('/signup')}
         >
           Criar Conta

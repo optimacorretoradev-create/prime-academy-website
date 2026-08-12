@@ -73,15 +73,15 @@ export function SignupForm() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md bg-white border border-slate-100 rounded-[2.5rem] p-8 sm:p-10 shadow-xl shadow-slate-200/50"
+        className="w-full max-w-md bg-white border border-slate-100 rounded-[2.5rem] p-8 sm:p-10 shadow-xl"
       >
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-tr from-[#312455] to-[#8a66a8] rounded-2xl mb-4 shadow-md shadow-purple-950/20">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-tr from-[#312455] to-[#8a66a8] rounded-xl mb-4 shadow-md shadow-purple-950/20">
             <GraduationCap className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-[#312455] mb-2 tracking-tight">Criar conta</h1>
           <p className="text-slate-500 text-sm sm:text-base">
-            Preencha os dados abaixo para começar
+            Preencha os dados abaixo para começar.
           </p>
         </div>
 
@@ -90,7 +90,7 @@ export function SignupForm() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="p-4 bg-destructive/10 border border-destructive/20 rounded-2xl text-destructive text-sm"
+              className="p-4 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive text-sm"
             >
               {error}
             </motion.div>
@@ -106,7 +106,7 @@ export function SignupForm() {
                 placeholder="Seu nome"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="pl-12 h-12 rounded-2xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
+                className="pl-12 h-12 rounded-xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
                 required
               />
             </div>
@@ -122,7 +122,7 @@ export function SignupForm() {
                 placeholder="seu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="pl-12 h-12 rounded-2xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
+                className="pl-12 h-12 rounded-xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
                 required
               />
             </div>
@@ -138,7 +138,7 @@ export function SignupForm() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pl-12 pr-12 h-12 rounded-2xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
+                className="pl-12 pr-12 h-12 rounded-xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
                 required
               />
               <button
@@ -150,7 +150,7 @@ export function SignupForm() {
               </button>
             </div>
             
-            <div className="grid grid-cols-1 gap-1.5 mt-2 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+            <div className="grid grid-cols-1 gap-1.5 mt-2 bg-slate-50 p-3 rounded-xl border border-slate-100">
               {passwordRequirements.map((req, index) => (
                 <div key={index} className="flex items-center gap-2 text-xs">
                   <div className={`w-4 h-4 rounded-full flex items-center justify-center transition-all ${req.met ? 'bg-emerald-500' : 'bg-slate-200'}`}>
@@ -172,7 +172,7 @@ export function SignupForm() {
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="pl-12 h-12 rounded-2xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
+                className="pl-12 h-12 rounded-xl border-slate-200 focus:border-[#8a66a8] focus:ring-[#8a66a8] transition-all bg-slate-50/50 focus:bg-white text-slate-800"
                 required
               />
             </div>
@@ -183,7 +183,7 @@ export function SignupForm() {
 
           <Button
             type="submit"
-            className="w-full h-12 bg-[#312455] hover:bg-[#402f6e] text-white rounded-2xl text-base font-semibold shadow-lg shadow-purple-950/15 hover:shadow-xl transition-all duration-300 mt-2"
+            className="w-full h-12 bg-[#8a66a8] hover:bg-[#735191] text-white rounded-xl text-base font-semibold shadow-lg shadow-purple-950/15 hover:shadow-xl transition-all duration-300 mt-2"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -242,7 +242,7 @@ export function SignupForm() {
               setShowSuccessModal(false)
               router.push('/login')
             }}
-            className="w-full h-12 bg-[#312455] hover:bg-[#402f6e] text-white rounded-2xl text-base font-semibold shadow-lg shadow-purple-950/15 hover:shadow-xl transition-all duration-300"
+            className="w-full h-12 bg-[#8a66a8] hover:bg-[#735191] text-white rounded-xl text-base font-semibold shadow-lg shadow-purple-950/15 hover:shadow-xl transition-all duration-300"
           >
             Ir para o Login
           </Button>

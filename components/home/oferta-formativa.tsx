@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import {
   BookOpen,
@@ -8,250 +7,84 @@ import {
   Users,
   Briefcase,
   ArrowRight,
-  FolderOpen,
-  Mic2,
-  Cpu,
-  Award,
-  RefreshCw,
-  ShieldCheck,
-  PresentationIcon,
-  Wrench,
-  Network,
-  GraduationCap,
-  FileSearch,
-  BarChart2,
-  MessageSquare,
-  Globe,
-  ClipboardList,
 } from 'lucide-react'
 
-// ─── Data ────────────────────────────────────────────────────────────────────
+// ─── Cards de Soluções (Substitui as tabs) ────────────────────────────────────
 
-const OFERTA_FORMATIVA = [
+const SOLUCOES_CARDS = [
   {
     id: 'formacao',
     icon: BookOpen,
     title: 'Formação Especializada',
-    subtitle: 'Programas completos para desenvolver competências críticas',
-    cta: 'Ver cursos',
+    description: 'Programas completos em Gestão Documental, Liderança e Comunicação, Tecnologias Inovadoras e Secretariado Estratégico.',
+    cta: 'Ver Cursos',
     ctaHref: '/courses',
-    areas: [
-      {
-        titulo: 'Gestão Administrativa Digital',
-        descricao: 'Sistemas, processos e normas de gestão da informação e arquivo nas organizações modernas.',
-        areaIcon: FolderOpen,
-        cursos: [
-          'Gestão de Documentos e Arquivos Electrónicos',
-          'Gestão Estratégica de Recursos Humanos',
-          'Gestão e Redacção de Documentos Oficiais e Pareceres Técnicos',
-        ],
-      },
-      {
-        titulo: 'Liderança e Comunicação',
-        descricao: 'Comunicação institucional, protocolo, redação executiva e relações interpessoais de alto nível.',
-        areaIcon: Mic2,
-        cursos: [
-          'Comunicação Institucional e Corporativa',
-          'Redacção Profissional e Escrita Executiva',
-          'Protocolo, Cerimonial e Imagem Institucional',
-          'Oratória, Persuasão e Comunicação de Impacto',
-        ],
-      },
-      {
-        titulo: 'Tecnologias Inovadoras',
-        descricao: 'IA, ferramentas digitais avançadas e cibersegurança para o profissional administrativo moderno.',
-        areaIcon: Cpu,
-        cursos: [
-          'AI para Automação e Tarefas Administrativas',
-          'Ferramentas de Produtividade (Office 365/Google)',
-          'Cibersegurança e Proteção de Dados',
-          'Gestão de Tempo, Processos e Produtividade',
-        ],
-      },
-      {
-        titulo: 'Secretariado Estratégico',
-        descricao: 'Competências de assessoria, protocolo executivo e gestão de gabinetes de alta direcção.',
-        areaIcon: Award,
-        cursos: [
-          'Secretariado para Alta Direcção',
-          'Gestão de Gabinetes de Altos Gestores',
-          'Práticas de Secretariado Executivo',
-          'Relações Públicas',
-        ],
-      },
-    ],
   },
   {
     id: 'programas',
     icon: Users,
     title: 'Programas Especiais',
-    subtitle: 'Programas de curta duração focados em resultados rápidos',
-    cta: 'Saber mais',
-    ctaHref: '/courses',
-    areas: [
-      {
-        titulo: 'Agenciamento',
-        descricao: 'Gestão de projetos e parcerias estratégicas para profissionais de alta performance.',
-        areaIcon: ClipboardList,
-        cursos: [
-          'Agenciamento de Formadores e Gestão de Formação Estratégica',
-        ],
-      },
-      {
-        titulo: 'Atualização',
-        descricao: 'Formação contínua e atualização profissional para acompanhar as exigências do mercado.',
-        areaIcon: RefreshCw,
-        cursos: [
-          'Atualização de Habilidades de Altos Gestores',
-        ],
-      },
-      {
-        titulo: 'Ética',
-        descricao: 'Princípios de ética profissional e governança corporativa aplicados ao contexto organizacional.',
-        areaIcon: ShieldCheck,
-        cursos: [
-          'Briefing sobre Ética e Deontologia Profissional',
-        ],
-      },
-    ],
+    description: 'Agenciamento de formadores, actualização de altos gestores e briefings sobre ética e deontologia profissional.',
+    cta: 'Conhecer os Programas',
+    ctaHref: '/courses?tab=programas',
   },
   {
     id: 'eventos',
     icon: Calendar,
     title: 'Eventos Corporativos',
-    subtitle: 'Seminários, workshops e masterclasses de alto nível',
-    cta: 'Explorar eventos',
+    description: 'Seminários, workshops e master classes de alto impacto para equipas e organizações exigentes.',
+    cta: 'Explorar Eventos',
     ctaHref: '/gallery',
-    areas: [
-      {
-        titulo: 'Seminários',
-        descricao: 'Sessões aprofundadas sobre gestão e organização de eventos corporativos de excelência.',
-        areaIcon: PresentationIcon,
-        cursos: [
-          'Seminários sobre Gestão e Organização de Eventos Corporativos',
-        ],
-      },
-      {
-        titulo: 'Workshops',
-        descricao: 'Formação prática em planeamento de viagens e ferramentas de IA para a administração moderna.',
-        areaIcon: Wrench,
-        cursos: [
-          'Workshop - Planeamento e Gestão de Viagens Corporativas',
-          'Workshop - Ferramentas de IA para Administração Moderna',
-        ],
-      },
-      {
-        titulo: 'Masterclasses',
-        descricao: 'Aprendizagem de elite com especialistas sobre a gestão de gabinetes de altos gestores.',
-        areaIcon: GraduationCap,
-        cursos: [
-          'Masterclass sobre Gestão de Gabinetes de Altos Gestores',
-        ],
-      },
-      {
-        titulo: 'Networking',
-        descricao: 'Eventos de networking exclusivos para profissionais de alto nível e tomadores de decisão.',
-        areaIcon: Network,
-        cursos: [
-          'Networking de Alto Nível',
-        ],
-      },
-    ],
   },
-
   {
     id: 'servicos',
     icon: Briefcase,
     title: 'Serviços Personalizados',
-    subtitle: 'Consultorias e formação sob medida para a sua organização',
-    cta: 'Solicitar consultoria',
+    description: 'Formação à medida da sua organização, diagnóstico de necessidades e programas in-company para equipas de qualquer dimensão.',
+    cta: 'Solicitar Consultoria',
     ctaHref: '/contact',
-    areas: [
-      {
-        titulo: 'Consultoria',
-        descricao: 'Apoio especializado na organização de gabinetes, comunicação institucional e assessoria de imprensa.',
-        areaIcon: BarChart2,
-        cursos: [
-          'Consultoria em Gestão e Organização de Gabinetes de Altos Gestores',
-          'Consultoria em Comunicação Institucional e Assessoria de Imprensa',
-        ],
-      },
-      {
-        titulo: 'Formação Sob Medida',
-        descricao: 'Programas formativos desenhados especificamente para as necessidades da sua organização.',
-        areaIcon: FileSearch,
-        cursos: [
-          'Construção de Formação sob Medida para as Necessidades da sua Organização',
-        ],
-      },
-    ],
   },
 ]
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-/** Linha clicável individual de cada curso dentro de um card de área */
-function CursoRow({ href, label }: { href: string; label: string }) {
-  return (
-    <Link
-      href={href}
-      className="flex items-center justify-between w-full px-4 py-3 rounded-lg bg-slate-50 border border-slate-100 text-left text-xs md:text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors group"
-    >
-      <span>{label}</span>
-      <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-[#8a66a8] transition-colors shrink-0 ml-2" />
-    </Link>
-  )
-}
-
-/** Card vertical de uma área (ex: Gestão Administrativa Digital) */
-function AreaCard({
-  area,
+/** Card individual de solução */
+function SolucaoCard({
+  icon: Icon,
+  title,
+  description,
+  cta,
   ctaHref,
-  ctaLabel,
 }: {
-  area: (typeof OFERTA_FORMATIVA)[0]['areas'][0]
+  icon: typeof BookOpen
+  title: string
+  description: string
+  cta: string
   ctaHref: string
-  ctaLabel: string
 }) {
-  const AreaIcon = area.areaIcon
-
   return (
-    <div className="flex flex-col justify-between h-full p-6 rounded-2xl bg-white border border-slate-100 shadow-sm">
-      {/* ── Topo: Cabeçalho ── */}
-      <div>
-        {/* Linha do título com ícone */}
-        <div className="flex items-center gap-3 mb-3">
-          <span className="p-2 rounded-lg bg-purple-50 text-purple-600 shrink-0">
-            <AreaIcon className="h-4 w-4" />
-          </span>
-          <h4 className="text-sm font-semibold text-[#312455] text-left leading-snug">
-            {area.titulo}
-          </h4>
-        </div>
-
-        {/* Descrição curta */}
-        <p className="mb-6 text-left text-slate-500 text-xs md:text-sm leading-relaxed">
-          {area.descricao}
-        </p>
-
-        {/* ── Meio: Lista de sub-itens ── */}
-        <div className="flex flex-col gap-2 mb-6">
-          {area.cursos.map((curso, i) => (
-            <CursoRow key={i} href={ctaHref} label={curso} />
-          ))}
-        </div>
+    <div className="flex flex-col h-full p-6 rounded-xl bg-white border border-slate-100 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_14px_30px_rgba(49,36,85,0.18)]">
+      {/* Ícone */}
+      <div className="w-12 h-12 rounded-xl bg-[#f5f0fa] flex items-center justify-center mb-4 shrink-0">
+        <Icon className="h-6 w-6 text-[#8a66a8]" />
       </div>
 
-      {/* ── Base: Botão de ação ── */}
-      <div>
-        <Link
-          href={ctaHref}
-          className="inline-flex items-center gap-1.5 self-start border border-slate-200 px-4 py-2 rounded-lg text-xs md:text-sm text-slate-700 hover:border-[#8a66a8] hover:text-[#8a66a8] transition-all font-medium"
-        >
-          {ctaLabel}
-          <ArrowRight className="h-3.5 w-3.5" />
-        </Link>
-      </div>
+      {/* Título */}
+      <h3 className="text-lg font-bold text-[#312455] mb-3 leading-snug">
+        {title}
+      </h3>
+
+      {/* Descrição */}
+      <p className="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">
+        {description}
+      </p>
+
+      {/* CTA */}
+      <Link
+        href={ctaHref}
+        className="inline-flex items-center gap-2 text-[#8a66a8] hover:text-[#735191] font-bold text-sm transition-colors group"
+      >
+        {cta}
+        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+      </Link>
     </div>
   )
 }
@@ -259,81 +92,35 @@ function AreaCard({
 // ─── Main Section ─────────────────────────────────────────────────────────────
 
 export function OfertaFormativa() {
-  const [activeTab, setActiveTab] = useState(0)
-  const activeCategory = OFERTA_FORMATIVA[activeTab]
-
   return (
-    <section className="relative py-16 md:py-24 bg-white">
+    <section className="relative pt-6 pb-8 md:pt-10 md:pb-12 bg-white">
       <div className="container mx-auto px-4 max-w-6xl">
 
         {/* Header */}
-        <div className="max-w-2xl mx-auto text-center space-y-4 mb-10 md:mb-14">
+        <div className="max-w-2xl mx-auto text-center space-y-4 mb-12 md:mb-16">
           <span className="text-[11px] sm:text-xs font-bold text-[#8a66a8] uppercase tracking-[0.2em]">
-            OFERTA FORMATIVA
+            SOLUÇÕES PRIME
           </span>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#312455] leading-tight">
-            4 formas de se tornar melhor no que faz
+            Quatro formas de transformar a sua organização
           </h2>
           <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-            Formação especializada, programas à medida e eventos de alto nível — escolha o formato que melhor serve o seu objectivo profissional.
+            Soluções especializadas, programas à medida e eventos de alto nível, escolha o formato que melhor serve o seu objectivo profissional.
           </p>
         </div>
 
-        {/* Tabs Navigation */}
-        <div className="flex overflow-x-auto whitespace-nowrap gap-2 md:justify-center border-b border-gray-200 pb-4 mb-10 md:mb-14 scrollbar-hide">
-          {OFERTA_FORMATIVA.map((cat, idx) => {
-            const Icon = cat.icon
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setActiveTab(idx)}
-                className={`flex items-center gap-2 px-6 py-3 text-sm font-semibold transition-all border-b-2 ${
-                  activeTab === idx
-                    ? 'border-[#8a66a8] text-[#8a66a8]'
-                    : 'border-transparent text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-                {cat.title}
-              </button>
-            )
-          })}
-        </div>
-
-        {/* Active Category Content */}
-        <div className="space-y-8">
-          <p className="text-center text-gray-500 max-w-xl mx-auto">
-            {activeCategory.subtitle}
-          </p>
-
-          {/* Sub-grid de cards de área */}
-          <div
-            className={`grid gap-6 ${
-              activeCategory.id === 'formacao'
-                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-                : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-            }`}
-          >
-            {activeCategory.areas.map((area, idx) => (
-              <AreaCard
-                key={idx}
-                area={area}
-                ctaHref={activeCategory.ctaHref}
-                ctaLabel={activeCategory.cta}
-              />
-            ))}
-          </div>
-
-          {/* CTA Geral — fora do grid de colunas */}
-          <div className="flex justify-center mt-14 pb-10">
-            <Link
-              href="/contact"
-              className="w-full max-w-xs sm:w-auto inline-flex items-center justify-center gap-2 bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-6 py-3 rounded-full transition-colors shadow-md"
-            >
-              Pedir Orçamento
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+        {/* Grid de Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {SOLUCOES_CARDS.map((solucao) => (
+            <SolucaoCard
+              key={solucao.id}
+              icon={solucao.icon}
+              title={solucao.title}
+              description={solucao.description}
+              cta={solucao.cta}
+              ctaHref={solucao.ctaHref}
+            />
+          ))}
         </div>
 
       </div>

@@ -62,7 +62,7 @@ export function TrainersSection() {
   const duplicateTrainers = [...trainers, ...trainers]
 
   return (
-    <section className="py-16 md:py-24 bg-slate-50 relative overflow-hidden">
+    <section className="pt-6 pb-8 md:pt-10 md:pb-12 bg-white relative overflow-hidden">
       {/* Decorative Brand Gradient Orbs in the background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 -left-20 w-[400px] h-[400px] bg-[#8a66a8]/5 rounded-full blur-[100px]" />
@@ -79,17 +79,17 @@ export function TrainersSection() {
           className="text-center"
         >
           <span className="block text-xs md:text-sm font-bold tracking-widest text-[#8a66a8] uppercase mb-3">
-            Elite de Especialistas
+            Núcleo de Especialistas
           </span>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#312455] tracking-tight uppercase leading-tight max-w-3xl mx-auto">
-            FORMADORES DE EXCELÊNCIA <span className="text-[#8a66a8]">NACIONAIS E INTERNACIONAIS</span>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#312455] tracking-tight leading-tight max-w-3xl mx-auto">
+            Formadores de excelência <span className="text-[#8a66a8]">nacionais e internacionais</span>
           </h2>
           <p className="mt-4 text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-            Todos os nossos formadores têm um percurso profissional comprovado nas áreas que ministram. Na Prime Academy, experiência real é requisito — não excepção.
+            Todos os nossos formadores têm um percurso profissional comprovado nas áreas que ministram. Na Prime Academy, experiência real é requisito, não excepção.
           </p>
           <Link
             href="/about#formadores"
-            className="inline-flex items-center gap-2 bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-6 py-3 rounded-full transition-colors shadow-md hover:shadow-lg mt-6"
+            className="inline-flex items-center gap-2 bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-6 py-3 rounded-xl transition-all shadow-lg hover:shadow-xl mt-6"
           >
             Ver todos os formadores
             <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -106,7 +106,7 @@ export function TrainersSection() {
           {duplicateTrainers.map((trainer, idx) => (
             <div 
               key={`trainer-card-${idx}`}
-              className="group relative flex-shrink-0 w-[240px] h-[340px] md:w-[280px] md:h-[390px] rounded-2xl md:rounded-3xl overflow-hidden bg-slate-200 border border-slate-200/60 shadow-[0_15px_30px_rgba(0,0,0,0.06)] transition-all duration-500 hover:shadow-[0_20px_40px_rgba(138,102,168,0.15)] hover:scale-[1.02] cursor-pointer"
+              className="group relative flex-shrink-0 w-[240px] h-[340px] md:w-[280px] md:h-[390px] rounded-xl overflow-hidden bg-slate-200 border border-slate-200/60 shadow-[0_15px_30px_rgba(0,0,0,0.06)] transition-all duration-500 hover:shadow-[0_20px_40px_rgba(138,102,168,0.15)] hover:scale-[1.02] cursor-pointer"
             >
               {/* Trainer Image */}
               <Image

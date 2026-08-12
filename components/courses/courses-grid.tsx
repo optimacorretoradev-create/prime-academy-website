@@ -5,6 +5,7 @@ import { SafeImage } from '@/components/ui/safe-image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
+import { OfertaFormativaTabs } from '@/components/home/oferta-formativa-tabs'
 import { BookOpen, Clock, Play, Search, BadgeCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { Course } from '@/lib/hygraph'
@@ -81,7 +82,7 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
     <div className="min-h-screen bg-slate-50">
 
       {/* ── HERO (Restaurado para cor original, com barra de pesquisa glassmorphic integrada) ── */}
-      <section className="relative pt-48 pb-16 lg:pt-40 lg:pb-24 overflow-hidden bg-[#312455]">
+      <section className="relative pt-48 pb-16 lg:pt-48 lg:pb-28 overflow-hidden bg-[#312455]">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1920&q=80)' }}
@@ -97,7 +98,7 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
             transition={{ duration: 0.4 }}
             className="text-white/60 font-bold text-xs uppercase tracking-widest block mb-3"
           >
-            FORMAÇÃO, PROGRAMAS, EVENTOS, CONSULTORIA
+            Formação, programas, eventos, consultoria
           </motion.span>
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
@@ -126,10 +127,15 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
 
         {/* Título da secção + underline */}
         <div className="text-center pt-15 mb-16 flex flex-col items-center">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-[#312455] uppercase tracking-wider mb-2">
-            Os Nossos Cursos
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#312455] tracking-wider mb-2">
+            Os nossos cursos
           </h2>
           <div className="w-14 h-1 bg-[#8a66a8] rounded-full" />
+        </div>
+
+        {/* Bloco de ofertas formativas */}
+        <div className="mb-20">
+          <OfertaFormativaTabs />
         </div>
 
         {/* Filtros por categoria (tabs responsivas) */}
@@ -138,7 +144,7 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
             <button
               key={category}
               onClick={() => setActiveFilter(category)}
-              className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer shadow-sm whitespace-nowrap ${
+              className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer shadow-sm whitespace-nowrap ${
                 activeFilter.trim().toUpperCase() === category.trim().toUpperCase()
                   ? 'bg-[#8a66a8] text-white shadow-md'
                   : 'bg-white text-slate-600 border border-slate-100 hover:bg-slate-50 hover:text-slate-900'
@@ -164,7 +170,7 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
                   transition={{ duration: 0.35, delay: index * 0.05 }}
                   className="flex"
                 >
-                  <div className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_40px_rgba(138,102,168,0.12)] transition-all duration-500 flex flex-col group w-full">
+                  <div className="bg-white rounded-xl overflow-hidden border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_40px_rgba(138,102,168,0.12)] transition-all duration-500 flex flex-col group w-full">
 
                     {/* Imagem de capa */}
                     <div className="relative h-44 overflow-hidden bg-slate-200">
@@ -222,14 +228,14 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
 
                     {/* CTA */}
                     <div className="px-4 pb-4 flex gap-2">
-                      <Button asChild variant="outline" className="w-1/2 rounded-xl h-10 text-xs font-bold border-slate-200 text-slate-600 hover:border-[#312455] hover:text-[#312455] hover:bg-transparent cursor-pointer transition-colors duration-300">
+                      <Button asChild variant="outline" className="w-1/2 rounded-xl h-10 text-xs font-bold border-slate-200 text-slate-600 hover:border-[#8a66a8] hover:text-[#8a66a8] hover:bg-transparent cursor-pointer transition-colors duration-300">
                         <Link href={`/courses/${course.id}`}>
-                          Saber Mais
+                          Saber mais
                         </Link>
                       </Button>
                       <Button 
                         onClick={() => openPreEnrollment(course)}
-                        className="w-1/2 bg-[#312455] hover:bg-[#8a66a8] text-white rounded-xl h-10 text-xs font-bold shadow-md cursor-pointer transition-all duration-300"
+                        className="w-1/2 bg-[#8a66a8] hover:bg-[#735191] text-white rounded-xl h-10 text-xs font-bold shadow-md cursor-pointer transition-all duration-300"
                       >
                         Pré-inscrição
                       </Button>
@@ -247,7 +253,7 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-20 bg-white border border-slate-100 rounded-3xl shadow-sm max-w-lg mx-auto"
+            className="text-center py-20 bg-white border border-slate-100 rounded-xl shadow-sm max-w-lg mx-auto"
           >
             <BookOpen className="h-12 w-12 text-slate-400 mx-auto mb-4" />
             <h3 className="text-lg font-bold text-slate-800 mb-1">Nenhum curso encontrado</h3>

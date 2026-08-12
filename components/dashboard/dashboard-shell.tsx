@@ -4,6 +4,7 @@ import { useEffect, useState, Fragment, type ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
+import { createPortal } from 'react-dom'
 import {
   BookOpen,
   LogOut,
@@ -374,32 +375,34 @@ export function DashboardShell({
                   </span>
                 )}
               </Button>
-              <AnimatePresence>
-                {showNotifications && (
-                  <>
-                    {/* Overlay — fecha ao clicar fora */}
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="fixed inset-0 z-40"
-                      onClick={() => setShowNotifications(false)}
-                    />
+              {typeof window !== 'undefined' &&
+                createPortal(
+                  <AnimatePresence>
+                    {showNotifications && (
+                      <>
+                        {/* Overlay — fecha ao clicar fora */}
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="fixed inset-0 z-[9998]"
+                          onClick={() => setShowNotifications(false)}
+                        />
 
-                    {/* Painel de notificações */}
-                    <motion.div
-                      initial={{ opacity: 0, y: -8, scale: 0.97 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -8, scale: 0.97 }}
-                      transition={{ duration: 0.18, ease: 'easeOut' }}
-                      className="
-                        fixed z-50 overflow-hidden
-                        bg-white border border-slate-100 shadow-2xl
-                        rounded-[2rem]
-                        top-[4.5rem] right-4 left-4
-                        sm:left-auto sm:w-[360px]
-                      "
-                    >
+                        {/* Painel de notificações (portalizado com z-index maior) */}
+                        <motion.div
+                          initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -8, scale: 0.97 }}
+                          transition={{ duration: 0.18, ease: 'easeOut' }}
+                          className="
+                            fixed z-[9999] overflow-hidden
+                            bg-white border border-slate-100 shadow-2xl
+                            rounded-[2rem]
+                            top-[4.5rem] right-4 left-4
+                            sm:left-auto sm:w-[360px]
+                          "
+                        >
                       {/* Cabeçalho */}
                       <div className="flex items-center justify-between px-5 py-4 bg-[#312455]">
                         <div className="flex items-center gap-2">
@@ -491,9 +494,11 @@ export function DashboardShell({
                         </div>
                       )}
                     </motion.div>
-                  </>
+                      </>
+                    )}
+                  </AnimatePresence>,
+                  document.body
                 )}
-              </AnimatePresence>
             </div>
             <Link
               href="/dashboard?tab=settings"

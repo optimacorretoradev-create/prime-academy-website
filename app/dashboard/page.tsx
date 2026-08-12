@@ -6,6 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { SafeImage } from '@/components/ui/safe-image'
 import { motion, AnimatePresence } from 'framer-motion'
+import { createPortal } from 'react-dom'
 import { 
   BookOpen, Clock, Award, ArrowRight, Play, User, LogOut, 
   Download, Upload, Plus, CheckCircle2, Globe, Users, FileText, 
@@ -1434,30 +1435,32 @@ function DashboardPageContent() {
                   </AnimatePresence>
                 </Button>
 
-                {/* Elegant Notifications Popup */}
-                <AnimatePresence>
-                  {showNotifications && (
-                    <>
-                      {/* Backdrop overlay for closing */}
-                      <div 
-                        className="fixed inset-0 z-40 cursor-default" 
-                        onClick={() => setShowNotifications(false)}
-                      />
-                      
-                      {/* Popup Container */}
-                      <motion.div
-                        initial={{ opacity: 0, y: 12, scale: 0.96 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 12, scale: 0.96 }}
-                        transition={{ duration: 0.18, ease: 'easeOut' }}
-                        className="
-                          fixed z-50 overflow-hidden
-                          bg-white border border-slate-100 shadow-2xl
-                          rounded-[2rem]
-                          top-[4.5rem] right-4 left-4
-                          sm:left-auto sm:w-[360px]
-                        "
-                      >
+                {/* Elegant Notifications Popup (portalized) */}
+                {typeof window !== 'undefined' &&
+                  createPortal(
+                    <AnimatePresence>
+                      {showNotifications && (
+                        <>
+                          {/* Backdrop overlay for closing */}
+                          <div
+                            className="fixed inset-0 z-[9998] cursor-default"
+                            onClick={() => setShowNotifications(false)}
+                          />
+
+                          {/* Popup Container */}
+                          <motion.div
+                            initial={{ opacity: 0, y: 12, scale: 0.96 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 12, scale: 0.96 }}
+                            transition={{ duration: 0.18, ease: 'easeOut' }}
+                            className="
+                              fixed z-[9999] overflow-hidden
+                              bg-white border border-slate-100 shadow-2xl
+                              rounded-[2rem]
+                              top-[4.5rem] right-4 left-4
+                              sm:left-auto sm:w-[360px]
+                            "
+                          >
                         {/* Cabeçalho */}
                         <div className="flex items-center justify-between px-5 py-4 bg-[#312455]">
                           <div className="flex items-center gap-2">
@@ -1549,9 +1552,11 @@ function DashboardPageContent() {
                           </div>
                         )}
                       </motion.div>
-                    </>
-                  )}
-                </AnimatePresence>
+                      </>
+                    )}
+                  </AnimatePresence>,
+                  document.body
+                )}
               </div>
 
               <div 
@@ -1575,7 +1580,7 @@ function DashboardPageContent() {
                 <>
                   <Card className="border border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl bg-white/70 backdrop-blur-sm overflow-hidden group">
                     <CardContent className="flex flex-col items-center justify-center text-center gap-0.5 py-2.5 px-2 md:p-6">
-                      <div className="text-xl font-bold text-slate-900 leading-none">2</div>
+                      <div className="text-xl font-bold text-slate-900 leading-none">{exploreCourses.length}</div>
                       <div className="flex items-center gap-1 text-[9px] font-semibold tracking-wider text-slate-400 uppercase">
                         <BookOpen className="w-3 h-3 hidden sm:block" />
                         <span className="hidden sm:inline">Cursos</span>
@@ -1840,8 +1845,28 @@ function DashboardPageContent() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {activeCourses.map((course) => (
-                    <Card key={course.id} className="overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 rounded-3xl bg-white flex flex-col group">
+                  {activeCourses.length === 0 ? (
+                    <div className="col-span-full flex flex-col md:flex-row items-start gap-6 py-8 bg-white border border-slate-100 rounded-2xl shadow-sm p-6">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-extrabold text-[#312455] mb-2">Nenhuma formação encontrada</h3>
+                        <p className="text-sm text-slate-500 mb-3">
+                          {isInstructor
+                            ? 'Ainda não existem formações registadas. Pode criar conteúdos formativos a partir do painel de administração.'
+                            : 'Ainda não tem formações activas. Consulte o catálogo público para descobrir formações e inscreva-se nas que lhe interessam.'}
+                        </p>
+                        <p className="text-xs text-slate-400">Se for administrador, utilize a área de gestão para adicionar formações; se for formando, explore o catálogo para se inscrever.</p>
+                      </div>
+                      <div className="flex-shrink-0 flex items-center">
+                        {isInstructor ? (
+                          <Link href="/admin" className="bg-gradient-to-r from-[#312455] to-[#8a66a8] text-white font-bold px-4 py-2 rounded-xl shadow-md">Ir para Admin</Link>
+                        ) : (
+                          <Link href="/enroll" className="bg-white border border-slate-200 text-[#312455] font-bold px-4 py-2 rounded-xl">Inscrever-me</Link>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    activeCourses.map((course) => (
+                      <Card key={course.id} className="overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 rounded-3xl bg-white flex flex-col group">
                       <div className="relative h-48 w-full overflow-hidden">
                         {course.image ? (
                           <SafeImage
@@ -1898,7 +1923,7 @@ function DashboardPageContent() {
                         </Button>
                       </CardContent>
                     </Card>
-                  ))}
+                  ))) }
                 </div>
               </motion.div>
             )}

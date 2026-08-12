@@ -73,7 +73,7 @@ export function WorkshopsSection() {
                 transition={{ delay: index * 0.1, duration: 0.5 }}
                 className="group h-full"
               >
-                <Card className="h-full flex flex-col justify-between border border-border/80 hover:border-accent/40 hover:shadow-xl transition-all duration-300 bg-card rounded-3xl overflow-hidden">
+                <Card className="h-full flex flex-col justify-between border border-border/80 hover:border-accent/40 hover:shadow-xl transition-all duration-300 bg-card rounded-xl overflow-hidden">
                   <CardHeader className="pb-3 space-y-3">
                     <div className="flex items-center justify-between">
                       <Badge variant="secondary" className="bg-primary/5 text-primary text-[10px] uppercase font-bold py-0.5 px-2">
@@ -89,7 +89,7 @@ export function WorkshopsSection() {
                   </CardHeader>
                   
                   <CardContent className="pb-4 space-y-4">
-                    <div className="flex items-start gap-2.5 text-xs text-muted-foreground bg-muted/40 p-3.5 rounded-2xl border border-border/50">
+                    <div className="flex items-start gap-2.5 text-xs text-muted-foreground bg-muted/40 p-3.5 rounded-xl border border-border/50">
                       <Calendar className="h-4.5 w-4.5 text-accent flex-shrink-0 mt-0.5" />
                       <div className="space-y-0.5">
                         <span className="block font-bold text-foreground text-[10px] uppercase tracking-wider">Período Previsto</span>
@@ -99,7 +99,7 @@ export function WorkshopsSection() {
                   </CardContent>
 
                   <CardFooter className="pt-2 pb-6 px-6">
-                    <Button asChild className="w-full bg-accent text-accent-foreground hover:bg-accent/90 rounded-2xl font-semibold shadow-md group-hover:shadow-lg transition-all">
+                    <Button asChild className="w-full bg-accent text-accent-foreground hover:bg-accent/90 rounded-xl font-semibold shadow-md group-hover:shadow-lg transition-all">
                       <Link href={`/enroll?workshop=${encodeURIComponent(w.title)}`}>
                         Inscrever-me
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />

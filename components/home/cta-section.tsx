@@ -17,7 +17,7 @@ interface CtaSectionProps {
 export function CtaSection({
   eyebrow = '',
   title = 'Pronto para atualizar os seus conhecimentos?',
-  subtitle = 'A sua jornada começa hoje. Inscreva-se numa das nossas turmas ou fale connosco para encontrar o programa ideal — individual ou à medida da sua equipa.',
+  subtitle = 'A sua jornada começa hoje. Inscreva-se numa das nossas turmas ou fale connosco para encontrar o programa ideal, individual ou à medida da sua equipa.',
   cta1Label = 'Pedir Proposta',
   cta1Href = '/contact',
   cta2Label = 'Falar com a Nossa Equipa',
@@ -31,7 +31,7 @@ export function CtaSection({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-primary text-primary-foreground px-6 py-8 md:px-10 md:py-8 shadow-xl border border-white/10"
+          className="relative overflow-hidden rounded-xl bg-primary text-primary-foreground px-6 py-8 md:px-10 md:py-8 shadow-xl border border-white/10"
         >
           {/* Subtle glowing gradients using Prime Academy brand accent colors */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">

@@ -52,7 +52,7 @@ export function WhyPrimeSection() {
             >
               <Card className="h-full hover:shadow-xl transition-all border-slate-100 hover:border-secondary/20">
                 <CardContent className="p-8 flex flex-col items-center text-center space-y-4">
-                  <div className="w-16 h-16 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary mb-2">
+                  <div className="w-16 h-16 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary mb-2">
                     <diff.icon className="w-8 h-8" />
                   </div>
                   <h3 className="font-bold text-lg text-primary tracking-tight">{diff.title}</h3>

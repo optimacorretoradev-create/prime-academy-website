@@ -54,7 +54,7 @@ export function PartnersSection() {
             {duplicatedPartners.map((partner, idx) => (
               <div
                 key={`${partner.name}-${idx}`}
-                className="w-36 sm:w-40 h-24 sm:h-28 bg-white dark:bg-card border border-border/60 rounded-2xl flex flex-col items-center justify-center p-4 shadow-[0_4px_20px_rgb(0,0,0,0.01)] dark:shadow-none hover:shadow-[0_12px_24px_rgba(138,102,168,0.04)] hover:border-accent/30 transition-all duration-500 group shrink-0 select-none cursor-pointer"
+                className="w-36 sm:w-40 h-24 sm:h-28 bg-white dark:bg-card border border-border/60 rounded-xl flex flex-col items-center justify-center p-4 shadow-[0_4px_20px_rgb(0,0,0,0.01)] dark:shadow-none hover:shadow-[0_12px_24px_rgba(138,102,168,0.04)] hover:border-accent/30 transition-all duration-500 group shrink-0 select-none cursor-pointer"
               >
                 <div className="h-8 sm:h-9 w-full flex items-center justify-center relative overflow-hidden mb-2">
                   <img

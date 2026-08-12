@@ -60,19 +60,16 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 items-start mb-8">
           
           {/* Column 1: Logo and Brand Description */}
-          <div className="space-y-1 md:space-y-0">
-            <Link href="/" className="inline-block group md:-mt-4">
+          <div className="relative h-28 md:h-0">
+            <Link href="/" className="inline-block group absolute top-0 left-0">
               <Image 
                 src="/logo.svg" 
                 alt="Prime Academy Logo" 
                 width={200} 
                 height={54} 
-                className="h-14 md:h-46 w-auto invert brightness-0" 
+                className="h-55 md:h-55 w-auto -translate-y-20 invert brightness-0" 
               />
             </Link>
-            <p className="text-xs text-primary-foreground/70 leading-relaxed font-light max-w-xs md:-mt-2">
-              Capacitação e desenvolvimento profissional de excelência em Angola.
-            </p>
           </div>
 
           {/* Column 2: Navigation - Split into 2 visual columns */}
