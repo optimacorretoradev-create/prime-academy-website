@@ -193,7 +193,7 @@ export function HeroSection({ featuredCourses = [], featuredBoards = [] }: HeroS
                   <div className="max-w-[90%] md:max-w-[540px] text-left flex flex-col items-start justify-start">
                     <div className="overflow-hidden">
                       <h1 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight tracking-tight">
-                        Da competência à excelência
+                        Da Competência à Excelência
                       </h1>
                       <p className="text-sm sm:text-base md:text-lg text-white/80 max-w-lg font-light leading-relaxed text-pretty mt-3">
                         Oferecemos formação corporativa especializada em secretariado executivo, gestão administrativa e tecnologias digitais em Angola. Programas práticos, formadores com experiência real, para profissionais ativos no alcance dos objectivos organizacionais.

@@ -133,31 +133,52 @@ export function DashboardShell({
 
   const isInstructor = user.role === 'admin'
 
-  const navLinks: { id: DashboardNavId; label: string; href: string; icon: typeof BookOpen }[] = [
-    {
-      id: 'courses',
-      label: isInstructor ? 'Minhas Turmas' : 'Meus Cursos',
-      href: '/dashboard',
-      icon: BookOpen,
-    },
-    {
-      id: 'online-classes',
-      label: 'Aulas Online',
-      href: '/dashboard?tab=online-classes',
-      icon: Video,
-    },
-    {
-      id: 'pdfs',
-      label: isInstructor ? 'Gerir PDFs' : 'Biblioteca PDF',
-      href: '/dashboard?tab=pdfs',
-      icon: FileText,
-    },
-    ...(isInstructor
-      ? [{ id: 'students' as const, label: 'Lista de Formandos', href: '/dashboard?tab=students', icon: Users }]
-      : []),
-    { id: 'explore', label: 'Explorar Cursos', href: '/dashboard?tab=explore', icon: Compass },
-    { id: 'settings', label: 'Definições', href: '/dashboard?tab=settings', icon: Settings },
-  ]
+  const navLinks: { id: DashboardNavId; label: string; href: string; icon: typeof BookOpen }[] = isInstructor
+    ? [
+        {
+          id: 'courses',
+          label: 'Minhas Turmas',
+          href: '/dashboard',
+          icon: BookOpen,
+        },
+        {
+          id: 'online-classes',
+          label: 'Aulas Online',
+          href: '/dashboard?tab=online-classes',
+          icon: Video,
+        },
+        {
+          id: 'pdfs',
+          label: 'Gerir PDFs',
+          href: '/dashboard?tab=pdfs',
+          icon: FileText,
+        },
+        { id: 'students' as const, label: 'Lista de Formandos', href: '/dashboard?tab=students', icon: Users },
+        { id: 'explore', label: 'Explorar Cursos', href: '/dashboard?tab=explore', icon: Compass },
+        { id: 'settings', label: 'Definições', href: '/dashboard?tab=settings', icon: Settings },
+      ]
+    : [
+        { id: 'explore', label: 'Explorar Cursos', href: '/dashboard?tab=explore', icon: Compass },
+        {
+          id: 'courses',
+          label: 'Meus Cursos',
+          href: '/dashboard',
+          icon: BookOpen,
+        },
+        {
+          id: 'online-classes',
+          label: 'Aulas Online',
+          href: '/dashboard?tab=online-classes',
+          icon: Video,
+        },
+        {
+          id: 'pdfs',
+          label: 'Biblioteca PDF',
+          href: '/dashboard?tab=pdfs',
+          icon: FileText,
+        },
+        { id: 'settings', label: 'Definições', href: '/dashboard?tab=settings', icon: Settings },
+      ]
 
   const handleLogout = () => {
     logout()
@@ -174,7 +195,7 @@ export function DashboardShell({
         <Link
           href={link.href}
           onClick={onNavigate}
-          className={`flex items-center gap-3 px-4 py-3 rounded-l-[2rem] rounded-r-none text-sm font-semibold transition-all duration-300 w-full relative ${
+          className={`flex items-center gap-3 px-4 py-3 rounded-l-xl rounded-r-none text-sm font-semibold transition-all duration-300 w-full relative ${
             isActive
               ? 'bg-[#f8fafc] text-[#312455] z-10 shadow-sm'
               : 'text-white/70 hover:bg-white/5 hover:text-white'
@@ -185,10 +206,10 @@ export function DashboardShell({
           {isActive && (
             <>
               <div className="absolute bottom-full right-0 w-8 h-8 bg-[#f8fafc] pointer-events-none translate-y-[1px]">
-                <div className="w-full h-full bg-[#312455] rounded-br-[2rem]" />
+                <div className="w-full h-full bg-[#312455] rounded-br-xl" />
               </div>
               <div className="absolute top-full right-0 w-8 h-8 bg-[#f8fafc] pointer-events-none -translate-y-[1px]">
-                <div className="w-full h-full bg-[#312455] rounded-tr-[2rem]" />
+                <div className="w-full h-full bg-[#312455] rounded-tr-xl" />
               </div>
             </>
           )}
@@ -225,20 +246,24 @@ export function DashboardShell({
         </div>
 
         <nav className="flex-1 pl-4 pr-0 py-6 space-y-1 overflow-y-auto">
-          <div className="text-[10px] font-bold tracking-wider text-white/40 uppercase px-3 mb-2">
-            Área de Formação
-          </div>
-          {navLinks.map((link) => renderNavItem(link))}
           {isInstructor && (
-            <div className="pt-4">
+            <div className="pb-4">
+              <div className="text-[10px] font-bold tracking-wider text-white/40 uppercase px-3 mb-2">
+                Administração
+              </div>
               {renderNavItem({
                 id: 'admin',
-                label: 'Base de Dados',
+                label: 'Painel Geral Admin',
                 href: '/admin',
                 icon: ShieldCheck,
               })}
             </div>
           )}
+
+          <div className="text-[10px] font-bold tracking-wider text-white/40 uppercase px-3 mb-2">
+            Área de Formação
+          </div>
+          {navLinks.map((link) => renderNavItem(link))}
         </nav>
 
         <div className="p-4 border-t border-white/10 bg-black/10 mt-auto rounded-br-[2.5rem]">
@@ -301,12 +326,22 @@ export function DashboardShell({
                 </Badge>
               </div>
               <nav className="flex-1 pl-4 py-6 space-y-1 overflow-y-auto">
+                {isInstructor && (
+                  <div className="pb-4 pr-4">
+                    <div className="text-[10px] font-bold tracking-wider text-white/40 uppercase px-3 mb-2">
+                      Administração
+                    </div>
+                    {renderNavItem(
+                      { id: 'admin', label: 'Painel Geral Admin', href: '/admin', icon: ShieldCheck },
+                      () => setSidebarOpen(false)
+                    )}
+                  </div>
+                )}
+
+                <div className="text-[10px] font-bold tracking-wider text-white/40 uppercase px-3 mb-2">
+                  Área de Formação
+                </div>
                 {navLinks.map((link) => renderNavItem(link, () => setSidebarOpen(false)))}
-                {isInstructor &&
-                  renderNavItem(
-                    { id: 'admin', label: 'Base de Dados', href: '/admin', icon: ShieldCheck },
-                    () => setSidebarOpen(false)
-                  )}
               </nav>
               <div className="p-4 border-t border-white/10">
                 <button
