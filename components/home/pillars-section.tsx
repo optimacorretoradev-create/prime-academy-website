@@ -139,7 +139,7 @@ export function PillarsSection() {
                 <div className="border-t pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
                    <p className="text-xs text-muted-foreground text-center md:text-left">Todos os módulos contam com material de apoio completo em formato PDF e avaliação prática continuada.</p>
                    <Link href="/courses" className="bg-primary text-white px-6 py-2 rounded-lg font-bold text-sm flex items-center gap-2 hover:bg-primary/90 transition-colors whitespace-nowrap">
-                     Ver Horários e Preços <ArrowRight className="w-4 h-4" />
+                     Ver Horários E Preços <ArrowRight className="w-4 h-4" />
                    </Link>
                 </div>
               </motion.div>

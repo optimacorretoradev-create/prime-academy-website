@@ -48,7 +48,7 @@ export function CoursesSection() {
           </div>
           <Button asChild variant="outline" className="rounded-xl font-bold px-6 text-[#312455] hover:bg-[#312455] hover:text-white transition-all h-10 shadow-md hover:shadow-xl">
             <Link href="/courses" className="flex items-center gap-2">
-              Ver Todos os Cursos
+              Ver Todos Os Cursos
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
@@ -88,7 +88,7 @@ export function CoursesSection() {
 
                   <CardFooter className="pt-3 px-3 pb-3 justify-start">
                     <Button asChild className="w-fit justify-center bg-[#8a66a8] hover:bg-[#312455] text-white rounded-xl font-bold h-9 px-4 shadow-md hover:shadow-xl transition-all">
-                      <span>Saber mais</span>
+                      <span>Saber Mais</span>
                     </Button>
                   </CardFooter>
                 </Card>

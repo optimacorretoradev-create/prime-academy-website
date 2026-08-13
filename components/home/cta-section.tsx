@@ -20,7 +20,7 @@ export function CtaSection({
   subtitle = 'A sua jornada começa hoje. Inscreva-se numa das nossas turmas ou fale connosco para encontrar o programa ideal, individual ou à medida da sua equipa.',
   cta1Label = 'Pedir Proposta',
   cta1Href = '/contact',
-  cta2Label = 'Falar com a Nossa Equipa',
+  cta2Label = 'Falar Com A Nossa Equipa',
   cta2Href = '/contact',
 }: CtaSectionProps) {
   return (

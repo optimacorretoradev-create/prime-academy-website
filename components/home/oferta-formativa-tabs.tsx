@@ -31,7 +31,7 @@ const OFERTA_FORMATIVA = [
     id: 'formacao',
     icon: BookOpen,
     title: 'Formação Especializada',
-    subtitle: 'Programas completos para desenvolver competências críticas',
+    subtitle: 'Programas Completos Para Desenvolver Competências Críticas',
     cta: 'Ver cursos',
     ctaHref: '/courses',
     areas: [
@@ -84,7 +84,7 @@ const OFERTA_FORMATIVA = [
     id: 'programas',
     icon: Users,
     title: 'Programas Especiais',
-    subtitle: 'Programas de curta duração focados em resultados rápidos',
+    subtitle: 'Programas De Curta Duração Focados Em Resultados Rápidos',
     cta: 'Saber mais',
     ctaHref: '/courses',
     areas: [
@@ -118,7 +118,7 @@ const OFERTA_FORMATIVA = [
     id: 'eventos',
     icon: Calendar,
     title: 'Eventos Corporativos',
-    subtitle: 'Seminários, workshops e masterclasses de alto nível',
+    subtitle: 'Seminários, Workshops E Masterclasses De Alto Nível',
     cta: 'Explorar eventos',
     ctaHref: '/gallery',
     areas: [
@@ -162,7 +162,7 @@ const OFERTA_FORMATIVA = [
     id: 'servicos',
     icon: Briefcase,
     title: 'Serviços Personalizados',
-    subtitle: 'Consultorias e formação sob medida para a sua organização',
+    subtitle: 'Consultorias E Formação Sob Medida Para A Sua Organização',
     cta: 'Solicitar consultoria',
     ctaHref: '/contact',
     areas: [

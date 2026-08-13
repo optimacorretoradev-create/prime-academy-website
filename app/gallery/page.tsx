@@ -62,7 +62,7 @@ export default async function GalleryPage() {
                 href="/contact"
                 className="bg-[#8a66a8] hover:bg-[#735191] text-white text-sm font-bold px-6 py-3 rounded-xl transition-all shadow-lg text-center w-full max-w-[360px]"
               >
-                Fazer parte da próxima edição
+                Fazer Parte Da Próxima Edição
               </Link>
             </div>
           </div>
