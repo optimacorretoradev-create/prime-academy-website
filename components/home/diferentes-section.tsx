@@ -70,7 +70,7 @@ export function DiferentesSection() {
             href="/contact"
             className="inline-flex items-center gap-2 bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-6 py-3 rounded-xl transition-all shadow-lg hover:shadow-xl"
           >
-            Falar com a Nossa Equipa
+            Falar Com A Nossa Equipa
           </Link>
         </div>
       </div>

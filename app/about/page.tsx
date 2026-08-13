@@ -195,7 +195,7 @@ export default function AboutPage() {
               href="/gallery"
               className="inline-flex items-center justify-center bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
             >
-              Ir para Galeria de Projetos
+              Ir Para Galeria De Projetos
             </Link>
           </div>
         </div>
@@ -282,7 +282,7 @@ export default function AboutPage() {
                   href="/gallery"
                   className="inline-flex items-center justify-center bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
                 >
-                  Conheça o nosso trabalho
+                  Conheça O Nosso Trabalho
                 </Link>
               </div>
             </div>
@@ -574,9 +574,9 @@ export default function AboutPage() {
         eyebrow="ENCONTROU O PARCEIRO CERTO"
         title="Já Escolheu o Programa Ideal?"
         subtitle="Explore o nosso catálogo ou fale connosco — temos o programa certo para si ou para a sua equipa."
-        cta1Label="Ver todas as soluções"
+        cta1Label="Ver Todas As Soluções"
         cta1Href="/courses"
-        cta2Label="Falar com a Prime"
+        cta2Label="Falar Com A Prime"
         cta2Href="/contact"
       />
     </div>

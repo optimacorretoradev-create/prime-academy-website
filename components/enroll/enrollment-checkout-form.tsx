@@ -168,7 +168,8 @@ export function EnrollmentCheckoutForm({
 
   const buildWhatsAppUrl = (): string => {
     const phone = whatsappNumber.replace(/[^0-9]/g, '')
-    const courseName = selectedCourse?.name ?? 'um curso da Prime Academy'
+    const courseMatch = courses.find((c) => c.id === formData.course)
+    const courseName = courseMatch?.name ?? 'um curso da Prime Academy'
     const nome = userProfile?.nome ?? 'Candidato'
     const email = userProfile?.email ?? ''
     const modalidade = formData.modalidade
@@ -212,12 +213,12 @@ export function EnrollmentCheckoutForm({
       if (!formData.course) {
         throw new Error('Por favor, selecione um curso')
       }
-      
+
       if (!formData.comprovativo) {
         toast({
-          title: "Atenção",
-          description: "Por favor, faça o upload do seu comprovativo bancário para concluir a inscrição.",
-          variant: "destructive"
+          title: 'Atenção',
+          description: 'Por favor, faça o upload do seu comprovativo bancário para concluir a inscrição.',
+          variant: 'destructive',
         })
         setIsSubmitting(false)
         return
@@ -232,16 +233,14 @@ export function EnrollmentCheckoutForm({
         throw new Error('Curso não encontrado')
       }
 
-      const tempInscricaoId = crypto.randomUUID()
-      const comprovativoUrl = await uploadComprovatvoToStorage(formData.comprovativo, tempInscricaoId)
-
+      // 1. Salvar inscrição imediatamente (sem esperar pelo upload do ficheiro)
       const inscricaoResult = await createInscricao({
         nome: userProfile.nome,
         email: userProfile.email,
         curso_id: formData.course,
         curso_nome: matchedCourse.name,
         modalidade: formData.modalidade,
-        comprovativo_url: comprovativoUrl,
+        comprovativo_url: null,
         mensagem: formData.mensagem.trim() || undefined,
       })
 
@@ -249,108 +248,125 @@ export function EnrollmentCheckoutForm({
         throw new Error(inscricaoResult.error || 'Erro ao criar inscrição')
       }
 
-      // Enviar e-mail de notificação via EmailJS
+      const inscricaoId = inscricaoResult.inscricao?.id
+
+      // 2. Upload do comprovativo + patch da inscrição em segundo plano
+      const fileToUpload = formData.comprovativo
+      if (fileToUpload && inscricaoId) {
+        ;(async () => {
+          try {
+            const fileExt = fileToUpload.name.split('.').pop()
+            const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${fileExt}`
+            const filePath = `comprovativos/${fileName}`
+            const { error: uploadError } = await supabase.storage
+              .from('inscricoes')
+              .upload(filePath, fileToUpload, { contentType: fileToUpload.type, upsert: true })
+            if (!uploadError) {
+              const { data: urlData } = supabase.storage.from('inscricoes').getPublicUrl(filePath)
+              await supabase.from('inscricoes').update({ comprovativo_url: urlData.publicUrl }).eq('id', inscricaoId)
+            }
+          } catch (_) {}
+        })()
+      }
+
+      // 3. Notificações em segundo plano
       const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
       const templateId = process.env.NEXT_PUBLIC_EMAILJS_ENROLL_TEMPLATE_ID || process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
       const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
-
-
-
-      if (!serviceId || !templateId || !publicKey) {
-
-        toast({ title: 'Aviso', description: 'Configuração de e-mail em falta. Contacte o suporte.', variant: 'destructive' })
-      } else {
-        try {
-          const result = await emailjs.send(
-            serviceId,
-            templateId,
-            {
-              to_email: 'comercialprimeacademy@gmail.com',
-              name: userProfile.nome,
-              email: userProfile.email,
-              phone: 'N/A',
-              course: matchedCourse.name,
-              message: `Modalidade: ${formData.modalidade === 'presencial' ? 'Presencial' : 'Online'}. Comprovativo: ${comprovativoUrl}`,
-            },
-            publicKey
-          )
-
-        } catch (emailErr) {
-
-          toast({ title: 'Aviso de e-mail', description: `Erro: ${emailErr instanceof Error ? emailErr.message : String(emailErr)}`, variant: 'destructive' })
-        }
+      if (serviceId && templateId && publicKey) {
+        emailjs.send(serviceId, templateId, {
+          to_email: 'comercialprimeacademy@gmail.com',
+          name: userProfile.nome,
+          email: userProfile.email,
+          phone: 'N/A',
+          course: matchedCourse.name,
+          message: `Modalidade: ${formData.modalidade === 'presencial' ? 'Presencial' : 'Online'}. Comprovativo será enviado via WhatsApp.`,
+        }, publicKey).catch(() => {})
       }
 
-      try {
-        const { data: admins } = await supabase
-          .from('perfis')
-          .select('id')
-          .eq('cargo', 'admin')
-
+      supabase.from('perfis').select('id').eq('cargo', 'admin').then(({ data: admins }) => {
         if (admins && admins.length > 0) {
-          await Promise.allSettled(
-            admins.map((admin: { id: string }) =>
-              createNotificationViaApi({
-                perfilId: admin.id,
-                tipo: 'nova_inscricao',
-                titulo: 'Nova Inscrição Recebida',
-                descricao: `${userProfile.nome} inscreveu-se no curso "${matchedCourse.name}" (${formData.modalidade === 'presencial' ? 'Presencial' : 'Online'}). Comprovativo de pagamento enviado.`,
-                metadata: {
-                  aluno_nome: userProfile.nome,
-                  aluno_email: userProfile.email,
-                  curso_nome: matchedCourse.name,
-                  curso_id: formData.course,
-                  modalidade: formData.modalidade,
-                  comprovativo_url: comprovativoUrl,
-                  inscricao_id: inscricaoResult.inscricao?.id,
-                },
-              })
-            )
-          )
-        }
-      } catch (adminNotifErr) {
-
-      }
-
-      // 2. Notificar o formando com inscricao_em_analise
-      try {
-        const { data: authData } = await supabase.auth.getUser()
-        if (authData?.user?.id) {
-          await createNotificationViaApi({
-            perfilId: authData.user.id,
-            tipo: 'inscricao_em_analise',
-            titulo: 'Inscrição Enviada',
-            descricao: `A sua inscrição no curso "${matchedCourse.name}" foi recebida e está a ser analisada. A equipa entrará em contacto em breve.`,
-            metadata: {
-              curso_nome: matchedCourse.name,
-              curso_id: formData.course,
-              inscricao_id: inscricaoResult.inscricao?.id,
-            },
+          admins.forEach((admin: { id: string }) => {
+            createNotificationViaApi({
+              perfilId: admin.id,
+              tipo: 'nova_inscricao',
+              titulo: 'Nova Inscrição Recebida',
+              descricao: `${userProfile.nome} inscreveu-se no curso "${matchedCourse.name}".`,
+              metadata: { aluno_nome: userProfile.nome, aluno_email: userProfile.email, curso_nome: matchedCourse.name, curso_id: formData.course, modalidade: formData.modalidade, inscricao_id: inscricaoId },
+            }).catch(() => {})
           })
         }
-      } catch (userNotifErr) {
+      }).catch(() => {})
 
+      if (userAuthId) {
+        createNotificationViaApi({
+          perfilId: userAuthId,
+          tipo: 'inscricao_em_analise',
+          titulo: 'Inscrição Enviada',
+          descricao: `A sua inscrição no curso "${matchedCourse.name}" foi recebida e está a ser analisada.`,
+          metadata: { curso_nome: matchedCourse.name, curso_id: formData.course, inscricao_id: inscricaoId },
+        }).catch(() => {})
       }
 
       setIsSuccess(true)
-
-      // Open WhatsApp immediately with pre-filled message
       const whatsappUrl = buildWhatsAppUrl()
-      window.open(whatsappUrl, '_blank')
 
       toast({
-        title: '✓ Inscrição confirmada!',
-        description: 'A redirecionar para o WhatsApp para enviar o comprovativo...',
+        title: '✓ Inscrição enviada com sucesso!',
+        description: 'A abrir o WhatsApp...',
       })
 
-      setTimeout(() => {
-        router.push('/dashboard')
-      }, 2000)
+      // Redirecionamento instantâneo para o WhatsApp
+      window.location.href = whatsappUrl
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao processar inscrição')
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  if (isSuccess) {
+    const whatsappUrl = buildWhatsAppUrl()
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md w-full bg-card border border-border rounded-2xl p-6 sm:p-8 text-center shadow-xl space-y-4"
+        >
+          <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center mx-auto shadow-xs">
+            <CheckCircle className="h-8 w-8" />
+          </div>
+
+          <div>
+            <h2 className="text-xl font-bold text-foreground">Inscrição Enviada com Sucesso!</h2>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+              Os seus dados e comprovativo foram registados no sistema. A redirecionar para o WhatsApp para falar com a nossa equipa…
+            </p>
+          </div>
+
+          <div className="pt-2 space-y-2.5">
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs py-3 px-4 rounded-xl transition-all shadow-md hover:shadow-lg"
+            >
+              <span>Enviar Mensagem no WhatsApp</span>
+              <ArrowRight className="h-4 w-4" />
+            </a>
+
+            <Button
+              variant="outline"
+              className="w-full rounded-xl text-xs"
+              onClick={() => router.push('/dashboard')}
+            >
+              Ir para o Meu Painel
+            </Button>
+          </div>
+        </motion.div>
+      </div>
+    )
   }
 
   if (isLoading || !user || !userProfile) {
@@ -778,7 +794,7 @@ export function EnrollmentCheckoutForm({
           </Button>
 
           <p className="text-center text-[10px] text-muted-foreground">
-            Ao confirmar, abriremos o WhatsApp para enviar o seu comprovativo
+            Após confirmar, será redirecionado para o WhatsApp para falar com a nossa equipa.
           </p>
         </form>
         </motion.div>

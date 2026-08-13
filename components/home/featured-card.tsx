@@ -1,5 +1,4 @@
 import { Star, BadgeCheck, ArrowRight } from 'lucide-react'
-import Link from 'next/link'
 
 interface FeaturedCardProps {
   title: string
@@ -7,9 +6,23 @@ interface FeaturedCardProps {
   level: string
   regime: string
   vagasLimitadas?: boolean
+  whatsappNumber?: string
 }
 
-export function FeaturedCard({ title, duration, level, regime, vagasLimitadas = false }: FeaturedCardProps) {
+export function FeaturedCard({
+  title,
+  duration,
+  level,
+  regime,
+  vagasLimitadas = false,
+  whatsappNumber = '+244921394946',
+}: FeaturedCardProps) {
+  const phone = whatsappNumber.replace(/[^0-9]/g, '')
+  const message = encodeURIComponent(
+    `Olá, Prime Academy! 👋 Desejo reservar o meu lugar no curso em destaque: *${title}*. Podem ajudar-me com as informações para inscrição?`
+  )
+  const whatsappUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${message}`
+
   return (
     <div className="flex flex-col p-5 space-y-4 text-white">
       {/* Header Badge & Title */}
@@ -45,25 +58,20 @@ export function FeaturedCard({ title, duration, level, regime, vagasLimitadas = 
 
       {/* Card Footer — Vagas Text Above Button + Full Width Pill CTA */}
       <div className="flex flex-col gap-2 pt-1">
-        {vagasLimitadas ? (
-          <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
-            <span className="h-2 w-2 rounded-full bg-[#8a66a8] shrink-0 animate-pulse" />
-            <span>Vagas limitadas disponíveis</span>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 shrink-0" />
-            <span>Inscrições abertas</span>
-          </div>
-        )}
+        <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
+          <span className="h-2 w-2 rounded-full bg-[#8a66a8] shrink-0 animate-pulse" />
+          <span>Vagas Limitadas</span>
+        </div>
 
-        <Link
-          href="/enroll"
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
           className="w-full bg-secondary hover:bg-secondary/90 text-white text-xs md:text-sm font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
         >
-          <span>Reservar o meu lugar</span>
+          <span>Reservar O Meu Lugar</span>
           <ArrowRight className="h-4 w-4" />
-        </Link>
+        </a>
       </div>
     </div>
   )

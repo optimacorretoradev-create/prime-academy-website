@@ -22,7 +22,7 @@ export function AboutSection() {
               href="/about"
               className="inline-flex items-center gap-2 bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-6 py-3 rounded-xl transition-all shadow-md hover:shadow-xl group"
             >
-              Conheça a nossa história
+              Conheça A Nossa História
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>

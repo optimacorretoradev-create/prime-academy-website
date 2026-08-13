@@ -25,7 +25,7 @@ const SOLUCOES_CARDS = [
     icon: Users,
     title: 'Programas Especiais',
     description: 'Agenciamento de formadores, actualização de altos gestores e briefings sobre ética e deontologia profissional.',
-    cta: 'Conhecer os Programas',
+    cta: 'Conhecer Os Programas',
     ctaHref: '/courses?tab=programas',
   },
   {
