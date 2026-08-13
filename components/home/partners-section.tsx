@@ -30,8 +30,8 @@ export function PartnersSection() {
         {/* Title block with scroll reveals */}
         <div className="text-center mb-10 space-y-2">
           <ScrollReveal delay={0.05} direction="up" distance={15}>
-            <h2 className="text-xl md:text-2xl font-extrabold text-primary uppercase tracking-wider">
-              CLIENTES E PARCEIROS
+            <h2 className="text-xl md:text-2xl font-extrabold text-primary tracking-wider">
+              Clientes E Parceiros
             </h2>
           </ScrollReveal>
 
@@ -39,10 +39,6 @@ export function PartnersSection() {
             <p className="text-muted-foreground text-xs font-light">
               Empresas públicas e privadas, organismos do Estado e instituições internacionais com equipas formadas pela Prime Academy.
             </p>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.25} direction="up" distance={10}>
-            <div className="w-12 h-[2px] bg-amber-500 mx-auto mt-3 rounded-full" />
           </ScrollReveal>
         </div >
       </div >

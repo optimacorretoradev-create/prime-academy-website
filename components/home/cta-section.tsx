@@ -16,7 +16,7 @@ interface CtaSectionProps {
 
 export function CtaSection({
   eyebrow = '',
-  title = 'Pronto para atualizar os seus conhecimentos?',
+  title = 'Pronto Para Atualizar Os Seus Conhecimentos?',
   subtitle = 'A sua jornada começa hoje. Inscreva-se numa das nossas turmas ou fale connosco para encontrar o programa ideal, individual ou à medida da sua equipa.',
   cta1Label = 'Pedir Proposta',
   cta1Href = '/contact',

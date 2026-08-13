@@ -34,7 +34,7 @@ export function DiferentesSection() {
             O QUE NOS DIFERENCIA
           </span>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#312455] leading-tight">
-            Razões fundamentais para escolher a Prime Academy
+            Razões Fundamentais Para Escolher A Prime Academy
           </h2>
           <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
             Não somos mais um centro de formação. Somos a academia angolana especializada em Novas Tecnologias de Gestão Secretarial, com historial e metodologia, para o sector público e privado.

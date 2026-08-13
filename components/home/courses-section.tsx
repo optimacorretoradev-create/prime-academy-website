@@ -40,7 +40,7 @@ export function CoursesSection() {
               FORMAÇÃO EXECUTIVA ESPECIALIZADA
             </span>
             <h2 className="text-2xl md:text-4xl font-extrabold text-[#312455] tracking-tight">
-              Cursos em destaque
+              Cursos Em Destaque
             </h2>
             <p className="text-slate-500 text-sm">
               Seleccione uma das nossas especialidades de alta conversão empresarial e acelere a sua carreira.

@@ -13,7 +13,7 @@ export function AboutSection() {
               QUEM SOMOS
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#312455] leading-tight">
-              Liderança, inovação e impacto no desenvolvimento corporativo
+              Liderança, Inovação E Impacto No Desenvolvimento Corporativo
             </h2>
             <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
               Transformamos organizações e carreiras desenvolvendo programas individuais ou para equipas de qualquer dimensão, com diagnóstico de necessidades, formação in-company e relatório de impacto incluídos.

@@ -13,11 +13,11 @@ export const metadata: Metadata = {
  * Devem corresponder (case-insensitive) ao campo `categoria` no Hygraph.
  */
 const OFFICIAL_CATEGORIES = [
-  'TODOS',
   'GESTÃO ADMINISTRATIVA DIGITAL',
   'LIDERANÇA E COMUNICAÇÃO',
   'SECRETARIADO ESTRATÉGICO',
   'TECNOLOGIAS INOVADORAS',
+  'TODOS',
 ] as const
 
 

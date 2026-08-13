@@ -247,7 +247,7 @@ export function FeaturesSection() {
             <div className="space-y-5">
                 <div className="space-y-2 text-left">
                   <h2 className="text-2xl md:text-3xl font-extrabold text-primary leading-tight uppercase tracking-tight">
-                    Excelência Operacional e Metodológica
+                    Excelência Operacional E Metodológica
                   </h2>
                   <p className="text-muted-foreground text-xs font-light leading-relaxed">
                     Clique nas vantagens abaixo para inspecionar em tempo real o funcionamento do nosso ecossistema de elite no painel oposto:

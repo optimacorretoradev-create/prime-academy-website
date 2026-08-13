@@ -264,7 +264,7 @@ export function OfertaFormativaTabs() {
   }, [tabParam, defaultTabIndex])
 
   return (
-    <div className="w-full">
+    <div className="w-full pt-6 md:pt-8">
       {/* Tabs Navigation */}
       <div className="flex overflow-x-auto whitespace-nowrap gap-2 md:justify-center border-b border-gray-200 pb-4 mb-10 md:mb-14 scrollbar-hide">
         {OFERTA_FORMATIVA.map((cat, idx) => {

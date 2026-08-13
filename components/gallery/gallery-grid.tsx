@@ -95,7 +95,7 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
           <div>
             <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">Registos recentes</span>
             <h2 className="text-xl md:text-2xl font-black text-[#312455] mt-2 leading-tight">
-              Últimos destaques da Prime Academy
+              Últimos Destaques Da Prime Academy
             </h2>
             <p className="text-slate-500 text-sm mt-1 max-w-lg">
               Explore os momentos marcantes que moldam o nosso ecossistema — formações intensivas, workshops práticos e celebrações de excelência profissional.
@@ -188,7 +188,7 @@ export function GalleryGrid({ images, categories }: GalleryGridProps) {
           <div>
             <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">Coleção completa</span>
             <h2 className="text-xl md:text-2xl font-black text-[#312455] mt-2 leading-tight">
-              Galeria geral de momentos
+              Galeria Geral De Momentos
             </h2>
           </div>
 

@@ -147,7 +147,7 @@ export function Header() {
                     asChild
                     className="bg-[#8a66a8] text-white hover:bg-[#8a66a8]/90 rounded-xl shadow-md ml-2 font-bold px-5 text-sm cursor-pointer border border-[#8a66a8]/20 hover:scale-105 transition-all"
                   >
-                    <Link href="/signup">Criar Conta</Link>
+                    <Link href="/signup">Inscrever-me</Link>
                   </Button>
                 </>
               )}
@@ -272,7 +272,7 @@ export function Header() {
                         className="w-full bg-[#8a66a8] text-white hover:bg-[#8a66a8]/90 rounded-xl font-bold cursor-pointer transition-all py-6 text-lg hover:scale-[1.02]"
                       >
                         <Link href="/signup" onClick={() => setIsOpen(false)}>
-                          Criar Conta Gratuita
+                          Inscrever-me
                         </Link>
                       </Button>
                     </>

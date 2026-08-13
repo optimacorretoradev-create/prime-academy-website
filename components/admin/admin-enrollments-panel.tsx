@@ -273,7 +273,10 @@ export function AdminEnrollmentsPanel({ adminPerfilId, onUpdated }: AdminEnrollm
                       </a>
                     )}
                     {ins.mensagem && (
-                      <p className="text-xs text-slate-500 mt-2 italic line-clamp-2">{ins.mensagem}</p>
+                      <div className="mt-2.5 p-2.5 rounded-xl bg-amber-50/80 border border-amber-200/70 text-xs text-amber-950">
+                        <span className="font-bold text-amber-900 block mb-0.5">📝 Nota / Observação do Candidato:</span>
+                        <p className="leading-relaxed whitespace-pre-wrap">{ins.mensagem}</p>
+                      </div>
                     )}
                     <p className="text-[10px] text-slate-400 mt-2">
                       {new Date(ins.criado_em).toLocaleString('pt-AO')}
