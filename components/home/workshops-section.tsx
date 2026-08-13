@@ -54,7 +54,7 @@ export function WorkshopsSection() {
             CALENDÁRIO EXECUTIVO 2026
           </Badge>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-primary max-w-3xl mx-auto leading-tight">
-            Workshops e Seminários Executivos
+            Workshops E Seminários Executivos
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto text-sm">
             Programas intensivos de atualização profissional com formadores especialistas de renome nacional e internacional.

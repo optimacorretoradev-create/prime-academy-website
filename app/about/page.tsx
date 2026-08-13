@@ -14,9 +14,9 @@ const TEAM_SECTIONS = [
     department: "Direcção Geral",
     gridClass: "grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-center justify-center",
     members: [
-      { name: "Valéria Serra", role: "Directora Administrativa", img: "/images/Equipe/dg3.jpeg" },
-      { name: "Júlia Indira Simões", role: "Diretora Geral", img: "/images/Equipe/dg1.jpeg" },
-      { name: "Santos Egas Moniz", role: "Director Pedagógico", img: "/images/trainers/SantosEgasMoniz.png" }
+      { name: "Valéria Serra", role: "Directora Administrativa", department: "Direcção Administrativa", img: "/images/Equipe/dg3.jpeg" },
+      { name: "Júlia Indira Simões", role: "Diretora Geral", department: "Direcção Geral", img: "/images/Equipe/dg1.jpeg" },
+      { name: "Santos Egas Moniz", role: "Director Pedagógico", department: "Direcção Pedagógica", img: "/images/trainers/SantosEgasMoniz.png" }
     ]
   }
 ];
@@ -30,9 +30,9 @@ export default function AboutPage() {
 
   const differentials = [
     { icon: Award, title: 'Certificações Reconhecidas', desc: 'Diplomas e certificados com validade nacional e reconhecimento institucional.' },
-    { icon: Heart, title: 'Conteúdos para Problemas Reais', desc: 'Programas desenvolvidos com base em desafios organizacionais concretos.' },
+    { icon: Heart, title: 'Conteúdos Para Problemas Reais', desc: 'Programas desenvolvidos com base em desafios organizacionais concretos.' },
     { icon: Cpu, title: 'Metodologia Prática', desc: '80% de prática aplicada e 20% de teoria relevante.' },
-    { icon: Users, title: 'Formadores de Excelência', desc: 'Especialistas nacionais e internacionais de experiência comprovada.' },
+    { icon: Users, title: 'Formadores De Excelência', desc: 'Especialistas nacionais e internacionais de experiência comprovada.' },
     { icon: TrendingUp, title: 'Impacto Organizacional', desc: 'Medimos o sucesso pela transformação real nas organizações.' },
     { icon: Target, title: 'Formação Sob Medida', desc: 'Programas In Company adaptados à realidade da sua instituição.' },
   ]
@@ -90,7 +90,7 @@ export default function AboutPage() {
             O SEU PARCEIRO ESTRATÉGICO
           </span>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight mb-4 max-w-3xl mx-auto">
-            Conheça o Ecossistema Prime
+            Conheça O Ecossistema Prime
           </h1>
           <p className="text-slate-300 max-w-2xl mx-auto text-base md:text-lg font-light leading-relaxed mt-4 text-pretty">
             Desde 2018 a impulsionar o desenvolvimento e a melhoria contínua das habilidades técnicas e humanas em gestão secretarial, com soluções personalizadas em todo território nacional.
@@ -104,42 +104,53 @@ export default function AboutPage() {
       ══════════════════════════════════════════════ */}
       <section className="pt-6 pb-8 md:pt-10 md:pb-12 bg-slate-50 overflow-hidden">
         <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-14">
-            <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">Origens</span>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#312455] mt-3 leading-tight">
-              Um caminho construído com trabalho e determinação
-            </h2>
-            <p className="text-slate-500 text-sm leading-relaxed mt-4 max-w-2xl mx-auto">
-              Academia de referência em Angola para secretariado executivo, gestão administrativa e tecnologias digitais. A formar os melhores profissionais desde 2018.
-            </p>
-          </div>
 
-          <div className="relative pb-12 md:pb-20">
-            {/* Desktop: SVG wavy timeline */}
-            <div className="hidden md:block relative h-56">
-              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden>
+          <div className="relative pb-4 md:pb-6">
+            {/* Desktop: SVG straight timeline with connectors */}
+            <div className="hidden md:block relative" style={{ height: '240px' }}>
+              <svg 
+                className="absolute inset-0 w-full h-full" 
+                viewBox="0 0 1000 240" 
+                preserveAspectRatio="none" 
+                aria-hidden
+                style={{ overflow: 'visible' }}
+              >
                 <defs>
-                  <linearGradient id="g1" x1="0%" x2="100%" y1="0%" y2="0%">
+                  <linearGradient id="timelineGradient" x1="0%" x2="100%" y1="0%" y2="0%">
                     <stop offset="0%" stopColor="#8a66a8" stopOpacity="0.95" />
                     <stop offset="100%" stopColor="#735191" stopOpacity="0.9" />
                   </linearGradient>
                 </defs>
-                <path d="M0,120 C180,20 320,220 500,120 C680,20 820,220 1000,120" fill="none" stroke="url(#g1)" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+                
+                {/* Main horizontal line at Y=35 */}
+                <line x1="0" y1="35" x2="1000" y2="35" stroke="#8a66a8" strokeWidth="6" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+                
+                {/* Connectors starting exactly from main line (Y=35) down to card top (Y=85) */}
+                <line x1="60" y1="35" x2="60" y2="85" stroke="#8a66a8" strokeWidth="2.5" strokeLinecap="round" opacity="0.6" vectorEffect="non-scaling-stroke" />
+                <line x1="340" y1="35" x2="340" y2="85" stroke="#8a66a8" strokeWidth="2.5" strokeLinecap="round" opacity="0.6" vectorEffect="non-scaling-stroke" />
+                <line x1="630" y1="35" x2="630" y2="85" stroke="#8a66a8" strokeWidth="2.5" strokeLinecap="round" opacity="0.6" vectorEffect="non-scaling-stroke" />
+                <line x1="900" y1="35" x2="900" y2="85" stroke="#8a66a8" strokeWidth="2.5" strokeLinecap="round" opacity="0.6" vectorEffect="non-scaling-stroke" />
               </svg>
 
-              {/* Markers placed along the wave */}
+              {/* Markers placed exactly centered on the horizontal line (top: 11px + half height 24px = 35px) */}
               {[
-                { left: '6%', year: 'Ponto de partida', title: 'Identificação da Oportunidade', desc: 'Ausência de formação especializada em gestão secretarial', offset: -36 },
-                { left: '34%', year: '2018', title: 'Início do Projecto', desc: 'Fundação com apoio da Universidade Agostinho Neto em Luanda', offset: 28 },
-                { left: '63%', year: 'Marco de impacto', title: '+10.353 Profissionais Capacitados', desc: 'Estado, Forças Armadas, Governos e Ensino Superior', offset: -36 },
-                { left: '90%', year: '2026', title: 'Lançamento do Manual', desc: 'Contextualização e publicação do Manual', offset: 28 },
+                { left: '6%', year: 'Ponto de partida', title: 'Identificação da Oportunidade', desc: 'Ausência de formação especializada em gestão secretarial' },
+                { left: '34%', year: '2018', title: 'Início do Projecto', desc: 'Fundação com apoio da Universidade Agostinho Neto em Luanda' },
+                { left: '63%', year: 'Marco de impacto', title: '+10.353 Profissionais Capacitados', desc: 'Estado, Forças Armadas, Governos e Ensino Superior' },
+                { left: '90%', year: '2026', title: 'Lançamento do Manual', desc: 'Contextualização e publicação do Manual' },
               ].map((m, i) => (
-                <div key={i} className="absolute" style={{ left: m.left, top: '50%', transform: `translate(-50%, ${m.offset}px)` }}>
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white shadow-xl ring-4 ring-[#8a66a8]/10 border border-[#8a66a8] z-20">
-                    <div className="w-3 h-3 rounded-full bg-[#8a66a8]" />
+                <div 
+                  key={i} 
+                  className="absolute flex flex-col items-center z-20" 
+                  style={{ left: m.left, top: '11px', transform: 'translate(-50%, 0)' }}
+                >
+                  {/* Purple dot marker centered on main line */}
+                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white shadow-lg ring-4 ring-[#8a66a8]/15 border-2 border-[#8a66a8] z-20">
+                    <div className="w-3.5 h-3.5 rounded-full bg-[#8a66a8] shadow-xs" />
                   </div>
 
-                  <div className={`mt-4 w-[220px] ${m.offset < 0 ? 'text-center' : 'text-center'}`}>
+                  {/* Card positioned right where connector line ends (Y=85) */}
+                  <div className="w-[220px] text-center" style={{ marginTop: '26px' }}>
                     <AnimatedCard delay={i * 0.11}>
                       <div className="bg-white rounded-xl p-4 border border-slate-100 shadow-md hover:-translate-y-1 transition-transform duration-350 hover-float">
                         <span className="text-[#8a66a8] font-extrabold text-sm">{m.year}</span>
@@ -154,7 +165,7 @@ export default function AboutPage() {
 
             {/* Mobile: vertical timeline fallback */}
             <div className="md:hidden relative px-4">
-              <div className="absolute left-8 top-8 bottom-8 w-0.5 bg-[#8a66a8]/20" />
+              <div className="absolute left-7 top-6 bottom-6 w-0.5 bg-[#8a66a8]/30" />
               <div className="space-y-6">
                 {[
                   { year: 'Ponto de partida', title: 'Identificação da Oportunidade', desc: 'Ausência de formação especializada em gestão secretarial' },
@@ -163,10 +174,10 @@ export default function AboutPage() {
                   { year: '2026', title: 'Actualização de Profissionais & Lançamento do Manual', desc: 'Contextualização e publicação do Manual' },
                 ].map((marco, i) => (
                   <div key={i} className="relative animate-fade-up" style={{ animationDelay: `${i * 90}ms` }}>
-                    <div className="absolute left-6 top-3 w-3 h-3 rounded-full bg-[#8a66a8] border-2 border-white shadow z-20" />
+                    <div className="absolute left-[21px] top-4 w-3.5 h-3.5 rounded-full bg-[#8a66a8] border-2 border-white shadow-md z-20" />
                     <div className="pl-12">
                       <AnimatedCard delay={i * 0.09}>
-                        <div className="bg-white rounded-xl p-3 border border-slate-100 shadow-sm hover:-translate-y-1 transition-transform duration-350 hover-float">
+                        <div className="bg-[#fff] rounded-xl p-3.5 border border-slate-100 shadow-sm hover:-translate-y-1 transition-transform duration-350 hover-float">
                           <span className="text-[#8a66a8] font-bold text-sm">{marco.year}</span>
                           <h3 className="text-sm font-bold text-[#312455] mt-1">{marco.title}</h3>
                           <p className="text-xs text-slate-500 mt-1">{marco.desc}</p>
@@ -179,7 +190,7 @@ export default function AboutPage() {
             </div>
           </div>
 
-          <div className="text-center mt-12 relative z-30">
+          <div className="text-center mt-3 relative z-30">
             <Link
               href="/gallery"
               className="inline-flex items-center justify-center bg-[#8a66a8] hover:bg-[#735191] text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
@@ -286,14 +297,14 @@ export default function AboutPage() {
       <section className="pt-6 pb-8 md:pt-10 md:pb-12 bg-slate-50 border-t border-slate-100">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="mb-10 text-center">
-            <h2 className="text-3xl md:text-4xl font-black text-[#312455]">A Nossa identidade</h2>
+            <h2 className="text-3xl md:text-4xl font-black text-[#312455]">A Nossa Identidade</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             <div className="bg-white rounded-xl p-8 border border-slate-100 shadow-sm flex flex-col gap-5">
               <div className="w-14 h-14 rounded-xl bg-[#8a66a8]/10 flex items-center justify-center">
                 <Target className="h-7 w-7 text-[#8a66a8]" />
               </div>
-              <h3 className="text-xl font-black text-[#312455]">A nossa missão</h3>
+              <h3 className="text-xl font-black text-[#312455]">A Nossa Missão</h3>
               <p className="text-slate-500 text-sm leading-relaxed">
                 Capacitar profissionais para liderar, decidir e transformar organizações, por meio da aplicação de tecnologias, metodologias inovadoras e boas práticas internacionais, promovendo resultados sustentáveis e excelência organizacional.
               </p>
@@ -303,7 +314,7 @@ export default function AboutPage() {
               <div className="w-14 h-14 rounded-xl bg-white/15 flex items-center justify-center">
                 <Shield className="h-7 w-7 text-[#c4a9e0]" />
               </div>
-              <h3 className="text-xl font-black text-white">A nossa visão</h3>
+              <h3 className="text-xl font-black text-white">A Nossa Visão</h3>
               <p className="text-white/70 text-sm leading-relaxed">
                 Ser uma academia de referência nacional e regional na formação de quadros estratégicos em gestão administrativa moderna e secretariado executivo de alto nível, reconhecida pela excelência, inovação e impacto no desenvolvimento organizacional.
               </p>
@@ -313,7 +324,7 @@ export default function AboutPage() {
               <div className="w-14 h-14 rounded-xl bg-[#8a66a8]/10 flex items-center justify-center">
                 <Gem className="h-7 w-7 text-[#8a66a8]" />
               </div>
-              <h3 className="text-xl font-black text-[#312455]">Os nossos valores</h3>
+              <h3 className="text-xl font-black text-[#312455]">Os Nossos Valores</h3>
               <ul className="space-y-2">
                 {['Excelência', 'Rigor', 'Especialidade', 'Cooperação', 'Inovação'].map((valor) => (
                   <li key={valor} className="flex items-center gap-2.5">
@@ -334,7 +345,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="mb-10 text-center">
             <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">O NOSSO PÚBLICO</span>
-            <h2 className="text-3xl md:text-4xl font-black text-[#312455]">Para quem criamos valor</h2>
+            <h2 className="text-3xl md:text-4xl font-black text-[#312455]">Para Quem Criamos Valor</h2>
             <p className="text-slate-500 text-sm leading-relaxed mt-4 max-w-2xl mx-auto">
               Da Administração Pública às maiores empresas privadas de Angola — a Prime Academy forma profissionais e equipas em todos os sectores onde a gestão secretarial e administrativa faz a diferença.
             </p>
@@ -345,7 +356,7 @@ export default function AboutPage() {
                 <div className="w-10 h-10 rounded-xl bg-[#8a66a8]/10 flex items-center justify-center">
                   <Briefcase className="h-5 w-5 text-[#8a66a8]" />
                 </div>
-                <h3 className="text-xl font-black text-[#312455]">Perfil dos profissionais</h3>
+                <h3 className="text-xl font-black text-[#312455]">Perfil Dos Profissionais</h3>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {targetAudience.map((item, i) => (
@@ -362,7 +373,7 @@ export default function AboutPage() {
                 <div className="w-10 h-10 rounded-xl bg-[#8a66a8]/10 flex items-center justify-center">
                   <Landmark className="h-5 w-5 text-[#8a66a8]" />
                 </div>
-                <h3 className="text-xl font-black text-[#312455]">Organizações e sectores</h3>
+                <h3 className="text-xl font-black text-[#312455]">Organizações E Sectores</h3>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {segments.map((item, i) => (
@@ -381,9 +392,24 @@ export default function AboutPage() {
 
       
 
-      {/* ── SECÇÃO 4.5 — Equipa Interna (Fundo Branco para contraste) ── */}
-      <section className="pt-4 pb-6 md:pt-8 md:pb-10 bg-white border-t border-slate-100">
+      {/* ══════════════════════════════════════════════
+          SECÇÃO — A Excelência Que Não Se Negocia + Equipa Interna
+      ══════════════════════════════════════════════ */}
+      <section className="pt-6 pb-6 md:pt-10 md:pb-10 bg-slate-50 border-t border-slate-100">
         <div className="container mx-auto px-4 max-w-4xl">
+          <div className="text-center space-y-4 mb-8 md:mb-10">
+            <div>
+              <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">A EXCELÊNCIA QUE NÃO SE NEGOCEIA</span>
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#312455] mt-3 leading-tight">
+                As Pessoas Por Detrás Da Prime
+              </h2>
+            </div>
+            <p className="text-slate-500 text-sm leading-relaxed max-w-2xl mx-auto">
+              A qualidade de uma academia mede-se pelo talento que a compõe. Contamos com profissionais de referência, desde a equipa interna aos formadores. Porque dirigimos o que conhecemos e conhecemos o que ensinamos.
+            </p>
+          </div>
+
+          {/* Equipa Interna */}
           <div className="space-y-6 md:space-y-8">
             <div className="text-center mb-4 md:mb-6">
               <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">Equipa interna</span>
@@ -412,7 +438,7 @@ export default function AboutPage() {
                           <div className="text-center w-full">
                             <p className="font-bold text-slate-800 text-base md:text-lg leading-tight">{member.name}</p>
                             <p className="text-xs font-bold text-[#8a66a8] tracking-wider uppercase mt-1">
-                              {section.department}
+                              {member.department || section.department}
                             </p>
                           </div>
                         )}
@@ -443,17 +469,11 @@ export default function AboutPage() {
       <section id="formadores" className="pt-6 pb-4 md:pt-10 md:pb-8 bg-slate-50">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-14">
-            <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">A EXCELÊNCIA QUE NÃO SE NEGOCEIA</span>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#312455] mt-3 leading-tight">
-              As Pessoas por Detrás da Prime
-            </h2>
-            <p className="text-slate-500 text-sm leading-relaxed mt-4 max-w-2xl mx-auto">
-              A qualidade de uma academia mede-se pelo talento que a compõe. Contamos com profissionais de referência, desde a equipa interna aos formadores. Porque dirigimos o que conhecemos e conhecemos o que ensinamos.
-            </p>
+            <span className="text-[#8a66a8] font-bold text-xs uppercase tracking-widest">Os Formadores</span>
           </div>
 
           {/* Corpo Docente */}
-          <div className="mb-16">
+          <div>
             {/* Row 1: 4 trainers */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 mb-8 md:mb-10">
               {trainers.slice(0, 4).map((trainer, i) => (
@@ -506,33 +526,40 @@ export default function AboutPage() {
       </section>
 
       {/* ══════════════════════════════════════════════
-          SECÇÃO — Faixa Métrica de Impacto
+          SECÇÃO — Faixa Métrica de Impacto (Estilo Clean & Moderno)
       ══════════════════════════════════════════════ */}
-      <section className="bg-[#312455] pt-4 pb-6 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.04]"
-          style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
+      <section className="bg-gradient-to-b from-slate-50/60 via-white to-slate-50/60 py-6 md:py-8 border-y border-slate-100/80 relative overflow-hidden">
+        {/* Glow de fundo subtil */}
+        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-64 h-64 bg-purple-100/30 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-64 h-64 bg-slate-100/40 rounded-full blur-3xl pointer-events-none" />
+
         <div className="container mx-auto px-4 max-w-6xl relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center text-white">
-            {[
-              { icon: BookOpen, label: 'Formação Contextualizada', sub: 'Com metodologia prática' },
-              { icon: Award, label: 'Formadores', sub: 'Com experiência comprovada' },
-              { icon: TrendingUp, label: 'Impacto Organizacional', sub: 'E de carreira' },
-              { icon: Target, label: 'Formação Sob Medida', sub: 'formação sob medida para indivíduos ou equipas' },
-              { icon: BadgeCheck, label: 'Certificação Reconhecida', sub: 'Validade nacional' },
-            ].map((feat, i) => {
-              const Icon = feat.icon
-              return (
-                <div key={i} className="flex flex-col items-center gap-3">
-                  <div className="w-12 h-12 rounded-full border border-[#8a66a8]/40 bg-[#8a66a8]/15 flex items-center justify-center">
-                    <Icon className="w-5 h-5 text-[#c4a9e0]" />
+          <div className="bg-white/90 backdrop-blur-md rounded-3xl border border-slate-200/70 shadow-[0_4px_25px_-4px_rgba(49,36,85,0.04)] p-4 sm:p-6 md:p-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-slate-100 gap-y-6 md:gap-y-0">
+              {[
+                { icon: BookOpen, label: 'Formação Contextualizada', sub: 'Com metodologia prática' },
+                { icon: Users, label: 'Formadores', sub: 'Com experiência comprovada' },
+                { icon: TrendingUp, label: 'Impacto Organizacional', sub: 'E de carreira' },
+                { icon: Target, label: 'Formação Sob Medida', sub: 'Para indivíduos ou equipas' },
+                { icon: BadgeCheck, label: 'Certificação Reconhecida', sub: 'Validade nacional' },
+              ].map((feat, i) => {
+                const Icon = feat.icon
+                return (
+                  <div 
+                    key={i} 
+                    className="group flex flex-col items-center text-center px-3 pt-4 pb-2 md:py-2 transition-all duration-300"
+                  >
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#f8f3fe] via-[#f3e9fd] to-[#ede0fb] border border-[#e4d3f8] flex items-center justify-center mb-3.5 shadow-xs group-hover:shadow-md group-hover:shadow-purple-500/10 group-hover:border-[#cbb0f3] transition-all duration-300 group-hover:-translate-y-1">
+                      <Icon className="w-6 h-6 text-[#6b46c1] group-hover:scale-110 transition-transform duration-300" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-[#2a1d4a] group-hover:text-[#6b46c1] text-sm leading-snug tracking-tight transition-colors duration-200">{feat.label}</p>
+                      <p className="text-slate-500 text-xs mt-1 leading-relaxed max-w-[190px] mx-auto font-normal">{feat.sub}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-black text-sm leading-tight">{feat.label}</p>
-                    <p className="text-white/55 text-[11px] mt-0.5">{feat.sub}</p>
-                  </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
           </div>
         </div>
       </section>

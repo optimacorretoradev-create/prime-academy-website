@@ -65,7 +65,7 @@ function StatItem({ stat, idx }: { stat: (typeof stats)[number]; idx: number }) 
 
 export function StatsStrip() {
   return (
-    <div className="relative z-30 bg-gradient-to-r from-[#8a66a8] to-[#735191] text-white overflow-hidden shadow-lg border-y border-purple-400/20">
+    <div className="relative z-30 -mt-10 lg:-mt-14 bg-gradient-to-r from-[#8a66a8] to-[#735191] text-white overflow-hidden shadow-xl border-y border-purple-400/20">
       <div className="container mx-auto px-4 max-w-6xl py-2 sm:py-3 md:py-4">
         <div className="grid grid-cols-2 gap-4 md:flex md:flex-row md:items-center md:justify-between md:gap-0">
           {stats.map((stat, idx) => (

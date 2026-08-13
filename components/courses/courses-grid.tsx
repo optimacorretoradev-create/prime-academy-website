@@ -36,8 +36,8 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
   const searchParams = useSearchParams()
   const categoryParam = searchParams.get('category')
   
-  // activeFilter default 'TODOS' — matches the first entry in OFFICIAL_CATEGORIES
-  const [activeFilter, setActiveFilter] = useState(categoryParam || 'TODOS')
+  // activeFilter default 'GESTÃO ADMINISTRATIVA DIGITAL' — first category in OFFICIAL_CATEGORIES
+  const [activeFilter, setActiveFilter] = useState(categoryParam || 'GESTÃO ADMINISTRATIVA DIGITAL')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedType, setSelectedType] = useState('Todos')
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -106,7 +106,7 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
             transition={{ duration: 0.5 }}
             className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight mb-4 max-w-3xl mx-auto"
           >
-            Um mar de oportunidades à sua espera
+            Um Mar De Oportunidades À Sua Espera
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: -10 }}
@@ -125,17 +125,21 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
       {/* ── CONTEÚDO PRINCIPAL ── */}
       <div className="container mx-auto px-4 max-w-screen-xl pb-20">
 
-        {/* Título da secção + underline */}
-        <div className="text-center pt-15 mb-16 flex flex-col items-center">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-[#312455] tracking-wider mb-2">
-            Os nossos cursos
-          </h2>
-          <div className="w-14 h-1 bg-[#8a66a8] rounded-full" />
+        {/* Bloco de ofertas formativas */}
+        <div className="mb-10">
+          <OfertaFormativaTabs />
         </div>
 
-        {/* Bloco de ofertas formativas */}
-        <div className="mb-20">
-          <OfertaFormativaTabs />
+        {/* Título da secção */}
+        <div className="text-center pt-2 mb-2">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#312455] tracking-wider">
+            Os Nossos Cursos
+          </h2>
+        </div>
+
+        {/* Traço roxo mantido na sua posição visual original */}
+        <div className="flex justify-center mb-6">
+          <div className="w-14 h-1 bg-[#8a66a8] rounded-full" />
         </div>
 
         {/* Filtros por categoria (tabs responsivas) */}

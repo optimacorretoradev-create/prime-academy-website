@@ -102,7 +102,7 @@ export function OfertaFormativa() {
             SOLUÇÕES PRIME
           </span>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#312455] leading-tight">
-            Quatro formas de transformar a sua organização
+            Quatro Formas De Transformar A Sua Organização
           </h2>
           <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
             Soluções especializadas, programas à medida e eventos de alto nível, escolha o formato que melhor serve o seu objectivo profissional.

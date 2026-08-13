@@ -64,6 +64,7 @@ export function EnrollmentCheckoutForm({
     course: '',
     modalidade: 'online' as 'online' | 'presencial',
     comprovativo: null as File | null,
+    mensagem: '',
   })
 
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
@@ -147,16 +148,22 @@ export function EnrollmentCheckoutForm({
     courseName: string,
     email: string,
     nome: string,
-    modalidade: 'online' | 'presencial'
+    modalidade: 'online' | 'presencial',
+    mensagem?: string
   ): string => {
     const modalidadeLabel = modalidade === 'presencial' ? 'Presencial' : 'Online'
-    const message =
+    let msg =
       `Olá, Prime Academy! 👋\n\n` +
       `O meu nome é *${nome}* e acabei de realizar a minha inscrição no curso:\n` +
       `📚 *${courseName}* — Modalidade: *${modalidadeLabel}*\n\n` +
-      `O meu e-mail de registo é: *${email}*\n\n` +
-      `Envio em anexo o comprovativo de pagamento para validação. Fico a aguardar a confirmação. Obrigado! 🙏`
-    return encodeURIComponent(message)
+      `O meu e-mail de registo é: *${email}*\n\n`
+
+    if (mensagem && mensagem.trim()) {
+      msg += `📝 *Nota/Observação:* ${mensagem.trim()}\n\n`
+    }
+
+    msg += `Envio em anexo o comprovativo de pagamento para validação. Fico a aguardar a confirmação. Obrigado! 🙏`
+    return encodeURIComponent(msg)
   }
 
   const buildWhatsAppUrl = (): string => {
@@ -165,7 +172,7 @@ export function EnrollmentCheckoutForm({
     const nome = userProfile?.nome ?? 'Candidato'
     const email = userProfile?.email ?? ''
     const modalidade = formData.modalidade
-    return `https://api.whatsapp.com/send?phone=${phone}&text=${buildWhatsAppMessage(courseName, email, nome, modalidade)}`
+    return `https://api.whatsapp.com/send?phone=${phone}&text=${buildWhatsAppMessage(courseName, email, nome, modalidade, formData.mensagem)}`
   }
 
   const uploadComprovatvoToStorage = async (file: File, inscricaoId: string): Promise<string> => {
@@ -235,6 +242,7 @@ export function EnrollmentCheckoutForm({
         curso_nome: matchedCourse.name,
         modalidade: formData.modalidade,
         comprovativo_url: comprovativoUrl,
+        mensagem: formData.mensagem.trim() || undefined,
       })
 
       if (!inscricaoResult.ok) {
@@ -734,6 +742,21 @@ export function EnrollmentCheckoutForm({
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Campo de Notas / Observações */}
+          <div className="space-y-1">
+            <Label htmlFor="mensagem" className="text-foreground font-medium text-xs flex items-center justify-between">
+              <span>Notas / Observações <span className="text-muted-foreground font-normal text-[11px]">(Opcional)</span></span>
+            </Label>
+            <textarea
+              id="mensagem"
+              rows={2}
+              placeholder="Ex: O pagamento foi efetuado por outra pessoa em meu nome..."
+              value={formData.mensagem}
+              onChange={(e) => setFormData((prev) => ({ ...prev, mensagem: e.target.value }))}
+              className="w-full rounded-xl border border-border bg-muted/20 px-3 py-2 text-xs placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary resize-none transition-all"
+            />
           </div>
 
           <Button

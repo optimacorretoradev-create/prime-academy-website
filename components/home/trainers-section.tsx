@@ -82,7 +82,7 @@ export function TrainersSection() {
             Núcleo de Especialistas
           </span>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#312455] tracking-tight leading-tight max-w-3xl mx-auto">
-            Formadores de excelência <span className="text-[#8a66a8]">nacionais e internacionais</span>
+            Formadores De Excelência <span className="text-[#8a66a8]">Nacionais E Internacionais</span>
           </h2>
           <p className="mt-4 text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
             Todos os nossos formadores têm um percurso profissional comprovado nas áreas que ministram. Na Prime Academy, experiência real é requisito, não excepção.
