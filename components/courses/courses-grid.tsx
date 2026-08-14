@@ -282,9 +282,9 @@ export function CoursesGrid({ courses, categories }: CoursesGridProps) {
         title="Pronto Para Atualizar Os Seus Conhecimentos?"
         subtitle="A sua jornada começa hoje. Inscreva-se numa das nossas turmas ou fale connosco para encontrar o programa ideal, individual ou à medida da sua equipa."
         cta1Label="Pedir Proposta"
-        cta1Href="http://localhost:3000/contact"
+        cta1Href="/contact"
         cta2Label="Falar Com A Nossa Equipa"
-        cta2Href="http://localhost:3000/contact"
+        cta2Href="/contact"
       />
 
       <PreEnrollmentModal 
