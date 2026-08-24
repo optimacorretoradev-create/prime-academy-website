@@ -40,15 +40,15 @@ export function CoursesSection() {
               FORMAÇÃO EXECUTIVA ESPECIALIZADA
             </span>
             <h2 className="text-2xl md:text-4xl font-extrabold text-[#312455] tracking-tight">
-              Cursos Em Destaque
+              Cursos em Destaque
             </h2>
             <p className="text-slate-500 text-sm">
-              Seleccione uma das nossas especialidades de alta conversão empresarial e acelere a sua carreira.
+              Escolha o seu ponto de partida entre os mais procurados.
             </p>
           </div>
           <Button asChild variant="outline" className="rounded-xl font-bold px-6 text-[#312455] hover:bg-[#312455] hover:text-white transition-all h-10 shadow-md hover:shadow-xl">
             <Link href="/courses" className="flex items-center gap-2">
-              Ver Todos Os Cursos
+              Ver todos os Cursos
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
