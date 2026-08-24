@@ -36,7 +36,7 @@ export default async function ContactPage() {
             Fale Connosco
           </span>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-primary-foreground leading-tight mb-3 max-w-3xl mx-auto">
-            A Nossa Equipa À Sua Disposição
+            A nossa Equipa à sua Disposição
           </h1>
           <p className="text-slate-300 max-w-2xl mx-auto text-sm sm:text-base mt-3 text-pretty">
             Seja para formação individual, programas corporativos sob medida ou parcerias institucionais, estamos prontos para ajudar a alcançar os seus objectivos.
@@ -54,7 +54,7 @@ export default async function ContactPage() {
               <div className="text-left">
                 <h2 className="text-[#312455] font-black text-2xl sm:text-3xl mb-1">Contactos</h2>
                 <p className="text-slate-500 text-sm leading-relaxed max-w-xl">
-                  Contacte-Nos Pelo Seu Canal De Preferência: Formulário, WhatsApp Ou Email.
+                  Contacte-nos pelo seu canal de preferência: Formulário, WhatsApp Ou Email.
                 </p>
               </div>
               {/* Grid of 4 Items */}
@@ -143,7 +143,7 @@ export default async function ContactPage() {
             <div className="h-full">
               <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-7 shadow-lg h-full flex flex-col">
                 <h3 className="text-xl font-bold text-[#312455] mb-4 sm:mb-6">
-                  Envie-Nos Um Pedido
+                  Envie-nos o seu Pedido
                 </h3>
                 <div className="flex-1">
                   <ContactForm />
