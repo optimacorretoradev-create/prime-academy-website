@@ -31,7 +31,7 @@ const OFERTA_FORMATIVA = [
     id: 'formacao',
     icon: BookOpen,
     title: 'Formação Especializada',
-    subtitle: 'Programas Completos para Desenvolver Competências Críticas',
+    subtitle: 'Programas completos para Desenvolver competências críticas',
     cta: 'Ver cursos',
     ctaHref: '/courses',
     areas: [
@@ -47,7 +47,7 @@ const OFERTA_FORMATIVA = [
       },
       {
         titulo: 'Liderança e Comunicação',
-        descricao: 'Comunicação Institucional, Protocolo, Redação Executiva e Relações Interpessoais de Alto Nível.',
+        descricao: 'Comunicação Institucional, Protocolo, Redacção Executiva e Relações Interpessoais de Alto Nível.',
         areaIcon: Mic2,
         cursos: [
           'Comunicação Institucional e Corporativa',
@@ -84,7 +84,7 @@ const OFERTA_FORMATIVA = [
     id: 'programas',
     icon: Users,
     title: 'Programas Especiais',
-    subtitle: 'Programas de Curta Duração focados em Resultados Rápidos',
+    subtitle: 'Programas de curta duração focados em resultados rápidos',
     cta: 'Saber mais',
     ctaHref: '/courses',
     areas: [
@@ -101,7 +101,7 @@ const OFERTA_FORMATIVA = [
         descricao: 'Formação Contínua e atualização profissional para acompanhar as exigências do mercado.',
         areaIcon: RefreshCw,
         cursos: [
-          'Atualização de Habilidades de Altos Gestores',
+          'Atualização de habilidades de Altos Gestores',
         ],
       },
       {
