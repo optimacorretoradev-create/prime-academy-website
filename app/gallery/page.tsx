@@ -37,7 +37,7 @@ export default async function GalleryPage() {
                 O NOSSO PERCURSO EM IMAGENS
               </span>
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight max-w-3xl">
-                Cada Imagem É Uma Competência Transformada.
+                Cada imagem é uma Competência Transformada.
               </h1>
               <p className="text-slate-300 max-w-2xl text-sm sm:text-base font-light leading-relaxed mt-3 text-pretty">
                 Mais de 10.353 profissionais formados não cabem numa página, cada momento aqui representa projectos reais, pessoas reais, resultados reais. Veja a Prime Academy em acção.
@@ -62,7 +62,7 @@ export default async function GalleryPage() {
                 href="/contact"
                 className="bg-[#8a66a8] hover:bg-[#735191] text-white text-sm font-bold px-6 py-3 rounded-xl transition-all shadow-lg text-center w-full max-w-[360px]"
               >
-                Fazer Parte Da Próxima Edição
+                Fazer parte da Próxima Edição
               </Link>
             </div>
           </div>
